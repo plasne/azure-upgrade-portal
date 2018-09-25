@@ -1,6 +1,6 @@
 FROM node:10-alpine
 WORKDIR /app
-COPY . .
+COPY ../../../dist/api .
 RUN npm install
 EXPOSE 80
 CMD [ "npm start" ]
