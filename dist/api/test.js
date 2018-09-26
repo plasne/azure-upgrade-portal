@@ -9,7 +9,7 @@ const assert = require("assert");
 const child_process_1 = require("child_process");
 require("mocha");
 // startup the API server
-const server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8113']);
+const server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8112']);
 before(done => {
     server.on('message', message => {
         if (message === 'listening') {
