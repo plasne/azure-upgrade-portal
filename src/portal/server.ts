@@ -61,7 +61,7 @@ if (!PORT) throw new Error('You must specify a PORT.');
 
 // hello world
 app.get('/', (_, res) => {
-    res.send('Hello from portal');
+    res.send('Hello from portal\n');
 });
 
 // listening

@@ -3,7 +3,13 @@ require('dotenv').config();
 import cmd = require('commander');
 import * as winston from 'winston';
 import express = require('express');
+import * as fs from 'fs';
+import * as util from 'util';
 
+// promisify
+const readdirAsync = util.promisify(fs.readdir);
+
+// configure express
 const app = express();
 
 // define command line parameters
@@ -59,12 +65,21 @@ logger.info(`PORT = "${PORT}".`);
 // check requirements
 if (!PORT) throw new Error('You must specify a PORT.');
 
-// hello world
-app.get('/', (_, res) => {
-    res.send('Hello from API');
-});
+// startup
+(async () => {
+    // mount all routes
+    const routePaths = await readdirAsync(`${__dirname}/routes`);
+    for (const routePath of routePaths) {
+        logger.verbose(`mounting routes for "${routePath}"...`);
+        require(`${__dirname}/routes/${routePath}`)(app);
+        logger.verbose(`mounted routes for "${routePath}".`);
+    }
 
-// listening
-app.listen(PORT, () => {
-    logger.verbose(`listening on port ${PORT}...`);
+    // start listening
+    app.listen(PORT, () => {
+        logger.verbose(`listening on port ${PORT}...`);
+        if (process.send) process.send('listening');
+    });
+})().catch(error => {
+    logger.error(error.stack);
 });
