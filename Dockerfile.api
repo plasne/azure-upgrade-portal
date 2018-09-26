@@ -4,5 +4,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY ./dist/api .
 RUN npm install
-EXPOSE 80
+ARG PORT
+ENV PORT $PORT
+EXPOSE $PORT
 CMD [ "node", "server.js" ]
