@@ -1,6 +1,6 @@
 
 # global settings
-dnsSuffix: .3eaf3a8cd0b54691a700.eastus2.aksapp.io
+dnsSuffix: 3eaf3a8cd0b54691a700.eastus2.aksapp.io
 
 # API settings
 apiReplicas: 3

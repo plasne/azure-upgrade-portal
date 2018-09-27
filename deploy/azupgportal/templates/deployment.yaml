@@ -31,7 +31,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: azupgportal-api
+  name: azupgportal-api-service
 spec:
   type: ClusterIP
   ports:
@@ -43,7 +43,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: azupgportal-api
+  name: azupgportal-api-ingress
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
@@ -52,6 +52,6 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: azupgportal-api
+          serviceName: azupgportal-api-service
           servicePort: {{.Values.apiPort}}
         path: /
