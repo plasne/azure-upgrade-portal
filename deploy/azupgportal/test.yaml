@@ -1,0 +1,10 @@
+
+# global settings
+dns-suffix: .3eaf3a8cd0b54691a700.eastus2.aksapp.io
+
+# API settings
+api:
+  replicas: 3
+  version: latest
+  port: 80
+  dns-name: api

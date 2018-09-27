@@ -1,0 +1,9 @@
+apiVersion: v1
+name: azupgportal
+version: 0.1.0
+description: Azure Upgrade Portal to help keep your Azure Resources at the latest versions and features.
+sources:
+  - https://github.com/plasne/azure-upgrade-portal
+maintainers:
+  - name: Peter Lasne
+    email: pelasne@microsoft.com

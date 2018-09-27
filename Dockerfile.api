@@ -1,10 +1,11 @@
 FROM node:10-alpine
-WORKDIR /dist/api
+WORKDIR /dist
 COPY package.json package.json
 COPY package-lock.json package-lock.json
-COPY ./dist/api .
+COPY ./dist/api api/.
+COPY ./dist/lib lib/.
 RUN npm install
 ARG PORT
 ENV PORT $PORT
 EXPOSE $PORT
-CMD [ "node", "server.js" ]
+CMD [ "node", "api/server.js" ]

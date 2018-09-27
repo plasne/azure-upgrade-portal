@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // includes
-const axios_1 = __importDefault(require("axios"));
 const assert = require("assert");
+const axios_1 = __importDefault(require("axios"));
 const child_process_1 = require("child_process");
 require("mocha");
 // startup the API server

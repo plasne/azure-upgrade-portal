@@ -1,6 +1,6 @@
 // includes
-import axios from 'axios';
 import assert = require('assert');
+import axios from 'axios';
 import { fork } from 'child_process';
 import 'mocha';
 

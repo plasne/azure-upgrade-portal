@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const self_1 = __importDefault(require("../controllers/self"));
-module.exports = function (app) {
+module.exports = (app) => {
     // a get specifying no route returns version
     app.get('/', self_1.default.version);
 };
