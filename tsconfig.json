@@ -4,7 +4,7 @@
         "outDir": "./dist",
         "target": "esnext",
         "module": "commonjs",
-        "lib": ["es2018"],
+        "lib": ["es2018", "dom"],
         "strict": true,
         "noImplicitAny": true,
         "strictNullChecks": true,

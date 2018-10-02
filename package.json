@@ -5,7 +5,7 @@
     "main": "dist/api/server.js",
     "scripts": {
         "start-api": "node dist/api/server.js",
-        "build": "tsc",
+        "build": "tsc && cp -R $(ls -d1 src/portal/* | egrep -v '.ts$') dist/portal/.",
         "test-api": "mocha dist/api/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json"
     },
     "repository": {

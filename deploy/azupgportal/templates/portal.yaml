@@ -1,41 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azupgportal-api
+  name: azupgportal-portal
 spec:
-  replicas: {{.Values.apiReplicas}}
+  replicas: {{.Values.portalReplicas}}
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: azupgportal-api
+      app: azupgportal-portal
   template:
     metadata:
       labels:
-        app: azupgportal-api
+        app: azupgportal-portal
     spec:
       containers:
-      - name: azupgportal-api
-        image: azupgportal.azurecr.io/plasne/azure-upgrade-portal:{{.Values.apiVersion}}
+      - name: azupgportal-portal
+        image: azupgportal.azurecr.io/portal:{{.Values.portalVersion}}
         ports:
-        - containerPort: {{.Values.apiPort}}
+        - containerPort: {{.Values.portalPort}}
           name: http
-        env:
-        - name: PORT
-          value: '{{.Values.apiPort}}'
       imagePullSecrets:
       - name: azupgportal-registry
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: azupgportal-api-service
+  name: azupgportal-portal-service
 spec:
   type: ClusterIP
   ports:
-  - port: {{.Values.apiPort}}
+  - port: {{.Values.portalPort}}
     protocol: TCP
   selector:
     app: azupgportal-api
@@ -43,15 +40,15 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: azupgportal-api-ingress
+  name: azupgportal-portal-ingress
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: {{.Values.apiDnsName}}.{{.Values.dnsSuffix}}
+  - host: {{.Values.portalDnsName}}.{{.Values.dnsSuffix}}
     http:
       paths:
       - backend:
-          serviceName: azupgportal-api-service
-          servicePort: {{.Values.apiPort}}
+          serviceName: azupgportal-portal-service
+          servicePort: {{.Values.portalPort}}
         path: /
