@@ -35,7 +35,7 @@ spec:
   - port: {{.Values.portalPort}}
     protocol: TCP
   selector:
-    app: azupgportal-api
+    app: azupgportal-portal
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
