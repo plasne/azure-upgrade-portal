@@ -1,0 +1,11 @@
+FROM node:10-alpine
+WORKDIR /dist
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY ./dist/job-monitor job-monitor/.
+COPY ./dist/lib lib/.
+RUN npm install
+ARG PORT
+ENV PORT $PORT
+EXPOSE $PORT
+CMD [ "node", "job-monitor/server.js" ]

@@ -25,6 +25,8 @@ spec:
         env:
         - name: PORT
           value: '{{.Values.apiPort}}'
+        - name: LOG_LEVEL
+          value: '{{.Values.jobMonitorLogLevel}}'
       imagePullSecrets:
       - name: azupgportal-registry
 ---
