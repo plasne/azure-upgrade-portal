@@ -16,8 +16,8 @@ portalPort: 80
 portalDnsName: portal
 
 # Job Monitor settings
-jobMonitorReplicas: 2
-jobMonitorVersion: latest
-jobMonitorPort: 80
-jobMonitorLogLevel: verbose
-jobMonitorStorageSecret: storage
+jobsReplicas: 2
+jobsVersion: latest
+jobsPort: 80
+jobsLogLevel: verbose
+jobsStorageSecret: storage

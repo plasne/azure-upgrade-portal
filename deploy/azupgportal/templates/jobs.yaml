@@ -1,41 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azupgportal-jobMonitor
+  name: azupgportal-jobs
 spec:
-  replicas: {{.Values.jobMonitorReplicas}}
+  replicas: {{.Values.jobsReplicas}}
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: azupgportal-jobMonitor
+      app: azupgportal-jobs
   template:
     metadata:
       labels:
-        app: azupgportal-jobMonitor
+        app: azupgportal-jobs
     spec:
       containers:
-      - name: azupgportal-jobMonitor
-        image: azupgportal.azurecr.io/jobMonitor:{{.Values.jobMonitorVersion}}
+      - name: azupgportal-jobs
+        image: azupgportal.azurecr.io/jobs:{{.Values.jobsVersion}}
         ports:
-        - containerPort: {{.Values.jobMonitorPort}}
+        - containerPort: {{.Values.jobsPort}}
           name: http
         env:
         - name: PORT
-          value: '{{.Values.jobMonitorPort}}'
+          value: '{{.Values.jobsPort}}'
         - name: LOG_LEVEL
-          value: '{{.Values.jobMonitorLogLevel}}'
+          value: '{{.Values.jobsLogLevel}}'
         - name: STORAGE_ACCOUNT
           valueFrom:
             secretKeyRef:
-              name: {{.Values.jobMonitorStorageSecret}}
+              name: {{.Values.jobsStorageSecret}}
               key: STORAGE_ACCOUNT
         - name: STORAGE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{.Values.jobMonitorStorageSecret}}
+              name: {{.Values.jobsStorageSecret}}
               key: STORAGE_KEY
       imagePullSecrets:
       - name: azupgportal-registry
@@ -43,11 +43,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: azupgportal-jobMonitor-service
+  name: azupgportal-jobs-service
 spec:
   type: ClusterIP
   ports:
-  - port: {{.Values.jobMonitorPort}}
+  - port: {{.Values.jobsPort}}
     protocol: TCP
   selector:
-    app: azupgportal-jobMonitor
+    app: azupgportal-jobs
