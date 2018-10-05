@@ -1,7 +1,7 @@
 // includes
 import assert = require('assert');
 import axios from 'axios';
-import { ChildProcess, fork } from 'child_process';
+import { ChildProcess } from 'child_process';
 import dotenv = require('dotenv');
 import 'mocha';
 import { ICreateJob } from './Job';
@@ -34,6 +34,7 @@ before(done => {
         );
     }
     jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
+    done();
 });
 
 // unit tests
