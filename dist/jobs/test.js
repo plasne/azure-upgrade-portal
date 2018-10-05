@@ -23,7 +23,7 @@ let server;
 before(done => {
     server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8113']).on('message', message => {
         if (message === 'listening') {
-            console.log('Jobs server listening on port 8113...');
+            console.log('Jobs server listening on port 8113...\n');
             done();
         }
     });

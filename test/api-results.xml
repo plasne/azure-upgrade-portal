@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.21899999999999997" tests="3" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-05T19:00:15" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.274" tests="3" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-05T20:08:02" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="API Unit Tests" timestamp="2018-10-05T19:00:16" tests="1" file="/Users/plasne/Documents/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.017">
-    <testcase name="API Unit Tests should respond with application/version" time="0.017" classname="should respond with application/version">
+  <testsuite name="API Unit Tests" timestamp="2018-10-05T20:08:04" tests="1" file="/Users/plasne/Documents/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.016">
+    <testcase name="API Unit Tests should respond with application/version" time="0.016" classname="should respond with application/version">
     </testcase>
   </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-05T19:00:16" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.20199999999999999">
-    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.147" classname="should delete the jobs container">
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-05T20:08:04" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.258">
+    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.189" classname="should delete the jobs container">
     </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.055" classname="should be able to create a job without tasks">
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.069" classname="should be able to create a job without tasks">
     </testcase>
   </testsuite>
 </testsuites>
