@@ -9,11 +9,11 @@ const axios_1 = __importDefault(require("axios"));
 const child_process_1 = require("child_process");
 require("mocha");
 // startup the API server
-const server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8112']);
+let server;
 before(done => {
-    server.on('message', message => {
+    server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8112']).on('message', message => {
         if (message === 'listening') {
-            console.log('\n');
+            console.log('API server listening on port 8113...');
             done();
         }
     });
@@ -29,5 +29,6 @@ describe('API Unit Tests', () => {
 });
 // shutdown the API server
 after(() => {
-    server.kill();
+    if (server)
+        server.kill();
 });

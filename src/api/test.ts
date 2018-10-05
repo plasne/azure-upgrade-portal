@@ -1,18 +1,21 @@
 // includes
 import assert = require('assert');
 import axios from 'axios';
-import { fork } from 'child_process';
+import { ChildProcess, fork } from 'child_process';
 import 'mocha';
 
 // startup the API server
-const server = fork(`${__dirname}/server.js`, ['--port', '8112']);
+let server: ChildProcess | undefined;
 before(done => {
-    server.on('message', message => {
-        if (message === 'listening') {
-            console.log('\n');
-            done();
+    server = fork(`${__dirname}/server.js`, ['--port', '8112']).on(
+        'message',
+        message => {
+            if (message === 'listening') {
+                console.log('API server listening on port 8113...\n');
+                done();
+            }
         }
-    });
+    );
 });
 
 // unit tests
@@ -27,5 +30,5 @@ describe('API Unit Tests', () => {
 
 // shutdown the API server
 after(() => {
-    server.kill();
+    if (server) server.kill();
 });

@@ -39,7 +39,7 @@ globalExt.enableLogging(LOG_LEVEL);
 if (doStartup) {
     // log startup
     console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
-    global.logger.info(`PORT = "${PORT}".`);
+    global.logger.verbose(`PORT = "${PORT}".`);
     // check requirements
     if (!PORT) {
         throw new Error('You must specify a PORT.');
@@ -56,9 +56,8 @@ if (doStartup) {
         // start listening
         app.listen(PORT, () => {
             global.logger.verbose(`listening on port ${PORT}...`);
-            if (process.send) {
+            if (process.send)
                 process.send('listening');
-            }
         });
     })().catch(error => {
         global.logger.error(error.stack);

@@ -16,6 +16,10 @@
                     "esSpecCompliant": true
                 }
             ]
+        },
+        "jsdoc-format": false,
+        "curly": {
+            "options": ["ignore-same-line"]
         }
     },
     "rulesDirectory": []
