@@ -10,10 +10,12 @@ const child_process_1 = require("child_process");
 const dotenv = require("dotenv");
 require("mocha");
 const Jobs_1 = __importDefault(require("./Jobs"));
+console.log('STARTING TESTING');
 // startup the Jobs server
 let server;
 let jobs;
 before(done => {
+    console.log('BEFORE');
     // startup the server
     server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8113']).on('message', message => {
         if (message === 'listening') {

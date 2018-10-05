@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.33499999999999996" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-05T21:19:06" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.725" tests="3" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-05T21:27:13" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-05T21:19:07" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.33499999999999996">
-    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.213" classname="should delete the jobs container">
+  <testsuite name="API Unit Tests" timestamp="2018-10-05T21:27:14" tests="1" file="/Users/plasne/Documents/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.019">
+    <testcase name="API Unit Tests should respond with application/version" time="0.019" classname="should respond with application/version">
     </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.122" classname="should be able to create a job without tasks">
+  </testsuite>
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-05T21:27:14" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.706">
+    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.63" classname="should delete the jobs container">
+    </testcase>
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.076" classname="should be able to create a job without tasks">
     </testcase>
   </testsuite>
 </testsuites>
