@@ -7,20 +7,14 @@ import 'mocha';
 import { ICreateJob } from './Job';
 import Jobs from './Jobs';
 
-// create the Jobs context
-dotenv.config();
-const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
-const STORAGE_KEY = process.env.STORAGE_KEY;
-if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
-    throw new Error(
-        'You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.'
-    );
-}
-const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
+console.log('STARTING TESTING');
 
 // startup the Jobs server
 let server: ChildProcess | undefined;
+let jobs: Jobs | undefined;
 before(done => {
+    console.log('BEFORE');
+    // startup the server
     server = fork(`${__dirname}/server.js`, ['--port', '8113']).on(
         'message',
         message => {
@@ -30,14 +24,29 @@ before(done => {
             }
         }
     );
+
+    // create the Jobs context
+    dotenv.config();
+    const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
+    const STORAGE_KEY = process.env.STORAGE_KEY;
+    if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
+        throw new Error(
+            'You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.'
+        );
+    }
+    jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
 });
 
 // unit tests
 describe('Jobs Unit Tests', () => {
     it('should delete the jobs container', async () => {
-        await jobs.clear();
-        const hasJobs = await jobs.hasJobs();
-        assert.ok(hasJobs === false);
+        if (jobs) {
+            await jobs.clear();
+            const hasJobs = await jobs.hasJobs();
+            assert.ok(hasJobs === false);
+        } else {
+            throw new Error(`Jobs context not created.`);
+        }
     });
 
     it('should be able to create a job without tasks', async () => {
@@ -53,6 +62,6 @@ describe('Jobs Unit Tests', () => {
 
 // shutdown the API server
 after(() => {
-    jobs.shutdown();
+    if (jobs) jobs.shutdown();
     if (server) server.kill();
 });
