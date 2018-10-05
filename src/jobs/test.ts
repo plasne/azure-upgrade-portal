@@ -7,14 +7,12 @@ import 'mocha';
 import { ICreateJob } from './Job';
 import Jobs from './Jobs';
 
-console.log('STARTING TESTING');
-
 // startup the Jobs server
 let server: ChildProcess | undefined;
 let jobs: Jobs | undefined;
 before(done => {
-    console.log('BEFORE');
     // startup the server
+    /*
     server = fork(`${__dirname}/server.js`, ['--port', '8113']).on(
         'message',
         message => {
@@ -24,6 +22,7 @@ before(done => {
             }
         }
     );
+    */
 
     // create the Jobs context
     dotenv.config();
@@ -44,6 +43,7 @@ describe('Jobs Unit Tests', () => {
             await jobs.clear();
             const hasJobs = await jobs.hasJobs();
             assert.ok(hasJobs === false);
+            jobs.shutdown();
         } else {
             throw new Error(`Jobs context not created.`);
         }
