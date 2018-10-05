@@ -9,8 +9,7 @@
         "start-jobs": "node dist/jobs/server.js",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json",
         "test-api": "mocha dist/api/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json",
-        "test-jobs": "mocha dist/jobs/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json",
-        "env": "echo '~' $STORAGE_ACCOUNT $STORAGE_KEY '~'"
+        "test-jobs": "mocha dist/jobs/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-jobs.json"
     },
     "repository": {
         "type": "git",
