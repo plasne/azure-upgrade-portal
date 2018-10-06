@@ -34,7 +34,7 @@ class Jobs {
             }
         });
         this.tableIn = tableStreams.in.on('error', error => {
-            global.logger.error(error);
+            global.logger.error(error.stack);
         });
         this.tableOut = tableStreams.out.on('error', error => {
             global.logger.error(error.stack);
@@ -64,6 +64,12 @@ class Jobs {
             processAfter: this.createJobsTable
         }, {
             batchSize: 100
+        });
+        streams.in.on('error', error => {
+            global.logger.error(error.stack);
+        });
+        streams.out.on('error', error => {
+            global.logger.error(error.stack);
         });
         // query for everything
         const query = new AzureTableOperation_1.default('jobs', 'query', new azs.TableQuery()).finally(() => {

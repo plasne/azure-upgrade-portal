@@ -5,6 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const PromiseImposter_1 = __importDefault(require("./PromiseImposter"));
 class AzureTableOperation extends PromiseImposter_1.default {
+    get partitionKey() {
+        if (this.entity)
+            return this.entity.PartitionKey;
+        return undefined;
+    }
+    get rowKey() {
+        if (this.entity)
+            return this.entity.RowKey;
+        return undefined;
+    }
     constructor(table, type) {
         super();
         this.table = table;

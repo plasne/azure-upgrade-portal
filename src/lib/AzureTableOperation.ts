@@ -19,6 +19,16 @@ export default class AzureTableOperation extends PromiseImposter {
     public query?: azs.TableQuery;
     public token?: azs.TableService.TableContinuationToken;
 
+    public get partitionKey() {
+        if (this.entity) return this.entity.PartitionKey;
+        return undefined;
+    }
+
+    public get rowKey() {
+        if (this.entity) return this.entity.RowKey;
+        return undefined;
+    }
+
     /**
      * This class designates an table operation that can be queued, streamed, etc.
      * After creating an object, you may be alerted when its operation is complete using .then(),

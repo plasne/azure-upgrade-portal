@@ -81,8 +81,16 @@ export default class AzureTable {
                 const operation = streams.in.buffer[0];
                 if (!operation) break;
                 if (
+                    // must be in the same table
                     operations.length > 0 &&
                     operations[0].table !== operation.table
+                ) {
+                    break;
+                }
+                if (
+                    // must be in the same partition
+                    operations.length > 0 &&
+                    operations[0].partitionKey !== operation.partitionKey
                 ) {
                     break;
                 }
@@ -128,6 +136,7 @@ export default class AzureTable {
                         abort = true;
                         break;
                     case 'query':
+                        console.log('query');
                         operations.push(operation);
                         abort = true;
                         break;

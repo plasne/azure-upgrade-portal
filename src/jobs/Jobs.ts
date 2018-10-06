@@ -40,7 +40,7 @@ export default class Jobs {
             }
         );
         this.tableIn = tableStreams.in.on('error', error => {
-            global.logger.error(error);
+            global.logger.error(error.stack);
         });
         this.tableOut = tableStreams.out.on('error', error => {
             global.logger.error(error.stack);
@@ -81,6 +81,12 @@ export default class Jobs {
                 batchSize: 100
             }
         );
+        streams.in.on('error', error => {
+            global.logger.error(error.stack);
+        });
+        streams.out.on('error', error => {
+            global.logger.error(error.stack);
+        });
 
         // query for everything
         const query = new AzureTableOperation(

@@ -27,9 +27,11 @@ export default abstract class Stream<T, U> extends EventEmitter {
         // apply settings
         this.options = obj || {};
 
-        // raise errors, but don't throw them
-        this.on('error', () => {
+        // if there is a handler (besides this one), then raise those messages
+        //  into the stream, otherwise, throw them.
+        this.on('error', error => {
             // prevents: https://nodejs.org/api/events.html#events_error_events
+            if (this.listenerCount('error') === 1) throw error;
         });
 
         // wire up internal events
@@ -114,42 +116,46 @@ export default abstract class Stream<T, U> extends EventEmitter {
             return true;
         };
 
-        // loop
-        const loop: any = () => {
-            try {
-                const shouldContinue = processNext();
-                if (typeof shouldContinue === 'boolean') {
-                    if (this.processing.length < 1) this.emit('idle');
-                    return shouldContinue;
-                } else {
-                    // remove the promise on its completion making room for more
-                    this.processing.push(shouldContinue);
-                    shouldContinue.finally(() => {
-                        const index = this.processing.indexOf(shouldContinue);
-                        if (index > -1) this.processing.splice(index, 1);
-                    });
-                    if (this.processing.length < 1) this.emit('idle');
-                    return loop(); // continue filling the processing immediately
-                }
-            } catch (error) {
-                this.emit('error', error);
-                return true;
-            }
-        };
-
         // respect processAfter
         if (from && from.options.processAfter) await from.options.processAfter;
         if (this.options.processAfter) await this.options.processAfter;
 
-        // start processing
+        // process loop
         await new Promise(resolve => {
-            const interval = setInterval(() => {
-                const shouldContinue = loop();
-                if (!shouldContinue) {
-                    clearInterval(interval);
-                    resolve();
+            const loop: any = () => {
+                try {
+                    const shouldContinue = processNext();
+                    if (typeof shouldContinue === 'boolean') {
+                        if (this.processing.length < 1) this.emit('idle');
+                        if (shouldContinue) {
+                            setTimeout(() => {
+                                loop();
+                            }, 10);
+                        } else {
+                            resolve();
+                        }
+                    } else {
+                        // remove the promise on its completion making room for more
+                        this.processing.push(shouldContinue);
+                        shouldContinue.finally(() => {
+                            const index = this.processing.indexOf(
+                                shouldContinue
+                            );
+                            if (index > -1) this.processing.splice(index, 1);
+                        });
+                        if (this.processing.length < 1) this.emit('idle');
+                        loop();
+                    }
+                } catch (error) {
+                    this.emit('error', error);
+                    setTimeout(() => {
+                        loop();
+                    }, 10);
                 }
-            }, 10);
+            };
+            loop();
+        }).catch(error => {
+            this.emit('error', error);
         });
 
         // wait for processing to finish
