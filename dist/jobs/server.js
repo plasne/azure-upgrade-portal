@@ -78,7 +78,9 @@ if (doStartup) {
     // start listening
     app.listen(PORT, () => {
         global.logger.verbose(`listening on port ${PORT}...`);
-        if (process.send)
-            console.log('sent listening');
+        if (process.send) {
+            console.log('sent "listening" from Jobs to test rig.');
+            process.send('listening');
+        }
     });
 }

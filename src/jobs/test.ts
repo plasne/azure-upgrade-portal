@@ -23,6 +23,7 @@ before(done => {
             done();
         }
     });
+    console.log('waiting for Jobs server...');
 
     // create the Jobs context
     dotenv.config();

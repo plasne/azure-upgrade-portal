@@ -18,6 +18,7 @@ before(done => {
             done();
         }
     });
+    console.log('waiting for API server...');
 });
 
 // unit tests
