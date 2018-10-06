@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.423" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-06T00:07:32" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.245" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-06T00:31:45" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-06T00:07:34" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.423">
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-06T00:31:46" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.245">
     <testcase name="Jobs Unit Tests should delete the jobs container" time="0" classname="should delete the jobs container">
     </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.423" classname="should be able to create a job without tasks">
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.245" classname="should be able to create a job without tasks">
     </testcase>
   </testsuite>
 </testsuites>

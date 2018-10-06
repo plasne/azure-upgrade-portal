@@ -7,40 +7,43 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const axios_1 = __importDefault(require("axios"));
 const child_process_1 = require("child_process");
-// import dotenv = require('dotenv');
+const dotenv = require("dotenv");
 require("mocha");
+const Jobs_1 = __importDefault(require("./Jobs"));
 // startup the Jobs server
 let server;
 let jobs;
 before(done => {
     // startup the server
-    server = child_process_1.fork(`${__dirname}/server.js`, ['--port', '8113']).on('message', message => {
+    server = child_process_1.fork(`${__dirname}/server.js`, [
+        '--port',
+        '8113',
+        '--log-level',
+        'verbose'
+    ]).on('message', message => {
         if (message === 'listening') {
             console.log('Jobs server listening on port 8113...\n');
             done();
         }
     });
+    console.log('after');
     // create the Jobs context
-    /*
     dotenv.config();
     const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
     const STORAGE_KEY = process.env.STORAGE_KEY;
     if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
-        throw new Error(
-            'You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.'
-        );
+        throw new Error('You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.');
     }
-    jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
-    */
+    jobs = new Jobs_1.default(STORAGE_ACCOUNT, STORAGE_KEY);
 });
+const b = false;
 // unit tests
 describe('Jobs Unit Tests', () => {
     it('should delete the jobs container', async () => {
-        if (jobs) {
+        if (jobs && b) {
             await jobs.clear();
             const hasJobs = await jobs.hasJobs();
             assert.ok(hasJobs === false);
-            jobs.shutdown();
         }
         else {
             // throw new Error(`Jobs context not created.`);
