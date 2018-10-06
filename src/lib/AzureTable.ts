@@ -136,7 +136,6 @@ export default class AzureTable {
                         abort = true;
                         break;
                     case 'query':
-                        console.log('query');
                         operations.push(operation);
                         abort = true;
                         break;
