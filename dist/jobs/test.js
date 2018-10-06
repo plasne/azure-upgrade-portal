@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const axios_1 = __importDefault(require("axios"));
 const child_process_1 = require("child_process");
-// import dotenv = require('dotenv');
+const dotenv = require("dotenv");
 require("mocha");
 const Jobs_1 = __importDefault(require("./Jobs"));
 // before
@@ -15,7 +15,7 @@ let server;
 let jobs;
 before(done => {
     // create the Jobs context
-    // dotenv.config();
+    dotenv.config();
     const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
     const STORAGE_KEY = process.env.STORAGE_KEY;
     if (!STORAGE_ACCOUNT || !STORAGE_KEY) {

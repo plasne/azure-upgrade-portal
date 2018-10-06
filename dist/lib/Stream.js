@@ -106,6 +106,8 @@ class Stream extends events_1.EventEmitter {
                     else {
                         // remove the promise on its completion making room for more
                         this.processing.push(shouldContinue);
+                        console.log(`shouldContinue? ${typeof shouldContinue} ${typeof shouldContinue.finally}`);
+                        console.log(`shouldContinue? ${shouldContinue}`);
                         shouldContinue.finally(() => {
                             const index = this.processing.indexOf(shouldContinue);
                             if (index > -1)

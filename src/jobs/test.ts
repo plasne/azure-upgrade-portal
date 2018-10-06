@@ -2,7 +2,7 @@
 import assert = require('assert');
 import axios from 'axios';
 import { ChildProcess, fork } from 'child_process';
-// import dotenv = require('dotenv');
+import dotenv = require('dotenv');
 import 'mocha';
 import { ICreateJob } from './Job';
 import Jobs from './Jobs';
@@ -12,7 +12,7 @@ let server: ChildProcess | undefined;
 let jobs: Jobs | undefined;
 before(done => {
     // create the Jobs context
-    // dotenv.config();
+    dotenv.config();
     const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
     const STORAGE_KEY = process.env.STORAGE_KEY;
     if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
