@@ -10,34 +10,33 @@ const child_process_1 = require("child_process");
 const dotenv = require("dotenv");
 require("mocha");
 const Jobs_1 = __importDefault(require("./Jobs"));
+// before
+let server;
+let jobs;
+before(done => {
+    // startup the server
+    server = child_process_1.fork(`${__dirname}/server.js`, [
+        '--port',
+        '8113',
+        '--log-level',
+        'verbose'
+    ]).on('message', message => {
+        if (message === 'listening') {
+            console.log('Jobs server listening on port 8113...\n');
+            done();
+        }
+    });
+    // create the Jobs context
+    dotenv.config();
+    const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
+    const STORAGE_KEY = process.env.STORAGE_KEY;
+    if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
+        throw new Error('You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.');
+    }
+    jobs = new Jobs_1.default(STORAGE_ACCOUNT, STORAGE_KEY);
+});
 // unit tests
 describe('Jobs Unit Tests', () => {
-    // before
-    let server;
-    let jobs;
-    before(done => {
-        // startup the server
-        server = child_process_1.fork(`${__dirname}/server.js`, [
-            '--port',
-            '8113',
-            '--log-level',
-            'verbose'
-        ]).on('message', message => {
-            if (message === 'listening') {
-                console.log('Jobs server listening on port 8113...\n');
-                done();
-            }
-        });
-        // create the Jobs context
-        dotenv.config();
-        const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
-        const STORAGE_KEY = process.env.STORAGE_KEY;
-        if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
-            throw new Error('You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.');
-        }
-        jobs = new Jobs_1.default(STORAGE_ACCOUNT, STORAGE_KEY);
-    });
-    // test
     it('should delete the jobs container', async () => {
         if (jobs) {
             await jobs.clear();
@@ -48,7 +47,6 @@ describe('Jobs Unit Tests', () => {
             throw new Error(`Jobs context not created.`);
         }
     });
-    // test
     it('should be able to create a job without tasks', async () => {
         if (server) {
             const job = {};
@@ -60,11 +58,11 @@ describe('Jobs Unit Tests', () => {
             throw new Error(`Server does not exist.`);
         }
     });
-    // shutdown the API server
-    after(() => {
-        if (jobs)
-            jobs.shutdown();
-        if (server)
-            server.kill();
-    });
-}).timeout(20000);
+});
+// shutdown the API server
+after(() => {
+    if (jobs)
+        jobs.shutdown();
+    if (server)
+        server.kill();
+});
