@@ -34,7 +34,6 @@ before(done => {
     }
     jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
     */
-    done();
 });
 
 // unit tests
