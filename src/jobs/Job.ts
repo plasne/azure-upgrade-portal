@@ -1,5 +1,6 @@
 // includes
 import * as azs from 'azure-storage';
+import { timeout } from 'promise-timeout';
 import { v4 as uuid } from 'uuid';
 import AzureTableOperation from '../lib/AzureTableOperation';
 import PromiseImposter from '../lib/PromiseImposter';
@@ -60,6 +61,6 @@ export default class Job {
         }
 
         // wait for everything to be done
-        await Promise.all(promises);
+        await timeout(Promise.all(promises), 1000 * 60 * 5); // 5 min max
     }
 }

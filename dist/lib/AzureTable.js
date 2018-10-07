@@ -50,7 +50,8 @@ class AzureTable {
             out: new ReadableStream_1.default(outOptions)
         };
         // produce promises to commit the operations
-        streams.out.process(streams.in, () => {
+        streams.out
+            .process(streams.in, () => {
             // build a batch
             const batchSize = outOptions.batchSize || 100;
             const operations = [];
@@ -138,6 +139,7 @@ class AzureTable {
                                     else {
                                         streams.out.emit('success', opresult.response);
                                         operation.resolve(opresult.response);
+                                        operation.reject(new Error('cry break'));
                                     }
                                 }
                                 else {
@@ -167,7 +169,8 @@ class AzureTable {
                                 streams.out.push(entity, operations);
                             }
                             if (result.continuationToken) {
-                                operation.token = result.continuationToken;
+                                operation.token =
+                                    result.continuationToken;
                                 streams.in.buffer.push(operation);
                             }
                             else {
@@ -185,6 +188,9 @@ class AzureTable {
             }
             // nothing else to do
             return null;
+        })
+            .catch(error => {
+            streams.out.emit('error', error);
         });
         return streams;
     }

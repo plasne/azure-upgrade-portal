@@ -73,7 +73,8 @@ class AzureQueue {
             .promisify(azs.QueueService.prototype.createMessage)
             .bind(this.service);
         // produce promises to commit the operations
-        streams.out.process(streams.in, () => {
+        streams.out
+            .process(streams.in, () => {
             // enqueue
             const op = streams.in.buffer.shift();
             if (op) {
@@ -92,6 +93,9 @@ class AzureQueue {
             }
             // nothing else to do
             return null;
+        })
+            .catch(error => {
+            streams.out.emit('error', error);
         });
         return streams;
     }

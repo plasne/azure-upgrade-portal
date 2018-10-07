@@ -40,4 +40,9 @@ export default abstract class PromiseImposter {
         });
         return this;
     }
+
+    public timeout(onevent: anyfunc, ms: number) {
+        setTimeout(onevent, ms);
+        return this;
+    }
 }

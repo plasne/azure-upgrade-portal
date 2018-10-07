@@ -3,6 +3,8 @@ import { json as bodyParserJson } from 'body-parser';
 import cmd = require('commander');
 import dotenv = require('dotenv');
 import express = require('express');
+import * as http from 'http';
+import * as https from 'https';
 import * as globalExt from '../lib/global-ext';
 import { ICreateJob } from './Job';
 import Jobs from './Jobs';
@@ -47,6 +49,14 @@ const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8113;
 const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+
+// modify the agents
+const httpAgent: any = http.globalAgent;
+httpAgent.keepAlive = true;
+httpAgent.maxSockets = 30;
+const httpsAgent: any = https.globalAgent;
+httpsAgent.keepAlive = true;
+httpsAgent.maxSockets = 30;
 
 // enable logging
 globalExt.enableLogging(LOG_LEVEL);

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // includes
-// import PromisePool from 'es6-promise-pool';
 const events_1 = require("events");
 const overarg_1 = require("overarg");
+const promise_timeout_1 = require("promise-timeout");
 class Stream extends events_1.EventEmitter {
     constructor(obj) {
         super();
@@ -17,8 +17,11 @@ class Stream extends events_1.EventEmitter {
         //  into the stream, otherwise, throw them.
         this.on('error', error => {
             // prevents: https://nodejs.org/api/events.html#events_error_events
-            if (this.listenerCount('error') === 1)
-                throw error;
+            if (this.listenerCount('error') === 1) {
+                setTimeout(() => {
+                    throw error;
+                }, 0);
+            }
         });
         // wire up internal events
         this.on('end', () => {
@@ -106,28 +109,27 @@ class Stream extends events_1.EventEmitter {
                     else {
                         // remove the promise on its completion making room for more
                         this.processing.push(shouldContinue);
-                        console.log(`shouldContinue? ${typeof shouldContinue} ${typeof shouldContinue.finally}`);
-                        console.log(`shouldContinue? ${shouldContinue}`);
-                        shouldContinue.finally(() => {
+                        const done = () => {
                             const index = this.processing.indexOf(shouldContinue);
                             if (index > -1)
                                 this.processing.splice(index, 1);
-                        });
+                        };
+                        // NOTE: removed finally() since that requires Node 10
+                        // NOTE: don't let it sit in the processing queue for more than 5 minutes
+                        promise_timeout_1.timeout(shouldContinue, 1000 * 60 * 5).then(done, done);
                         if (this.processing.length < 1)
                             this.emit('idle');
                         loop();
                     }
                 }
                 catch (error) {
-                    this.emit('error', error);
                     setTimeout(() => {
                         loop();
                     }, 10);
+                    throw error;
                 }
             };
             loop();
-        }).catch(error => {
-            this.emit('error', error);
         });
         // wait for processing to finish
         await Promise.all(this.processing);
@@ -144,19 +146,19 @@ class Stream extends events_1.EventEmitter {
             });
         }
     }
-    waitForEnd() {
-        return new Promise(resolve => {
+    waitForEnd(ms) {
+        return promise_timeout_1.timeout(new Promise(resolve => {
             this.once('end', () => {
                 resolve();
             });
-        });
+        }), ms);
     }
-    waitForIdle() {
-        return new Promise(resolve => {
+    waitForIdle(ms) {
+        return promise_timeout_1.timeout(new Promise(resolve => {
             this.once('idle', () => {
                 resolve();
             });
-        });
+        }), ms);
     }
 }
 exports.default = Stream;

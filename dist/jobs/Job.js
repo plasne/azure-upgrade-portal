@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // includes
 const azs = __importStar(require("azure-storage"));
+const promise_timeout_1 = require("promise-timeout");
 const uuid_1 = require("uuid");
 const AzureTableOperation_1 = __importDefault(require("../lib/AzureTableOperation"));
 const Task_1 = __importDefault(require("./Task"));
@@ -47,7 +48,7 @@ class Job {
             }
         }
         // wait for everything to be done
-        await Promise.all(promises);
+        await promise_timeout_1.timeout(Promise.all(promises), 1000 * 60 * 5); // 5 min max
     }
 }
 exports.default = Job;

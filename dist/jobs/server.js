@@ -71,6 +71,7 @@ if (doStartup) {
             });
         }
         catch (error) {
+            console.log(`EEEEEEEERRRRRRRROOOORRR`);
             global.logger.error(error.stack);
             res.status(500).send('The job could not be created. Please check the logs.');
         }

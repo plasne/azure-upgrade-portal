@@ -35,9 +35,11 @@ class Jobs {
         });
         this.tableIn = tableStreams.in.on('error', error => {
             global.logger.error(error.stack);
+            // if (global.environment === 'test') throw error;
         });
         this.tableOut = tableStreams.out.on('error', error => {
             global.logger.error(error.stack);
+            // if (global.environment === 'test') throw error;
         });
         // create the queue in & out streams
         this.azureQueue = new AzureQueue_1.default({ account, key });
@@ -57,7 +59,7 @@ class Jobs {
     async clear() {
         // pause the stream
         this.tableOut.pause();
-        await this.tableOut.waitForIdle();
+        await this.tableOut.waitForIdle(1000 * 60 * 10); // 10 min max
         // create a new stream for fast delete
         const table = new AzureTable_1.default({ service: this.azureTable.service });
         const streams = table.queryStream({
@@ -65,11 +67,14 @@ class Jobs {
         }, {
             batchSize: 100
         });
+        let errors = 0;
         streams.in.on('error', error => {
             global.logger.error(error.stack);
+            errors++;
         });
         streams.out.on('error', error => {
             global.logger.error(error.stack);
+            errors++;
         });
         // query for everything
         const query = new AzureTableOperation_1.default('jobs', 'query', new azs.TableQuery()).finally(() => {
@@ -81,9 +86,13 @@ class Jobs {
             const del = new AzureTableOperation_1.default('jobs', 'delete', data);
             streams.in.push(del);
         });
-        await streams.out.waitForEnd();
+        await streams.out.waitForEnd(1000 * 60 * 10); // 10 min max
         // resume the jobs stream
         this.tableOut.resume();
+        // throw an exception if there were any stream errors
+        if (errors > 0) {
+            throw new Error('Jobs.clear() failed due to stream errors');
+        }
     }
     /** A Promise to return true if there are any jobs in the table. */
     async hasJobs() {

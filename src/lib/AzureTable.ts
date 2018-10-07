@@ -69,155 +69,182 @@ export default class AzureTable {
         };
 
         // produce promises to commit the operations
-        streams.out.process(streams.in, () => {
-            // build a batch
-            const batchSize = outOptions.batchSize || 100;
-            const operations: AzureTableOperation[] = [];
-            const batch = new azs.TableBatch();
-            let isRetrieveBatch = false;
-            let abort = false;
-            do {
-                // get the last item and make sure it can be added to existing batch
-                const operation = streams.in.buffer[0];
-                if (!operation) break;
-                if (
-                    // must be in the same table
-                    operations.length > 0 &&
-                    operations[0].table !== operation.table
-                ) {
-                    break;
-                }
-                if (
-                    // must be in the same partition
-                    operations.length > 0 &&
-                    operations[0].partitionKey !== operation.partitionKey
-                ) {
-                    break;
-                }
+        streams.out
+            .process(streams.in, () => {
+                // build a batch
+                const batchSize = outOptions.batchSize || 100;
+                const operations: AzureTableOperation[] = [];
+                const batch = new azs.TableBatch();
+                let isRetrieveBatch = false;
+                let abort = false;
+                do {
+                    // get the last item and make sure it can be added to existing batch
+                    const operation = streams.in.buffer[0];
+                    if (!operation) break;
+                    if (
+                        // must be in the same table
+                        operations.length > 0 &&
+                        operations[0].table !== operation.table
+                    ) {
+                        break;
+                    }
+                    if (
+                        // must be in the same partition
+                        operations.length > 0 &&
+                        operations[0].partitionKey !== operation.partitionKey
+                    ) {
+                        break;
+                    }
 
-                // attempt to process the operation
-                let shouldPop = true;
-                switch (operation.type) {
-                    case 'delete':
-                        batch.deleteEntity(operation.entity);
-                        operations.push(operation);
-                        break;
-                    case 'insert':
-                        batch.insertEntity(operation.entity, {});
-                        operations.push(operation);
-                        break;
-                    case 'insertOrMerge':
-                        batch.insertOrMergeEntity(operation.entity);
-                        operations.push(operation);
-                        break;
-                    case 'insertOrReplace':
-                        batch.insertOrReplaceEntity(operation.entity);
-                        operations.push(operation);
-                        break;
-                    case 'merge':
-                        batch.mergeEntity(operation.entity);
-                        operations.push(operation);
-                        break;
-                    case 'replace':
-                        batch.replaceEntity(operation.entity);
-                        operations.push(operation);
-                        break;
-                    case 'retrieve':
-                        if (batch.size() < 1) {
-                            batch.retrieveEntity(
-                                operation.entity.PartitionKey,
-                                operation.entity.RowKey
-                            );
+                    // attempt to process the operation
+                    let shouldPop = true;
+                    switch (operation.type) {
+                        case 'delete':
+                            batch.deleteEntity(operation.entity);
                             operations.push(operation);
-                            isRetrieveBatch = true;
-                        } else {
-                            shouldPop = false;
-                        }
-                        abort = true;
-                        break;
-                    case 'query':
-                        operations.push(operation);
-                        abort = true;
-                        break;
+                            break;
+                        case 'insert':
+                            batch.insertEntity(operation.entity, {});
+                            operations.push(operation);
+                            break;
+                        case 'insertOrMerge':
+                            batch.insertOrMergeEntity(operation.entity);
+                            operations.push(operation);
+                            break;
+                        case 'insertOrReplace':
+                            batch.insertOrReplaceEntity(operation.entity);
+                            operations.push(operation);
+                            break;
+                        case 'merge':
+                            batch.mergeEntity(operation.entity);
+                            operations.push(operation);
+                            break;
+                        case 'replace':
+                            batch.replaceEntity(operation.entity);
+                            operations.push(operation);
+                            break;
+                        case 'retrieve':
+                            if (batch.size() < 1) {
+                                batch.retrieveEntity(
+                                    operation.entity.PartitionKey,
+                                    operation.entity.RowKey
+                                );
+                                operations.push(operation);
+                                isRetrieveBatch = true;
+                            } else {
+                                shouldPop = false;
+                            }
+                            abort = true;
+                            break;
+                        case 'query':
+                            operations.push(operation);
+                            abort = true;
+                            break;
+                    }
+
+                    // if it was added, pop it
+                    if (shouldPop) streams.in.buffer.shift();
+                } while (batch.size() < batchSize && !abort);
+
+                // commit as batch
+                if (batch.size() > 0) {
+                    const table = operations[0].table;
+                    return new Promise((resolve, reject) => {
+                        this.service.executeBatch(
+                            table,
+                            batch,
+                            (error, result) => {
+                                if (!error) {
+                                    for (
+                                        let i = 0;
+                                        i < operations.length;
+                                        i++
+                                    ) {
+                                        const opresult = result[i]; // TODO: make sure the results are always in order
+                                        const operation = operations[i];
+                                        if (!opresult.error) {
+                                            if (isRetrieveBatch) {
+                                                streams.out.push(
+                                                    opresult.entity,
+                                                    operations[0]
+                                                );
+                                                operation.resolve(
+                                                    opresult.entity
+                                                );
+                                            } else {
+                                                streams.out.emit(
+                                                    'success',
+                                                    opresult.response
+                                                );
+                                                operation.resolve(
+                                                    opresult.response
+                                                );
+                                                operation.reject(
+                                                    new Error('cry break')
+                                                );
+                                            }
+                                        } else {
+                                            streams.out.emit(
+                                                'error',
+                                                opresult.error
+                                            );
+                                            operation.reject(error);
+                                        }
+                                    }
+                                    resolve(result);
+                                } else {
+                                    for (const operation of operations) {
+                                        streams.out.emit(
+                                            'error',
+                                            operation,
+                                            error
+                                        );
+                                        operation.reject('error', error);
+                                        reject(error);
+                                    }
+                                }
+                            }
+                        );
+                    });
                 }
 
-                // if it was added, pop it
-                if (shouldPop) streams.in.buffer.shift();
-            } while (batch.size() < batchSize && !abort);
-
-            // commit as batch
-            if (batch.size() > 0) {
-                const table = operations[0].table;
-                return new Promise((resolve, reject) => {
-                    this.service.executeBatch(table, batch, (error, result) => {
-                        if (!error) {
-                            for (let i = 0; i < operations.length; i++) {
-                                const opresult = result[i]; // TODO: make sure the results are always in order
-                                const operation = operations[i];
-                                if (!opresult.error) {
-                                    if (isRetrieveBatch) {
-                                        streams.out.push(
-                                            opresult.entity,
-                                            operations[0]
-                                        );
-                                        operation.resolve(opresult.entity);
-                                    } else {
-                                        streams.out.emit(
-                                            'success',
-                                            opresult.response
-                                        );
-                                        operation.resolve(opresult.response);
+                // commit as operation
+                if (operations.length === 1) {
+                    const operation = operations[0];
+                    return new Promise((resolve, reject) => {
+                        return this.service.queryEntities(
+                            operation.table,
+                            operation.query || new azs.TableQuery(),
+                            operation.token,
+                            (error, result) => {
+                                if (!error) {
+                                    for (const entity of result.entries) {
+                                        streams.out.push(entity, operations);
                                     }
+                                    if (result.continuationToken) {
+                                        operation.token =
+                                            result.continuationToken;
+                                        streams.in.buffer.push(operation);
+                                    } else {
+                                        operation.resolve();
+                                    }
+                                    resolve();
                                 } else {
-                                    streams.out.emit('error', opresult.error);
+                                    streams.out.emit('error', error);
                                     operation.reject(error);
+                                    reject(error);
                                 }
                             }
-                            resolve(result);
-                        } else {
-                            for (const operation of operations) {
-                                streams.out.emit('error', operation, error);
-                                operation.reject('error', error);
-                                reject(error);
-                            }
-                        }
+                        );
                     });
-                });
-            }
+                }
 
-            // commit as operation
-            if (operations.length === 1) {
-                const operation = operations[0];
-                return new Promise((resolve, reject) => {
-                    return this.service.queryEntities(
-                        operation.table,
-                        operation.query || new azs.TableQuery(),
-                        operation.token,
-                        (error, result) => {
-                            if (!error) {
-                                for (const entity of result.entries) {
-                                    streams.out.push(entity, operations);
-                                }
-                                if (result.continuationToken) {
-                                    operation.token = result.continuationToken;
-                                    streams.in.buffer.push(operation);
-                                } else {
-                                    operation.resolve();
-                                }
-                                resolve();
-                            } else {
-                                streams.out.emit('error', error);
-                                operation.reject(error);
-                                reject(error);
-                            }
-                        }
-                    );
-                });
-            }
-
-            // nothing else to do
-            return null;
-        });
+                // nothing else to do
+                return null;
+            })
+            .catch(error => {
+                streams.out.emit('error', error);
+            });
 
         return streams;
     }

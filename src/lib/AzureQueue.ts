@@ -99,28 +99,32 @@ export default class AzureQueue {
             .bind(this.service);
 
         // produce promises to commit the operations
-        streams.out.process(streams.in, () => {
-            // enqueue
-            const op = streams.in.buffer.shift();
-            if (op) {
-                const toString =
-                    typeof op.message === 'object'
-                        ? JSON.stringify(op.message)
-                        : op.message;
-                return createMessage(op.queue, toString || '')
-                    .then(result => {
-                        streams.out.emit('success', result);
-                        op.resolve(result);
-                    })
-                    .catch(error => {
-                        streams.out.emit('error', error);
-                        op.reject(error);
-                    });
-            }
+        streams.out
+            .process(streams.in, () => {
+                // enqueue
+                const op = streams.in.buffer.shift();
+                if (op) {
+                    const toString =
+                        typeof op.message === 'object'
+                            ? JSON.stringify(op.message)
+                            : op.message;
+                    return createMessage(op.queue, toString || '')
+                        .then(result => {
+                            streams.out.emit('success', result);
+                            op.resolve(result);
+                        })
+                        .catch(error => {
+                            streams.out.emit('error', error);
+                            op.reject(error);
+                        });
+                }
 
-            // nothing else to do
-            return null;
-        });
+                // nothing else to do
+                return null;
+            })
+            .catch(error => {
+                streams.out.emit('error', error);
+            });
 
         return streams;
     }

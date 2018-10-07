@@ -39,5 +39,9 @@ class PromiseImposter {
         });
         return this;
     }
+    timeout(onevent, ms) {
+        setTimeout(onevent, ms);
+        return this;
+    }
 }
 exports.default = PromiseImposter;
