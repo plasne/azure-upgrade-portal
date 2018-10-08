@@ -1,0 +1,23 @@
+
+# global settings
+dnsSuffix: 3eaf3a8cd0b54691a700.eastus2.aksapp.io
+
+# API settings
+apiReplicas: 2
+apiVersion: latest
+apiPort: 80
+apiLogLevel: verbose
+apiDnsName: api
+
+# Portal settings
+portalReplicas: 2
+portalVersion: latest
+portalPort: 80
+portalDnsName: portal
+
+# Job Monitor settings
+jobsReplicas: 2
+jobsVersion: latest
+jobsPort: 80
+jobsLogLevel: verbose
+jobsStorageSecret: storage

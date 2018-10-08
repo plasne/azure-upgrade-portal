@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="1.085" tests="2" failures="1">
+  <testsuite name="Root Suite" timestamp="2018-10-06T03:02:52" tests="0" failures="0" time="0">
+  </testsuite>
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-06T03:02:52" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="1" time="1.085">
+    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.987" classname="should delete the jobs container">
+      <failure message="The expression evaluated to a falsy value:
+
+  assert.ok(hasJobs === false)
+" type="AssertionError [ERR_ASSERTION]"><![CDATA[AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(hasJobs === false)
+
+    at Context.it (dist/jobs/test.js:44:20)
+    at process._tickCallback (internal/process/next_tick.js:68:7)]]></failure>
+    </testcase>
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.098" classname="should be able to create a job without tasks">
+    </testcase>
+  </testsuite>
+</testsuites>

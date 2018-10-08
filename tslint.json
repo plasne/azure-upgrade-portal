@@ -1,0 +1,26 @@
+{
+    "defaultSeverity": "error",
+    "extends": ["tslint:recommended"],
+    "jsRules": {},
+    "rules": {
+        "quotemark": {
+            "options": "single"
+        },
+        "arrow-parens": {
+            "options": "ban-single-arg-parens"
+        },
+        "no-console": false,
+        "trailing-comma": {
+            "options": [
+                {
+                    "esSpecCompliant": true
+                }
+            ]
+        },
+        "jsdoc-format": false,
+        "curly": {
+            "options": ["ignore-same-line"]
+        }
+    },
+    "rulesDirectory": []
+}
