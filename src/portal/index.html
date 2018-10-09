@@ -16,17 +16,23 @@
 
     <div class="navigation">
         <ul>
-            <li>Overview</li>
-            <li>Remediation Needed</li>
-            <li>Remediations Complete</li>
-            <li>Scheduled Jobs</li>
-            <li>Logs</li>
-            <li>Settings</li>
+            <li data-action-name="overview">Overview</li>
+            <li data-action-name="remediation-needed">Remediation Needed</li>
+            <li data-action-name="remediation-complete">Remediations Complete</li>
+            <li data-action-name="scheduled-jobs">Scheduled Jobs</li>
+            <li data-action-name="logs">Logs</li>
+            <li data-action-name="settings">Settings</li>
         </ul>
+    </div>
+
+    <div class="content-stage">
+        <h2></h2>
+        <div></div>
     </div>
 
     <div id="message"></div>
 
+    <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/index.js"></script>
 </body>
 

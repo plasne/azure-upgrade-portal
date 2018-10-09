@@ -4,11 +4,17 @@ class Application {
 
     public Initialize() {
         console.log('Application initializing...');
+
+        $('.navigation li').on('click', (e: any) => {
+            console.log(e);
+        });
     }
 }
 
+// Our singleton application instance
 const app = new Application();
 
-document.addEventListener('DOMContentLoaded', () => {
+$(() => {
+    // When the DOM is ready, bootstrap application
     app.Initialize();
 });
