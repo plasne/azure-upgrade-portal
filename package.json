@@ -7,7 +7,8 @@
         "build": "tsc && cp -R $(ls -d1 src/portal/* | egrep -v '.ts$') dist/portal/.",
         "start-api": "node dist/api/server.js",
         "start-jobs": "node dist/jobs/server.js",
-        "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000"
+        "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
+        "test-portal": "mocha dist/portal/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000"
     },
     "repository": {
         "type": "git",
@@ -21,6 +22,7 @@
     "homepage": "https://github.com/plasne/azure-upgrade-portal#readme",
     "dependencies": {
         "@types/jquery": "^3.3.14",
+        "@types/jsdom": "^11.12.0",
         "axios": "^0.18.0",
         "azure-storage": "^2.10.1",
         "commander": "^2.18.0",
