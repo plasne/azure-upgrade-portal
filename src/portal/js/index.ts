@@ -6,8 +6,16 @@ class Application {
         console.log('Application initializing...');
 
         $('.navigation li').on('click', (e: any) => {
-            console.log(e);
+            // For now, dump the navigation data value to the content stage
+            // TODO: Call into different components
+            const sampleContent = `{${$(e.target).data('action-name')}}`;
+            $('.content-stage h2').text(sampleContent);
+            $('.navigation li').removeClass('selected');
+            $(e.target).addClass('selected');
         });
+
+        // Select default navigation item
+        $('.navigation li.selected').click();
     }
 }
 

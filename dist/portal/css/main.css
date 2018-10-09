@@ -52,7 +52,6 @@ h3 {
     bottom: 0;
     top: 4.7em;
     background-color: #eee;
-    padding: 0.5em;
 }
 
 .navigation ul {
@@ -63,4 +62,19 @@ h3 {
 .navigation ul li {
     line-height: 2em;
     cursor: pointer;
+    padding: 0.25em 0.5em;
+}
+
+.navigation ul li.selected {
+    background-color: #c0c0c0;
+}
+
+.content-stage {
+    position: absolute;
+    left: 18em;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    top: 4.7em;
+    padding: 0.5em;
 }
