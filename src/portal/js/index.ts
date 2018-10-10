@@ -12,6 +12,7 @@ class Application {
         console.log('Application initializing...');
         this.ui.SetupNavigationEvents();
         this.ui.SelectDefaultNavigationItem();
+        // this.ui.DisplaySummaryInformation();
         console.log('Initialization complete.');
     }
 }

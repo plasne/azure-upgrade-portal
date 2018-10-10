@@ -1,6 +1,7 @@
 export interface IUIBinding {
     SetupNavigationEvents(): void;
     SelectDefaultNavigationItem(): void;
+    // DisplaySummaryInformation(): void;
 }
 
 export class UIBinding implements IUIBinding {
@@ -17,4 +18,8 @@ export class UIBinding implements IUIBinding {
             $(e.target).addClass('selected');
         });
     }
+
+    // public DisplaySummaryInformation() {
+    //     $('body');
+    // }
 }
