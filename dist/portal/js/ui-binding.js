@@ -42,7 +42,7 @@ class UIBinding {
         $('.content-stage .placeholder').html('');
     }
     RenderOverviewContent(data) {
-        const overviewMarkup = `
+        const markup = `
             <ul class="overview">
                 <li class="pending">Remediations Pending: <span>${data.RemediationsPending}</span></li>
                 <li class="completed">Remediations Completed: <span>${data.RemediationsCompleted}</span></li>
@@ -51,9 +51,33 @@ class UIBinding {
             </ul>
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
-            <button>Schedule Scan</button>
+            <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
         `;
-        $('.content-stage .placeholder').html(overviewMarkup);
+        $('.content-stage .placeholder').html(markup);
+    }
+    RenderRemediationNeededContent(data) {
+        const markup = `
+            <div class="computeUpgradable">
+                <i class="fas fa-server"></i>
+                <p>The following systems are found to need compute upgrades:</p>
+                <ul>
+                ${data.NeedsComputeUpgrade.map(item => {
+            return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+        }).join('')}
+                </ul>
+            </div>
+            <hr class="thinRule" />
+            <div class="storageUpgradable">
+                <i class="far fa-hdd"></i>
+                <p>The following systems are found to need storage account upgrades:</p>
+                <ul>
+                ${data.NeedsStorageUpgrade.map(item => {
+            return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+        }).join('')}
+                </ul>
+            </div>
+        `;
+        $('.content-stage .placeholder').html(markup);
     }
 }
 exports.UIBinding = UIBinding;

@@ -37,6 +37,9 @@ class TestUIBinding {
     RenderOverviewContent(data) {
         console.log(`Overview data loaded: ${JSON.stringify(data)}`);
     }
+    RenderRemediationNeededContent(data) {
+        console.log(`Remediation needed data loaded: ${JSON.stringify(data)}`);
+    }
     ClickNavigationItem(itemName) {
         this.TitleSelectionCallback(itemName);
     }

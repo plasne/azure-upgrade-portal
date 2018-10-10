@@ -47,8 +47,12 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         console.log('Cleared content stage.');
     }
 
-    public RenderOverviewContent(data: api.IOverviewData) {
+    public RenderOverviewContent(data: api.IOverviewSummary) {
         console.log(`Overview data loaded: ${JSON.stringify(data)}`);
+    }
+
+    public RenderRemediationNeededContent(data: api.IRemediationNeeded) {
+        console.log(`Remediation needed data loaded: ${JSON.stringify(data)}`);
     }
 
     public ClickNavigationItem(itemName: string) {

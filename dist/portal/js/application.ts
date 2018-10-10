@@ -44,6 +44,7 @@ export class Application {
                 break;
             case 'remediation-needed':
                 title = 'Remediations Needed';
+                this.LoadRemediationNeededContent();
                 break;
             case 'remediation-complete':
                 title = 'Remediations Complete';
@@ -66,6 +67,13 @@ export class Application {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadOverviewData();
         this.ui.RenderOverviewContent(data);
+        this.ui.SetBusyState(false);
+    }
+
+    public async LoadRemediationNeededContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadNeededRemediations();
+        this.ui.RenderRemediationNeededContent(data);
         this.ui.SetBusyState(false);
     }
 }

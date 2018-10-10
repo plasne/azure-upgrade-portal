@@ -11,7 +11,8 @@ export interface IUIBinding {
     SetContentStageTitle(title: string): void;
     SetNavigationFragment(path: string): void;
     ClearContentStage(): void;
-    RenderOverviewContent(data: api.IOverviewData): void;
+    RenderOverviewContent(data: api.IOverviewSummary): void;
+    RenderRemediationNeededContent(data: api.IRemediationNeeded): void;
 }
 
 export class UIBinding implements IUIBinding {
@@ -60,8 +61,8 @@ export class UIBinding implements IUIBinding {
         $('.content-stage .placeholder').html('');
     }
 
-    public RenderOverviewContent(data: api.IOverviewData) {
-        const overviewMarkup = `
+    public RenderOverviewContent(data: api.IOverviewSummary) {
+        const markup = `
             <ul class="overview">
                 <li class="pending">Remediations Pending: <span>${
                     data.RemediationsPending
@@ -74,9 +75,35 @@ export class UIBinding implements IUIBinding {
             </ul>
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
-            <button>Schedule Scan</button>
+            <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
         `;
 
-        $('.content-stage .placeholder').html(overviewMarkup);
+        $('.content-stage .placeholder').html(markup);
+    }
+
+    public RenderRemediationNeededContent(data: api.IRemediationNeeded) {
+        const markup = `
+            <div class="computeUpgradable">
+                <i class="fas fa-server"></i>
+                <p>The following systems are found to need compute upgrades:</p>
+                <ul>
+                ${data.NeedsComputeUpgrade.map(item => {
+                    return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+                }).join('')}
+                </ul>
+            </div>
+            <hr class="thinRule" />
+            <div class="storageUpgradable">
+                <i class="far fa-hdd"></i>
+                <p>The following systems are found to need storage account upgrades:</p>
+                <ul>
+                ${data.NeedsStorageUpgrade.map(item => {
+                    return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+                }).join('')}
+                </ul>
+            </div>
+        `;
+
+        $('.content-stage .placeholder').html(markup);
     }
 }

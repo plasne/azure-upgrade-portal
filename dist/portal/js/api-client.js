@@ -18,5 +18,37 @@ class ApiClient {
             }, 1000);
         });
     }
+    // Loads data for the machines that currently need remediation applied.
+    // Note this may return other resources beyond machines, but we'll stop there for now.
+    LoadNeededRemediations() {
+        return new Promise(resolve => {
+            const storageUpgradable = [];
+            const computeUpgradable = [];
+            storageUpgradable.push({
+                Name: 'VM01',
+                Type: 'Virtual Machine'
+            });
+            storageUpgradable.push({
+                Name: 'VM05',
+                Type: 'Virtual Machine'
+            });
+            computeUpgradable.push({
+                Name: 'VM-Z23',
+                Type: 'Virtual Machine'
+            });
+            computeUpgradable.push({
+                Name: 'CS-TR344',
+                Type: 'Cloud Service'
+            });
+            const mockResponse = {
+                NeedsComputeUpgrade: computeUpgradable,
+                NeedsStorageUpgrade: storageUpgradable
+            };
+            // TODO: This will be a real API call, bur for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
 }
 exports.ApiClient = ApiClient;
