@@ -19,6 +19,7 @@ const globalExt = __importStar(require("../lib/global-ext"));
 // before
 let logcar;
 let service;
+let SOCKET_ROOT = '/tmp/';
 before(done => {
     // read variables
     dotenv.config();
@@ -26,6 +27,8 @@ before(done => {
     globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
     const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
     const STORAGE_KEY = process.env.STORAGE_KEY;
+    if (process.env.SOCKET_ROOT)
+        SOCKET_ROOT = process.env.SOCKET_ROOT;
     if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
         throw new Error('You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.');
     }
@@ -42,7 +45,7 @@ before(done => {
 // unit tests
 describe('LogCar Tests', () => {
     it('should connect to a running logcar', async () => {
-        await globalExt.enablePersistentLogging();
+        await globalExt.enablePersistentLogging(SOCKET_ROOT);
     });
     it('should delete all system messages', () => {
         return new Promise((resolve, reject) => {

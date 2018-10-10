@@ -17,12 +17,14 @@ const globalExt = __importStar(require("../lib/global-ext"));
 cmd.option('-l, --log-level <s>', `LOG_LEVEL. The minimum level to log (error, warn, info, verbose, debug, silly). Defaults to "info".`, /^(error|warn|info|verbose|debug|silly)$/i)
     .option('-s, --storage-account <s>', '[REQUIRED] STORAGE_ACCOUNT. The Azure Storage Account that will be used for persistence.')
     .option('-k, --storage-key <s>', '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.')
+    .option('-r, --socket-root <s>', '[REQUIRED] SOCKET_ROOT. The root directory that will be used for sockets.')
     .parse(process.argv);
 // globals
 dotenv.config();
 const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
 // connect to the blob service
 const service = azs.createBlobService(STORAGE_ACCOUNT, STORAGE_KEY);
 // enable logging
@@ -83,6 +85,11 @@ function clear(entry) {
 // define startup
 async function startup() {
     try {
+        // log startup
+        console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
+        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}".`);
+        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}".`);
+        global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
         // create the container
         await new Promise(resolve => {
             service.createContainerIfNotExists('logs', error => {
@@ -97,6 +104,7 @@ async function startup() {
         });
         // startup IPC server
         ipc.config.id = 'logcar';
+        ipc.config.socketRoot = SOCKET_ROOT;
         ipc.config.retry = 1500;
         ipc.config.silent = true;
         ipc.serve(() => {

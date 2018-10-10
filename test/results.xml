@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="4.2829999999999995" tests="8" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-10T21:07:23" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="4.313" tests="8" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-10T21:14:46" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="API Unit Tests" timestamp="2018-10-10T21:07:29" tests="1" file="/mnt/c/temp/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.642">
-    <testcase name="API Unit Tests should respond with application/version" time="0.642" classname="should respond with application/version">
-    </testcase>
-  </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-10T21:07:29" tests="2" file="/mnt/c/temp/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="1.7959999999999998">
-    <testcase name="Jobs Unit Tests should delete all jobs" time="1.055" classname="should delete all jobs">
-    </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.741" classname="should be able to create a job without tasks">
+  <testsuite name="API Unit Tests" timestamp="2018-10-10T21:14:51" tests="1" file="/mnt/c/temp/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.489">
+    <testcase name="API Unit Tests should respond with application/version" time="0.489" classname="should respond with application/version">
     </testcase>
   </testsuite>
-  <testsuite name="LogCar Tests" timestamp="2018-10-10T21:07:31" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.845">
-    <testcase name="LogCar Tests should connect to a running logcar" time="0.003" classname="should connect to a running logcar">
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-10T21:14:52" tests="2" file="/mnt/c/temp/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="1.88">
+    <testcase name="Jobs Unit Tests should delete all jobs" time="1.236" classname="should delete all jobs">
     </testcase>
-    <testcase name="LogCar Tests should delete all system messages" time="0.186" classname="should delete all system messages">
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.644" classname="should be able to create a job without tasks">
     </testcase>
-    <testcase name="LogCar Tests should log a system message" time="0.768" classname="should log a system message">
+  </testsuite>
+  <testsuite name="LogCar Tests" timestamp="2018-10-10T21:14:53" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.944">
+    <testcase name="LogCar Tests should connect to a running logcar" time="0.005" classname="should connect to a running logcar">
     </testcase>
-    <testcase name="LogCar Tests should log a job message without a task" time="0.428" classname="should log a job message without a task">
+    <testcase name="LogCar Tests should delete all system messages" time="0.192" classname="should delete all system messages">
     </testcase>
-    <testcase name="LogCar Tests should log a job/task message" time="0.46" classname="should log a job/task message">
+    <testcase name="LogCar Tests should log a system message" time="0.829" classname="should log a system message">
+    </testcase>
+    <testcase name="LogCar Tests should log a job message without a task" time="0.441" classname="should log a job message without a task">
+    </testcase>
+    <testcase name="LogCar Tests should log a job/task message" time="0.477" classname="should log a job/task message">
     </testcase>
   </testsuite>
 </testsuites>
