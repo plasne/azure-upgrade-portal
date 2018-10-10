@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 require("mocha");
 const Application = require("./js/application.js");
+// This is a mock implementation of the UI layer which lets of invoke and inspect calls.
 class TestUIBinding {
     constructor() {
         this.DefaultNavigationItemCalled = false;

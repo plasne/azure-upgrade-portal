@@ -9,7 +9,7 @@
         "start-jobs": "node dist/jobs/server.js",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
         "test-portal": "mocha dist/portal/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
-        "clean-portal": "find ./dist/portal/js/*  | egrep -v \"bundle.js\" | xargs rm"
+        "clean-portal": "find ./dist/portal/js/* | egrep -v \"bundle.js\" | xargs rm"
     },
     "repository": {
         "type": "git",
