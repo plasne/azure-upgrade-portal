@@ -224,6 +224,11 @@ class UIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
+                    <tr class="header">
+                        <td>&nbsp;</td>
+                        <td>Name</td>
+                        <td>Type</td>
+                    </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
@@ -241,6 +246,11 @@ class UIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
+                    <tr class="header">
+                        <td>&nbsp;</td>
+                        <td>Name</td>
+                        <td>Type</td>
+                    </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +

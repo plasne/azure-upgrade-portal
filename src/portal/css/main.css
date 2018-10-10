@@ -197,3 +197,16 @@ ul.overview li.completed {
     background-color: #afdfff;
     cursor: pointer;
 }
+
+.computeUpgradable table tr.header,
+.storageUpgradable table tr.header {
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+}
+
+.computeUpgradable table tr.header:hover,
+.storageUpgradable table tr.header:hover {
+    cursor: default;
+    background-color: #fff;
+}
