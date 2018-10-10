@@ -142,6 +142,9 @@ async function startup() {
             // listening for logs
             ipc.server.on('log', async (message, socket) => {
                 try {
+                    global.logger.verbose(
+                        `received log message: "${JSON.stringify(message)}".`
+                    );
                     await write(message);
                     ipc.server.emit(socket, 'receipt', {
                         id: message.coorelationId
@@ -160,6 +163,9 @@ async function startup() {
             // listening for clear
             ipc.server.on('clear', async (message, socket) => {
                 try {
+                    global.logger.verbose(
+                        `received clear message: "${JSON.stringify(message)}".`
+                    );
                     await clear(message);
                     ipc.server.emit(socket, 'receipt', {
                         if: message.coorelationId
