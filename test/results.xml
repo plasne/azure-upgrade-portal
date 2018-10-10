@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="1.9149999999999998" tests="5" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-10T17:58:57" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="12.214" tests="8" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-10T20:02:27" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="LogCar Tests" timestamp="2018-10-10T17:58:59" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.9149999999999998">
-    <testcase name="LogCar Tests should connect to a running logcar" time="0.025" classname="should connect to a running logcar">
+  <testsuite name="API Unit Tests" timestamp="2018-10-10T20:02:32" tests="1" file="/mnt/c/temp/azure-upgrade-portal/dist/api/test.js" failures="0" time="7.778">
+    <testcase name="API Unit Tests should respond with application/version" time="7.778" classname="should respond with application/version">
     </testcase>
-    <testcase name="LogCar Tests should delete all system messages" time="0.181" classname="should delete all system messages">
+  </testsuite>
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-10T20:02:40" tests="2" file="/mnt/c/temp/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="2.594">
+    <testcase name="Jobs Unit Tests should delete all jobs" time="1.875" classname="should delete all jobs">
     </testcase>
-    <testcase name="LogCar Tests should log a system message" time="0.841" classname="should log a system message">
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.719" classname="should be able to create a job without tasks">
     </testcase>
-    <testcase name="LogCar Tests should log a job message without a task" time="0.44" classname="should log a job message without a task">
+  </testsuite>
+  <testsuite name="LogCar Tests" timestamp="2018-10-10T20:02:43" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.8419999999999999">
+    <testcase name="LogCar Tests should connect to a running logcar" time="0.004" classname="should connect to a running logcar">
     </testcase>
-    <testcase name="LogCar Tests should log a job/task message" time="0.428" classname="should log a job/task message">
+    <testcase name="LogCar Tests should delete all system messages" time="0.188" classname="should delete all system messages">
+    </testcase>
+    <testcase name="LogCar Tests should log a system message" time="0.734" classname="should log a system message">
+    </testcase>
+    <testcase name="LogCar Tests should log a job message without a task" time="0.458" classname="should log a job message without a task">
+    </testcase>
+    <testcase name="LogCar Tests should log a job/task message" time="0.458" classname="should log a job/task message">
     </testcase>
   </testsuite>
 </testsuites>

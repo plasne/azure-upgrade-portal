@@ -12,6 +12,7 @@ const cmd = require("commander");
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = __importStar(require("fs"));
+const os = __importStar(require("os"));
 const util = __importStar(require("util"));
 const globalExt = __importStar(require("../lib/global-ext"));
 // promisify
@@ -35,17 +36,21 @@ const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8112;
 // enable logging
 globalExt.enableConsoleLogging(LOG_LEVEL);
-// startup
-if (doStartup) {
-    // log startup
-    console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
-    global.logger.verbose(`PORT = "${PORT}".`);
-    // check requirements
-    if (!PORT) {
-        throw new Error('You must specify a PORT.');
-    }
-    // startup
-    (async () => {
+// declare startup
+async function startup() {
+    try {
+        // log startup
+        console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
+        global.logger.verbose(`PORT = "${PORT}".`);
+        // check requirements
+        if (!PORT) {
+            throw new Error('You must specify a PORT.');
+        }
+        // start persistent logging
+        global.logger.info(`Attempting to connect to "logcar"...`);
+        await globalExt.enablePersistentLogging();
+        global.commitLog(`API instance on "${os.hostname}" started up.`);
+        global.logger.info(`Connected to "logcar"...`);
         // mount all routes
         const routePaths = await readdirAsync(`${__dirname}/routes`);
         for (const routePath of routePaths) {
@@ -61,7 +66,13 @@ if (doStartup) {
                 process.send('listening');
             }
         });
-    })().catch(error => {
-        global.logger.error(error.stack);
-    });
+    }
+    catch (error) {
+        global.logger.error(`Jobs startup() failed.`);
+        global.logger.error(error);
+        process.exit(1);
+    }
 }
+// startup
+if (doStartup)
+    startup();

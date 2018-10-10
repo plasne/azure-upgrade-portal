@@ -8,25 +8,60 @@ import * as globalExt from '../lib/global-ext';
 
 // before
 let server: ChildProcess | undefined;
-before(done => {
+let logcar: ChildProcess | undefined;
+before(() => {
     // read variables
     dotenv.config();
     const LOG_LEVEL = process.env.LOG_LEVEL;
     globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
 
-    // startup the API server
-    server = fork(`${__dirname}/server.js`, [
-        '--port',
-        '8112',
-        '--log-level',
-        'verbose'
-    ]).on('message', message => {
-        if (message === 'listening') {
-            global.logger.verbose('API server listening on port 8112...');
-            done();
+    // startup the logcar
+    const p1 = new Promise<ChildProcess>((resolve, reject) => {
+        try {
+            const forked = fork(`${__dirname}/../logcar/server.js`, [
+                '--log-level',
+                'verbose'
+            ]).on('message', message => {
+                if (message === 'listening') {
+                    global.logger.info(
+                        'LogCar listening on "logcar", connecting...'
+                    );
+                    resolve(forked);
+                }
+            });
+        } catch (error) {
+            reject(error);
         }
+    }).then(cp => {
+        logcar = cp;
     });
-    global.logger.verbose('waiting for API server...');
+
+    // startup the API server
+    const p2 = new Promise<ChildProcess>((resolve, reject) => {
+        try {
+            const forked = fork(`${__dirname}/server.js`, [
+                '--port',
+                '8112',
+                '--log-level',
+                'verbose'
+            ]).on('message', message => {
+                if (message === 'listening') {
+                    global.logger.verbose(
+                        'API server listening on port 8112...'
+                    );
+                    resolve(forked);
+                }
+            });
+            global.logger.verbose('waiting for API server...');
+        } catch (error) {
+            reject(error);
+        }
+    }).then(cp => {
+        server = cp;
+    });
+
+    // wait for both
+    return Promise.all([p1, p2]);
 });
 
 // unit tests
@@ -41,5 +76,7 @@ describe('API Unit Tests', () => {
 
 // shutdown the API server
 after(() => {
+    globalExt.disablePersistentLogging();
+    if (logcar) logcar.kill();
     if (server) server.kill();
 });
