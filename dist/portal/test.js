@@ -13,6 +13,9 @@ class TestUIBinding {
             console.log(`TitleSelectionCallback defeault implementation: ${title}`);
         };
     }
+    SetBusyState(busy) {
+        console.log(`Setting busy state to: ${busy}`);
+    }
     SetNavigationCallback(onNavigation) {
         onNavigation('test');
     }
@@ -27,6 +30,12 @@ class TestUIBinding {
     }
     SetNavigationFragment(path) {
         console.log(`New navigation fragment is: ${path}`);
+    }
+    ClearContentStage() {
+        console.log('Cleared content stage.');
+    }
+    RenderOverviewContent(data) {
+        console.log(`Overview data loaded: ${JSON.stringify(data)}`);
     }
     ClickNavigationItem(itemName) {
         this.TitleSelectionCallback(itemName);

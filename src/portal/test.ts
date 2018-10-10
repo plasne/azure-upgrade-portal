@@ -1,6 +1,7 @@
 // includes
 import assert = require('assert');
 import 'mocha';
+import * as api from './js/api-client';
 import Application = require('./js/application.js');
 import IUIBinding = require('./js/ui-binding.js');
 
@@ -16,6 +17,10 @@ class TestUIBinding implements IUIBinding.IUIBinding {
                 `TitleSelectionCallback defeault implementation: ${title}`
             );
         };
+    }
+
+    public SetBusyState(busy: boolean) {
+        console.log(`Setting busy state to: ${busy}`);
     }
 
     public SetNavigationCallback(onNavigation: (path: string) => void) {
@@ -36,6 +41,14 @@ class TestUIBinding implements IUIBinding.IUIBinding {
 
     public SetNavigationFragment(path: string) {
         console.log(`New navigation fragment is: ${path}`);
+    }
+
+    public ClearContentStage() {
+        console.log('Cleared content stage.');
+    }
+
+    public RenderOverviewContent(data: api.IOverviewData) {
+        console.log(`Overview data loaded: ${JSON.stringify(data)}`);
     }
 
     public ClickNavigationItem(itemName: string) {
