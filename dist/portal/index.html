@@ -1,12 +1,40 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <script src="./index.js"></script>
+    <title>Azure Upgrade Portal</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
 </head>
 
 <body>
-    <div>CONTENT GOES HERE</div>
+    <div class="header">
+        <h1><i class="fas fa-upload"></i>Azure Upgrade Portal</h1>
+
+        <p class="userLabel"><i class="fas fa-user-circle"></i></p>
+    </div>
+
+    <div class="navigation">
+        <ul>
+            <li class="selected" data-action-name="overview">Overview</li>
+            <li data-action-name="remediation-needed">Remediations Needed</li>
+            <li data-action-name="remediation-complete">Remediations Complete</li>
+            <li data-action-name="scheduled-jobs">Scheduled Jobs</li>
+            <li data-action-name="logs">Logs</li>
+            <li data-action-name="settings">Settings</li>
+        </ul>
+    </div>
+
+    <div class="content-stage">
+        <h2></h2>
+        <div></div>
+    </div>
+
     <div id="message"></div>
+
+    <script src="/lib/jquery-3.3.1.min.js"></script>
+    <script src="/js/bundle.js"></script>
 </body>
 
 </html>
