@@ -167,13 +167,28 @@ ul.overview li.completed {
 }
 
 .computeUpgradable p,
-.computeUpgradable ul,
+.computeUpgradable table,
 .storageUpgradable p,
-.storageUpgradable ul {
+.storageUpgradable table {
     margin-left: 7em;
 }
 
-.computeUpgradable li,
-.storageUpgradable li {
-    margin-left: 2em;
+.computeUpgradable table,
+.storageUpgradable table {
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+.computeUpgradable table td,
+.storageUpgradable table td {
+    padding: 0.5em;
+    border: 1px solid #c0c0c0;
+    text-align: left;
+}
+
+.computeUpgradable table tr:hover,
+.storageUpgradable table tr:hover {
+    background-color: #9cf;
+    cursor: pointer;
 }

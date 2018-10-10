@@ -60,21 +60,37 @@ class UIBinding {
             <div class="computeUpgradable">
                 <i class="fas fa-server"></i>
                 <p>The following systems are found to need compute upgrades:</p>
-                <ul>
+                <table>
+                    <colgroup>
+                        <col width="25%" />
+                        <col width="75%" />
+                    </colgroup>
                 ${data.NeedsComputeUpgrade.map(item => {
-            return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+            return ('<tr><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Type +
+                ')</td></tr>');
         }).join('')}
-                </ul>
+                </table>
             </div>
             <hr class="thinRule" />
             <div class="storageUpgradable">
                 <i class="far fa-hdd"></i>
                 <p>The following systems are found to need storage account upgrades:</p>
-                <ul>
+                <table>
+                    <colgroup>
+                        <col width="25%" />
+                        <col width="75%" />
+                    </colgroup>
                 ${data.NeedsStorageUpgrade.map(item => {
-            return '<li>' + item.Name + ' (' + item.Type + ')</li>';
+            return ('<tr><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Type +
+                ')</td></tr>');
         }).join('')}
-                </ul>
+                </table>
             </div>
         `;
         $('.content-stage .placeholder').html(markup);

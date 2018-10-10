@@ -63,7 +63,7 @@ ol {
     height: 1px;
     border: none;
     background-color: #c0c0c0;
-    margin: 1em;
+    margin: 2em 0;
     display: block;
 }
 
@@ -163,16 +163,32 @@ ul.overview li.completed {
     float: left;
     font-size: 5em;
     color: #aaa;
+    padding-top: 0.1em;
 }
 
 .computeUpgradable p,
-.computeUpgradable ul,
+.computeUpgradable table,
 .storageUpgradable p,
-.storageUpgradable ul {
+.storageUpgradable table {
     margin-left: 7em;
 }
 
-.computeUpgradable li,
-.storageUpgradable li {
-    margin-left: 2em;
+.computeUpgradable table,
+.storageUpgradable table {
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+.computeUpgradable table td,
+.storageUpgradable table td {
+    padding: 0.5em;
+    border: 1px solid #c0c0c0;
+    text-align: left;
+}
+
+.computeUpgradable table tr:hover,
+.storageUpgradable table tr:hover {
+    background-color: #9cf;
+    cursor: pointer;
 }
