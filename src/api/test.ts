@@ -5,6 +5,7 @@ import { ChildProcess, fork } from 'child_process';
 import dotenv = require('dotenv');
 import 'mocha';
 import * as globalExt from '../lib/global-ext';
+import { IRemediate } from './controllers/remediate';
 
 // before
 let server: ChildProcess | undefined;
@@ -36,6 +37,16 @@ describe('API Unit Tests', () => {
         assert.ok(response.status >= 200 && response.status < 300);
         assert.ok(response.data.application);
         assert.ok(response.data.version);
+    });
+
+    it('should create a table entry', async () => {
+        const rem: IRemediate = { when: 'now', scope: 'abc123' };
+        const response = await axios.post<any>(
+            'http://localhost:8112/remediate',
+            rem
+        );
+        assert.ok(response.status >= 200 && response.status < 300);
+        assert.ok(response.data.success);
     });
 }).timeout(20000);
 

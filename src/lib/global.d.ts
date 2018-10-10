@@ -7,6 +7,8 @@ declare global {
         interface Global {
             version: () => Promise<string>;
             logger: winston.Logger;
+            STORAGE_ACCOUNT: string;
+            STORAGE_KEY: string;
         }
     }
 }

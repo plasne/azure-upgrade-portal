@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.244" tests="3" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-07T14:05:20" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="60.102000000000004" tests="4" failures="3">
+  <testsuite name="Root Suite" timestamp="2018-10-10T20:25:44" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="API Unit Tests" timestamp="2018-10-07T14:05:21" tests="1" file="/Users/plasne/Documents/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.015">
-    <testcase name="API Unit Tests should respond with application/version" time="0.015" classname="should respond with application/version">
+  <testsuite name="API Unit Tests" timestamp="2018-10-10T20:25:47" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/api/test.js" failures="1" time="0.098">
+    <testcase name="API Unit Tests should respond with application/version" time="0.032" classname="should respond with application/version">
+    </testcase>
+    <testcase name="API Unit Tests should create a table entry" time="0.066" classname="should create a table entry">
+      <failure message="socket hang up" type="Error"><![CDATA[Error: socket hang up
+    at createHangUpError (_http_client.js:331:15)
+    at Socket.socketOnEnd (_http_client.js:423:23)
+    at endReadableNT (_stream_readable.js:1064:12)
+    at _combinedTickCallback (internal/process/next_tick.js:138:11)
+    at process._tickCallback (internal/process/next_tick.js:180:9)]]></failure>
     </testcase>
   </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-07T14:05:21" tests="2" file="/Users/plasne/Documents/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="0.22899999999999998">
-    <testcase name="Jobs Unit Tests should delete the jobs container" time="0.104" classname="should delete the jobs container">
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-10T20:25:47" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js" failures="2" time="60.004000000000005">
+    <testcase name="Jobs Unit Tests should delete the jobs container" time="30.003" classname="should delete the jobs container">
+      <failure message="Timeout of 30000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js)" type="Error"><![CDATA[Error: Timeout of 30000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js)]]></failure>
     </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.125" classname="should be able to create a job without tasks">
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="30.001" classname="should be able to create a job without tasks">
+      <failure message="Timeout of 30000ms exceeded. For async tests and hooks, ensure &quot;done()&quot; is called; if returning a Promise, ensure it resolves. (/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js)" type="Error"><![CDATA[Error: Timeout of 30000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. (/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js)]]></failure>
     </testcase>
   </testsuite>
 </testsuites>

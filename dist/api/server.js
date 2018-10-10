@@ -8,6 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // includes
+const body_parser_1 = require("body-parser");
 const cmd = require("commander");
 const dotenv = require("dotenv");
 const express = require("express");
@@ -18,10 +19,13 @@ const globalExt = __importStar(require("../lib/global-ext"));
 const readdirAsync = util.promisify(fs.readdir);
 // configure express
 const app = express();
+app.use(body_parser_1.json());
 // define command line parameters
 let doStartup = true;
 cmd.option('-l, --log-level <s>', `LOG_LEVEL. The minimum level to log (error, warn, info, verbose, debug, silly). Defaults to "info".`, /^(error|warn|info|verbose|debug|silly)$/i)
     .option('-p, --port <i>', '[REQUIRED] PORT. The port that will host the API.', parseInt)
+    .option('-s, --storage-account <s>', '[REQUIRED] STORAGE_ACCOUNT. The Azure Storage Account that will be used for persistence.')
+    .option('-k, --storage-key <s>', '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.')
     .option('-V, --version', 'Displays the version.')
     .on('option:version', async () => {
     doStartup = false;
@@ -33,6 +37,8 @@ cmd.option('-l, --log-level <s>', `LOG_LEVEL. The minimum level to log (error, w
 dotenv.config();
 const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8112;
+global.STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
+global.STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
 // enable logging
 globalExt.enableLogging(LOG_LEVEL);
 // startup
@@ -43,6 +49,12 @@ if (doStartup) {
     // check requirements
     if (!PORT) {
         throw new Error('You must specify a PORT.');
+    }
+    if (!global.STORAGE_ACCOUNT) {
+        throw new Error('You must specify a STORAGE_ACCOUNT.');
+    }
+    if (!global.STORAGE_KEY) {
+        throw new Error('You must specify a STORAGE_KEY.');
     }
     // startup
     (async () => {
