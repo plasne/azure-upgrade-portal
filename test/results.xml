@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="1.9149999999999998" tests="5" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-10T17:58:57" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.005" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-10T18:49:31" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="LogCar Tests" timestamp="2018-10-10T17:58:59" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.9149999999999998">
-    <testcase name="LogCar Tests should connect to a running logcar" time="0.025" classname="should connect to a running logcar">
+  <testsuite name="Application controller unit tests" timestamp="2018-10-10T18:49:31" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.005">
+    <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.001" classname="Should pre-select the default nav item on initilization.">
     </testcase>
-    <testcase name="LogCar Tests should delete all system messages" time="0.181" classname="should delete all system messages">
-    </testcase>
-    <testcase name="LogCar Tests should log a system message" time="0.841" classname="should log a system message">
-    </testcase>
-    <testcase name="LogCar Tests should log a job message without a task" time="0.44" classname="should log a job message without a task">
-    </testcase>
-    <testcase name="LogCar Tests should log a job/task message" time="0.428" classname="should log a job/task message">
+    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.004" classname="Should set the content title corresponding to the nav item.">
     </testcase>
   </testsuite>
 </testsuites>
