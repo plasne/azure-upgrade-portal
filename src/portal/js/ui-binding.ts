@@ -2,17 +2,21 @@
 // This is primarily done to enable testing.
 
 export interface IUIBinding {
-    InitializeBindings(): void;
+    SetNavigationCallback(onNavigation: (path: string) => void): void;
     SetupNavigationEvents(onTitleSelected: (title: string) => void): void;
     SelectDefaultNavigationItem(): void;
     SetContentStageTitle(title: string): void;
     SetNavigationFragment(path: string): void;
-    // DisplaySummaryInformation(): void;
 }
 
 export class UIBinding implements IUIBinding {
-    public InitializeBindings() {
+    public SetNavigationCallback(onNavigation: (path: string) => void) {
         // This method can be used to wire up any initial event handlers
+        $(window).on('hashchange', () => {
+            const navTitle = location.hash.replace('#', '');
+            onNavigation(navTitle);
+            $(`.navigation li[data-action-name="${navTitle}"]`).click();
+        });
     }
 
     public SelectDefaultNavigationItem() {
@@ -38,8 +42,4 @@ export class UIBinding implements IUIBinding {
     public SetNavigationFragment(path: string) {
         location.hash = path;
     }
-
-    // public DisplaySummaryInformation() {
-    //     $('body');
-    // }
 }

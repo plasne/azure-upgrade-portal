@@ -4,11 +4,12 @@
     "description": "A tool to identify what resources in Azure need upgrading and help you upgrade them.",
     "main": "dist/api/server.js",
     "scripts": {
-        "build": "tsc && cp -R $(ls -d1 src/portal/* | egrep -v '.ts') dist/portal/. && ./node_modules/browserify/bin/cmd.js ./dist/portal/js/*.js -o ./dist/portal/js/bundle.js && find ./dist/portal/js/*  | egrep -v \"bundle.js\" | xargs rm",
+        "build": "tsc && rm -f ./dist/portal/js/bundle.js && cp -R $(ls -d1 src/portal/* | egrep -v '.ts') dist/portal/. && ./node_modules/browserify/bin/cmd.js ./dist/portal/js/*.js -o ./dist/portal/js/bundle.js",
         "start-api": "node dist/api/server.js",
         "start-jobs": "node dist/jobs/server.js",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
-        "test-portal": "mocha dist/portal/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000"
+        "test-portal": "mocha dist/portal/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
+        "clean-portal": "find ./dist/portal/js/*  | egrep -v \"bundle.js\" | xargs rm"
     },
     "repository": {
         "type": "git",
