@@ -48,7 +48,6 @@ function write(entry) {
     // optimistically write
     return new Promise((resolve, reject) => {
         const message = entry.message || '';
-        console.log(`message: ${message}`);
         service.appendBlockFromText('logs', blob, message, error1 => {
             if (!error1) {
                 resolve();
