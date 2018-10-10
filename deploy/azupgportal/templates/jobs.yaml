@@ -43,6 +43,8 @@ spec:
             secretKeyRef:
               name: {{.Values.storageSecret}}
               key: STORAGE_KEY
+        - name: SOCKET_ROOT
+          value: /shared/
       - name: azupgportal-jobs-logcar
         image: azupgportal.azurecr.io/logcar:{{.Values.logcarVersion}}
         volumeMounts:
@@ -61,6 +63,8 @@ spec:
             secretKeyRef:
               name: {{.Values.storageSecret}}
               key: STORAGE_KEY
+        - name: SOCKET_ROOT
+          value: /shared/
       imagePullSecrets:
       - name: azupgportal-registry
 ---

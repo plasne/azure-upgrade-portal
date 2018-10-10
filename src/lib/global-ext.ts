@@ -56,10 +56,15 @@ export function enableConsoleLogging(logLevel: string) {
     });
 }
 
-async function connectToIpc(sourceName: string, targetName: string) {
+// connect to IPC
+async function connectToIpc(
+    socketRoot: string,
+    sourceName: string,
+    targetName: string
+) {
     await new Promise(resolve => {
         ipc.config.id = sourceName;
-        ipc.config.socketRoot = '/shared/';
+        ipc.config.socketRoot = socketRoot;
         ipc.config.retry = 1500;
         ipc.config.stopRetrying = false;
         ipc.config.silent = true;
@@ -74,14 +79,17 @@ async function connectToIpc(sourceName: string, targetName: string) {
     });
 }
 
-export async function enablePersistentLogging() {
-    return connectToIpc('logcar-client', 'logcar');
+// start persistent logging
+export async function enablePersistentLogging(socketRoot: string) {
+    return connectToIpc(socketRoot, 'logcar-client', 'logcar');
 }
 
+// stop persistent logging
 export async function disablePersistentLogging() {
     ipc.disconnect('logcar');
 }
 
+// commit to the persistent log
 global.commitLog = (message: string, jobId?: string, taskName?: string) => {
     return new Promise<void>(async (resolve, reject) => {
         if (!ipc.of.logcar) {
