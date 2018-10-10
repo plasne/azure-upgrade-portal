@@ -161,23 +161,23 @@ ul.overview li.completed {
 .computeUpgradable i,
 .storageUpgradable i {
     float: left;
-    font-size: 5em;
+    font-size: 1.5em;
     color: #aaa;
     padding-top: 0.1em;
 }
 
-.computeUpgradable p,
+/* .computeUpgradable p,
 .computeUpgradable table,
 .storageUpgradable p,
 .storageUpgradable table {
     margin-left: 7em;
-}
+} */
 
 .computeUpgradable table,
 .storageUpgradable table {
     border: 1px solid #c0c0c0;
     border-collapse: collapse;
-    width: 50%;
+    width: 100%;
 }
 
 .computeUpgradable table td,
@@ -189,6 +189,6 @@ ul.overview li.completed {
 
 .computeUpgradable table tr:hover,
 .storageUpgradable table tr:hover {
-    background-color: #9cf;
+    background-color: #afdfff;
     cursor: pointer;
 }

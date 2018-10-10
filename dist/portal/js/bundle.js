@@ -205,8 +205,8 @@ class UIBinding {
                 <p>The following systems are found to need compute upgrades:</p>
                 <table>
                     <colgroup>
-                        <col width="25%" />
-                        <col width="75%" />
+                        <col width="10%" />
+                        <col width="90%" />
                     </colgroup>
                 ${data.NeedsComputeUpgrade.map(item => {
             return ('<tr><td>' +
@@ -223,8 +223,8 @@ class UIBinding {
                 <p>The following systems are found to need storage account upgrades:</p>
                 <table>
                     <colgroup>
-                        <col width="25%" />
-                        <col width="75%" />
+                        <col width="10%" />
+                        <col width="90%" />
                     </colgroup>
                 ${data.NeedsStorageUpgrade.map(item => {
             return ('<tr><td>' +
