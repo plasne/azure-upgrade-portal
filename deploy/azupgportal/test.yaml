@@ -1,6 +1,8 @@
 
 # global settings
 dnsSuffix: 3eaf3a8cd0b54691a700.eastus2.aksapp.io
+logcarVersion: latest
+storageSecret: storage
 
 # API settings
 apiReplicas: 2
@@ -20,4 +22,3 @@ jobsReplicas: 2
 jobsVersion: latest
 jobsPort: 80
 jobsLogLevel: verbose
-jobsStorageSecret: storage

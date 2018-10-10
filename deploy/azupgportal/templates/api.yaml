@@ -27,6 +27,23 @@ spec:
           value: '{{.Values.apiPort}}'
         - name: LOG_LEVEL
           value: '{{.Values.jobMonitorLogLevel}}'
+      - name: azupgportal-api-logcar
+        image: azupgportal.azurecr.io/logcar:{{.Values.logcarVersion}}
+        env:
+        - name: LOG_LEVEL
+          value: '{{.Values.apiLogLevel}}'
+        - name: STORAGE_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: {{.Values.storageSecret}}
+              key: STORAGE_ACCOUNT
+        - name: STORAGE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{.Values.storageSecret}}
+              key: STORAGE_KEY
+      imagePullSecrets:
+      - name: azupgportal-registry
       imagePullSecrets:
       - name: azupgportal-registry
 ---
