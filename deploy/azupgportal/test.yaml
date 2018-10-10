@@ -6,7 +6,7 @@ storageSecret: storage
 
 # API settings
 apiReplicas: 2
-apiVersion: latest
+apiVersion: 79
 apiPort: 80
 apiLogLevel: verbose
 apiDnsName: api
