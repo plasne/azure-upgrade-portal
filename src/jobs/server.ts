@@ -59,7 +59,7 @@ httpsAgent.keepAlive = true;
 httpsAgent.maxSockets = 30;
 
 // enable logging
-globalExt.enableLogging(LOG_LEVEL);
+globalExt.enableConsoleLogging(LOG_LEVEL);
 
 // startup
 if (doStartup) {
@@ -103,7 +103,7 @@ if (doStartup) {
     app.listen(PORT, () => {
         global.logger.verbose(`listening on port ${PORT}...`);
         if (process.send) {
-            console.log('sent "listening" from Jobs to test rig.');
+            global.logger.verbose('sent "listening" from Jobs to test rig.');
             process.send('listening');
         }
     });

@@ -15,6 +15,8 @@ const body_parser_1 = require("body-parser");
 const cmd = require("commander");
 const dotenv = require("dotenv");
 const express = require("express");
+const http = __importStar(require("http"));
+const https = __importStar(require("https"));
 const globalExt = __importStar(require("../lib/global-ext"));
 const Jobs_1 = __importDefault(require("./Jobs"));
 // THIS SHOULD ALSO BE THE SCHEDULER
@@ -40,8 +42,15 @@ const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8113;
 const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+// modify the agents
+const httpAgent = http.globalAgent;
+httpAgent.keepAlive = true;
+httpAgent.maxSockets = 30;
+const httpsAgent = https.globalAgent;
+httpsAgent.keepAlive = true;
+httpsAgent.maxSockets = 30;
 // enable logging
-globalExt.enableLogging(LOG_LEVEL);
+globalExt.enableConsoleLogging(LOG_LEVEL);
 // startup
 if (doStartup) {
     // log startup
@@ -71,7 +80,6 @@ if (doStartup) {
             });
         }
         catch (error) {
-            console.log(`EEEEEEEERRRRRRRROOOORRR`);
             global.logger.error(error.stack);
             res.status(500).send('The job could not be created. Please check the logs.');
         }
@@ -80,7 +88,7 @@ if (doStartup) {
     app.listen(PORT, () => {
         global.logger.verbose(`listening on port ${PORT}...`);
         if (process.send) {
-            console.log('sent "listening" from Jobs to test rig.');
+            global.logger.verbose('sent "listening" from Jobs to test rig.');
             process.send('listening');
         }
     });

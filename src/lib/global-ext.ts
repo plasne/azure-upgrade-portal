@@ -1,7 +1,10 @@
 // includes
 import * as fs from 'fs';
+import * as ipc from 'node-ipc';
 import * as util from 'util';
+import { v4 as uuid } from 'uuid';
 import * as winston from 'winston';
+import { ILogEntry } from '../logcar/server';
 
 // promisify
 const readFileAsync = util.promisify(fs.readFile);
@@ -24,7 +27,7 @@ global.version = async () => {
 };
 
 // enable logging
-export function enableLogging(logLevel: string) {
+export function enableConsoleLogging(logLevel: string) {
     const logColors: {
         [index: string]: string;
     } = {
@@ -47,9 +50,58 @@ export function enableLogging(logLevel: string) {
             })
         )
     });
-
     global.logger = winston.createLogger({
         level: logLevel,
         transports: [transport]
     });
 }
+
+async function connectToIpc(sourceName: string, targetName: string) {
+    await new Promise(resolve => {
+        ipc.config.id = sourceName;
+        ipc.config.retry = 1500;
+        ipc.config.stopRetrying = false;
+        ipc.config.silent = true;
+        ipc.connectTo(targetName, () => {
+            ipc.of.logcar.on('connect', () => {
+                global.logger.verbose(
+                    `"${sourceName}" successfully connected to "${targetName}" over IPC.`
+                );
+                resolve();
+            });
+        });
+    });
+}
+
+export async function enablePersistentLogging() {
+    return connectToIpc('logcar-client', 'logcar');
+}
+
+export async function disablePersistentLogging() {
+    ipc.disconnect('logcar');
+}
+
+global.commitLog = (message: string, jobId?: string, taskName?: string) => {
+    return new Promise<void>(async (resolve, reject) => {
+        if (!ipc.of.logcar) {
+            reject(new Error('You must enablePersistentLogging() first.'));
+        } else {
+            // create the message
+            const logEntry: ILogEntry = {
+                coorelationId: uuid(),
+                jobId,
+                message,
+                taskName
+            };
+
+            // commit the log and wait for response
+            ipc.of.logcar.emit('log', logEntry);
+            ipc.of.logcar.once('receipt', (msg: any) => {
+                resolve(msg);
+            });
+            ipc.of.logcar.once('failure', (msg: any) => {
+                reject(msg.error);
+            });
+        }
+    });
+};
