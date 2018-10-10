@@ -102,6 +102,11 @@ function clear(entry: ILogEntry) {
 // define startup
 async function startup() {
     try {
+        // log startup
+        console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
+        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}".`);
+        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}".`);
+
         // create the container
         await new Promise(resolve => {
             service.createContainerIfNotExists('logs', error => {
@@ -118,6 +123,7 @@ async function startup() {
 
         // startup IPC server
         ipc.config.id = 'logcar';
+        ipc.config.socketRoot = '/shared/';
         ipc.config.retry = 1500;
         ipc.config.silent = true;
         ipc.serve(() => {

@@ -59,6 +59,7 @@ export function enableConsoleLogging(logLevel: string) {
 async function connectToIpc(sourceName: string, targetName: string) {
     await new Promise(resolve => {
         ipc.config.id = sourceName;
+        ipc.config.socketRoot = '/shared/';
         ipc.config.retry = 1500;
         ipc.config.stopRetrying = false;
         ipc.config.silent = true;

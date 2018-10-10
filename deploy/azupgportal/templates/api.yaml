@@ -16,19 +16,28 @@ spec:
       labels:
         app: azupgportal-api
     spec:
+      volumes:
+      - name: shared
+        emptyDir: {}
       containers:
       - name: azupgportal-api
         image: azupgportal.azurecr.io/api:{{.Values.apiVersion}}
+        volumeMounts:
+        - name: shared
+          mountPath: /shared
         ports:
         - containerPort: {{.Values.apiPort}}
           name: http
         env:
+        - name: LOG_LEVEL
+          value: '{{.Values.apiLogLevel}}'
         - name: PORT
           value: '{{.Values.apiPort}}'
-        - name: LOG_LEVEL
-          value: '{{.Values.jobMonitorLogLevel}}'
       - name: azupgportal-api-logcar
         image: azupgportal.azurecr.io/logcar:{{.Values.logcarVersion}}
+        volumeMounts:
+        - name: shared
+          mountPath: /shared
         env:
         - name: LOG_LEVEL
           value: '{{.Values.apiLogLevel}}'

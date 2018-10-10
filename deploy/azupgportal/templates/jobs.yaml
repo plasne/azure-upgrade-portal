@@ -16,17 +16,23 @@ spec:
       labels:
         app: azupgportal-jobs
     spec:
+      volumes:
+      - name: shared
+        emptyDir: {}
       containers:
       - name: azupgportal-jobs
         image: azupgportal.azurecr.io/jobs:{{.Values.jobsVersion}}
+        volumeMounts:
+        - name: shared
+          mountPath: /shared
         ports:
         - containerPort: {{.Values.jobsPort}}
           name: http
         env:
-        - name: PORT
-          value: '{{.Values.jobsPort}}'
         - name: LOG_LEVEL
           value: '{{.Values.jobsLogLevel}}'
+        - name: PORT
+          value: '{{.Values.jobsPort}}'
         - name: STORAGE_ACCOUNT
           valueFrom:
             secretKeyRef:
@@ -39,6 +45,9 @@ spec:
               key: STORAGE_KEY
       - name: azupgportal-jobs-logcar
         image: azupgportal.azurecr.io/logcar:{{.Values.logcarVersion}}
+        volumeMounts:
+        - name: shared
+          mountPath: /shared
         env:
         - name: LOG_LEVEL
           value: '{{.Values.jobsLogLevel}}'
