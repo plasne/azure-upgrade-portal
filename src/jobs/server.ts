@@ -5,6 +5,7 @@ import dotenv = require('dotenv');
 import express = require('express');
 import * as http from 'http';
 import * as https from 'https';
+import * as os from 'os';
 import * as globalExt from '../lib/global-ext';
 import { ICreateJob } from './Job';
 import Jobs from './Jobs';
@@ -61,50 +62,67 @@ httpsAgent.maxSockets = 30;
 // enable logging
 globalExt.enableConsoleLogging(LOG_LEVEL);
 
-// startup
-if (doStartup) {
-    // log startup
-    console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
-    global.logger.verbose(`PORT = "${PORT}"`);
-    global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
-    global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
+// declare startup
+async function startup() {
+    try {
+        // log startup
+        console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
+        global.logger.verbose(`PORT = "${PORT}"`);
+        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
+        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
 
-    // check requirements
-    if (!PORT) {
-        throw new Error('You must specify a PORT.');
-    }
-    if (!STORAGE_ACCOUNT) {
-        throw new Error('You must specify a STORAGE_ACCOUNT.');
-    }
-    if (!STORAGE_KEY) {
-        throw new Error('You must specify a STORAGE_KEY.');
-    }
-
-    // initialize the jobs collection
-    const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
-
-    // create a job
-    app.post('/job', async (req, res) => {
-        try {
-            const definition: ICreateJob = req.body;
-            const job = await jobs.createJob(definition);
-            res.send({
-                id: job.id
-            });
-        } catch (error) {
-            global.logger.error(error.stack);
-            res.status(500).send(
-                'The job could not be created. Please check the logs.'
-            );
+        // check requirements
+        if (!PORT) {
+            throw new Error('You must specify a PORT.');
         }
-    });
-
-    // start listening
-    app.listen(PORT, () => {
-        global.logger.verbose(`listening on port ${PORT}...`);
-        if (process.send) {
-            global.logger.verbose('sent "listening" from Jobs to test rig.');
-            process.send('listening');
+        if (!STORAGE_ACCOUNT) {
+            throw new Error('You must specify a STORAGE_ACCOUNT.');
         }
-    });
+        if (!STORAGE_KEY) {
+            throw new Error('You must specify a STORAGE_KEY.');
+        }
+
+        // start persistent logging
+        global.logger.info(`Attempting to connect to "logcar"...`);
+        await globalExt.enablePersistentLogging();
+        global.commitLog(`Jobs instance on "${os.hostname}" started up.`);
+        global.logger.info(`Connected to "logcar"...`);
+
+        // initialize the jobs collection
+        const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
+
+        // function to create a job
+        app.post('/job', async (req, res) => {
+            try {
+                const definition: ICreateJob = req.body;
+                const job = await jobs.createJob(definition);
+                res.send({
+                    id: job.id
+                });
+            } catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send(
+                    'The job could not be created. Please check the logs.'
+                );
+            }
+        });
+
+        // start listening
+        app.listen(PORT, () => {
+            global.logger.info(`listening on port ${PORT}...`);
+            if (process.send) {
+                global.logger.verbose(
+                    'sent "listening" from Jobs to test rig.'
+                );
+                process.send('listening');
+            }
+        });
+    } catch (error) {
+        global.logger.error(`Jobs startup() failed.`);
+        global.logger.error(error);
+        process.exit(1);
+    }
 }
+
+// startup
+if (doStartup) startup();
