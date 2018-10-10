@@ -32,12 +32,28 @@ class ApiClient {
                 Name: 'VM05',
                 Type: 'Virtual Machine'
             });
+            storageUpgradable.push({
+                Name: 'VM13',
+                Type: 'Virtual Machine'
+            });
+            storageUpgradable.push({
+                Name: 'ABC-123',
+                Type: 'Virtual Machine'
+            });
             computeUpgradable.push({
                 Name: 'VM-Z23',
                 Type: 'Virtual Machine'
             });
             computeUpgradable.push({
                 Name: 'CS-TR344',
+                Type: 'Cloud Service'
+            });
+            computeUpgradable.push({
+                Name: 'CS-T23323',
+                Type: 'Cloud Service'
+            });
+            computeUpgradable.push({
+                Name: 'CS-AB34534',
                 Type: 'Cloud Service'
             });
             const mockResponse = {

@@ -58,37 +58,36 @@ class UIBinding {
     RenderRemediationNeededContent(data) {
         const markup = `
             <div class="computeUpgradable">
-                <i class="fas fa-server"></i>
-                <p>The following systems are found to need compute upgrades:</p>
+                <p><i class="fas fa-server"></i>The following systems are found to need compute upgrades:</p>
                 <table>
                     <colgroup>
-                        <col width="10%" />
-                        <col width="90%" />
+                        <col width="25px" />
+                        <col width="200px" />
+                        <col width="*" />
                     </colgroup>
                 ${data.NeedsComputeUpgrade.map(item => {
-            return ('<tr><td>' +
+            return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
                 '</td><td>' +
                 item.Type +
-                ')</td></tr>');
+                '</td></tr>');
         }).join('')}
                 </table>
             </div>
-            <hr class="thinRule" />
             <div class="storageUpgradable">
-                <i class="far fa-hdd"></i>
-                <p>The following systems are found to need storage account upgrades:</p>
+                <p><i class="far fa-hdd"></i>The following systems are found to need storage account upgrades:</p>
                 <table>
                     <colgroup>
-                        <col width="10%" />
-                        <col width="90%" />
+                        <col width="25px" />
+                        <col width="200px" />
+                        <col width="*" />
                     </colgroup>
                 ${data.NeedsStorageUpgrade.map(item => {
-            return ('<tr><td>' +
+            return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
                 '</td><td>' +
                 item.Type +
-                ')</td></tr>');
+                '</td></tr>');
         }).join('')}
                 </table>
             </div>
