@@ -1,10 +1,8 @@
-import { Request, Response } from 'express';
+export interface IGroup {
+    getList: () => 'T[]';
+}
 
-export default {
-    /** Returns the application. */
-    version: async (_: Request, res: Response) => {
-        res.send({
-            application: 'groupsapi'
-        });
-    }
-};
+export interface IMember {
+    name: string;
+    item: string;
+}
