@@ -1,3 +1,5 @@
+// Core application controller that handles top-level orchestration
+
 import { IUIBinding, UIBinding } from './ui-binding';
 
 /* Main Application Object */

@@ -1,3 +1,6 @@
+// UI Bindings allow the separation of the UI/DOM components from the core application logic.
+// This is primarily done to enable testing.
+
 export interface IUIBinding {
     SetupNavigationEvents(): void;
     SelectDefaultNavigationItem(): void;
