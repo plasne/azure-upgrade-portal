@@ -7,6 +7,11 @@ declare global {
         interface Global {
             version: () => Promise<string>;
             logger: winston.Logger;
+            commitLog: (
+                message: any,
+                jobId?: string,
+                taskName?: string
+            ) => Promise<void>;
         }
     }
 }
