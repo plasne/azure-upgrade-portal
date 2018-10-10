@@ -189,6 +189,6 @@ ul.overview li.completed {
 
 .computeUpgradable table tr:hover,
 .storageUpgradable table tr:hover {
-    background-color: #9cf;
+    background-color: #aef;
     cursor: pointer;
 }
