@@ -40,7 +40,7 @@ const PORT = cmd.port || process.env.PORT || 8112;
 global.STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 global.STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
 // enable logging
-globalExt.enableLogging(LOG_LEVEL);
+globalExt.enableConsoleLogging(LOG_LEVEL);
 // startup
 if (doStartup) {
     // log startup
@@ -69,7 +69,7 @@ if (doStartup) {
         app.listen(PORT, () => {
             global.logger.verbose(`listening on port ${PORT}...`);
             if (process.send) {
-                console.log('sent "listening" from API to test rig.');
+                global.logger.verbose('sent "listening" from API to test rig.');
                 process.send('listening');
             }
         });

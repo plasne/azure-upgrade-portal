@@ -9,6 +9,11 @@ declare global {
             logger: winston.Logger;
             STORAGE_ACCOUNT: string;
             STORAGE_KEY: string;
+            commitLog: (
+                message: any,
+                jobId?: string,
+                taskName?: string
+            ) => Promise<void>;
         }
     }
 }

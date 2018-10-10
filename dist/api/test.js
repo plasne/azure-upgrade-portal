@@ -23,7 +23,7 @@ before(done => {
     // read variables
     dotenv.config();
     const LOG_LEVEL = process.env.LOG_LEVEL;
-    globalExt.enableLogging(LOG_LEVEL || 'silly');
+    globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
     // startup the API server
     server = child_process_1.fork(`${__dirname}/server.js`, [
         '--port',
@@ -32,19 +32,19 @@ before(done => {
         'verbose'
     ]).on('message', message => {
         if (message === 'listening') {
-            console.log('API server listening on port 8112...\n');
+            global.logger.verbose('API server listening on port 8112...');
             done();
         }
     });
-    console.log('waiting for API server...');
+    global.logger.verbose('waiting for API server...');
 });
 // unit tests
 describe('API Unit Tests', () => {
     it('should respond with application/version', async () => {
         const response = await axios_1.default.get('http://localhost:8112');
         assert.ok(response.status >= 200 && response.status < 300);
-        assert.ok(response.data.application);
-        assert.ok(response.data.version);
+        assert.ok(typeof response.data.application === 'string');
+        assert.ok(typeof response.data.version === 'string');
     });
     it('should create a table entry', async () => {
         const rem = { when: 'now', scope: 'abc123' };
