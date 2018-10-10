@@ -4,7 +4,7 @@
     "description": "A tool to identify what resources in Azure need upgrading and help you upgrade them.",
     "main": "dist/api/server.js",
     "scripts": {
-        "build": "tsc && cp -R $(ls -d1 src/portal/* | egrep -v '.ts$') dist/portal/.",
+        "build": "tsc && cp -R $(ls -d1 src/portal/* | egrep -v '.ts') dist/portal/. && ./node_modules/browserify/bin/cmd.js ./dist/portal/js/*.js -o ./dist/portal/js/bundle.js && find ./dist/portal/js/*  | egrep -v \"bundle.js\" | xargs rm",
         "start-api": "node dist/api/server.js",
         "start-jobs": "node dist/jobs/server.js",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config-api.json --timeout 30000",
@@ -25,6 +25,7 @@
         "@types/jsdom": "^11.12.0",
         "axios": "^0.18.0",
         "azure-storage": "^2.10.1",
+        "browserify": "^16.2.3",
         "commander": "^2.18.0",
         "dotenv": "^6.0.0",
         "es6-promise-pool": "^2.5.0",
