@@ -15,6 +15,8 @@ export class Application {
     // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
+        this.ui.SetGlobalCallbacks();
+
         this.ui.SetDetailsLinkCallback((id: string) => {
             this.LoadDetailsView(id);
         });

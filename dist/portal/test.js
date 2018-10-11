@@ -13,6 +13,9 @@ class TestUIBinding {
             console.log(`TitleSelectionCallback defeault implementation: ${title}`);
         };
     }
+    SetGlobalCallbacks() {
+        console.log('SetGlobalCallbacks called');
+    }
     SetDetailsLinkCallback(onDetailsClick) {
         onDetailsClick('test');
     }

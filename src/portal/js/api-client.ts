@@ -267,8 +267,8 @@ export class ApiClient implements IApiClient {
         return new Promise<IDetailsData>(resolve => {
             const mockResponse: IDetailsData = {
                 DurationInMs: 15 * 60 * 1000,
-                Name: `Sample operation details for systme ${id}`,
-                Type: 'Virtual Machine',
+                Name: id,
+                Type: 'Virtual Machine Upgrade',
                 UpgradeDescription:
                     'This was a sample operation that involved the following upgrade steps:\n\n' +
                     'Step 1: Do the foo\nStep 2: Read the bar\nStep 3: ???\nStep 4: Profit!!!'

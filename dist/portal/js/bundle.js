@@ -187,8 +187,8 @@ class ApiClient {
         return new Promise(resolve => {
             const mockResponse = {
                 DurationInMs: 15 * 60 * 1000,
-                Name: `Sample operation details for systme ${id}`,
-                Type: 'Virtual Machine',
+                Name: id,
+                Type: 'Virtual Machine Upgrade',
                 UpgradeDescription: 'This was a sample operation that involved the following upgrade steps:\n\n' +
                     'Step 1: Do the foo\nStep 2: Read the bar\nStep 3: ???\nStep 4: Profit!!!'
             };
@@ -224,6 +224,7 @@ class Application {
     // Initialize the applicaiton hooks
     Initialize() {
         console.log('Application initializing...');
+        this.ui.SetGlobalCallbacks();
         this.ui.SetDetailsLinkCallback((id) => {
             this.LoadDetailsView(id);
         });
@@ -323,6 +324,14 @@ if (!isInTest) {
 // This is primarily done to enable testing.
 Object.defineProperty(exports, "__esModule", { value: true });
 class UIBinding {
+    SetGlobalCallbacks() {
+        $(document).on('click', 'button.dialogClose', (e) => {
+            console.log('Dialog close button clicked');
+            $(e.target)
+                .parents('.dialog-stage')
+                .hide();
+        });
+    }
     SetDetailsLinkCallback(onDetailsClick) {
         $(document).on('click', 'a.detailsViewLink', (e) => {
             // Notify app controller
@@ -549,11 +558,14 @@ class UIBinding {
     RenderDetailsView(data) {
         const markup = `
             <h2>Remediation Details</h2>
+            <ul class="listNone marginBottom">
+                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Duration:</strong> ${data.Type} (${this.formatDurationInMs(data.DurationInMs)})</li>
+            </ul>
             <textarea>${data.UpgradeDescription}</textarea>
         `;
-        $('.content-stage .dialog')
-            .html(markup)
-            .show();
+        $('.dialog-stage .placeholder').html(markup);
+        $('.dialog-stage').show();
     }
     formatDurationInMs(durationInMs) {
         const mins = durationInMs / (60 * 1000);

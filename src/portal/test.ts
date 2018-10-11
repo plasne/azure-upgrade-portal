@@ -19,6 +19,10 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         };
     }
 
+    public SetGlobalCallbacks() {
+        console.log('SetGlobalCallbacks called');
+    }
+
     public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
         onDetailsClick('test');
     }

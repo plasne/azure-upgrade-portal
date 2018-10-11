@@ -5,6 +5,7 @@ import * as api from './api-client';
 
 export interface IUIBinding {
     // Global event hook setup + busy / spinner mask control
+    SetGlobalCallbacks(): void;
     SetDetailsLinkCallback(onDetailsClick: (id: string) => void): void;
     SetBusyState(busy: boolean): void;
 
@@ -25,6 +26,14 @@ export interface IUIBinding {
 }
 
 export class UIBinding implements IUIBinding {
+    public SetGlobalCallbacks() {
+        $(document).on('click', 'button.dialogClose', (e: any) => {
+            console.log('Dialog close button clicked');
+            $(e.target)
+                .parents('.dialog-stage')
+                .hide();
+        });
+    }
     public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
         $(document).on('click', 'a.detailsViewLink', (e: any) => {
             // Notify app controller
@@ -281,12 +290,17 @@ export class UIBinding implements IUIBinding {
     public RenderDetailsView(data: api.IDetailsData) {
         const markup = `
             <h2>Remediation Details</h2>
+            <ul class="listNone marginBottom">
+                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Duration:</strong> ${
+                    data.Type
+                } (${this.formatDurationInMs(data.DurationInMs)})</li>
+            </ul>
             <textarea>${data.UpgradeDescription}</textarea>
         `;
 
-        $('.content-stage .dialog')
-            .html(markup)
-            .show();
+        $('.dialog-stage .placeholder').html(markup);
+        $('.dialog-stage').show();
     }
 
     private formatDurationInMs(durationInMs: number) {
