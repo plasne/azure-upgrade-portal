@@ -192,6 +192,7 @@ table.dataGrid td {
     padding: 0.5em;
     border: 1px solid #e0e0e0;
     text-align: left;
+    background-color: #fff;
 }
 
 table.dataGrid tr:hover {
