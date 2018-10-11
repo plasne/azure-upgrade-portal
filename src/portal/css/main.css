@@ -162,6 +162,8 @@ ol {
     width: 100%;
     height: 20em;
     resize: none;
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #fff;
 }
 
 .dialog-stage .dialog-buttons {

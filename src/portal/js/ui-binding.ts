@@ -312,7 +312,7 @@ export class UIBinding implements IUIBinding {
                     data.Type
                 } (${this.formatDurationInMs(data.DurationInMs)})</li>
             </ul>
-            <textarea>${data.UpgradeDescription}</textarea>
+            <textarea readonly>${data.UpgradeDescription}</textarea>
         `;
 
         $('.dialog-stage .placeholder').html(markup);
