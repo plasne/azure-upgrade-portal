@@ -20,7 +20,11 @@ const Job_1 = __importDefault(require("./Job"));
 class Jobs {
     constructor(account, key) {
         // create the table in & out streams
-        this.azureTable = new AzureTable_1.default({ account, key });
+        this.azureTable = new AzureTable_1.default({
+            account,
+            key,
+            useGlobalAgent: true
+        });
         this.createJobsTable = this.azureTable.createTableIfNotExists('jobs');
         const tableStreams = this.azureTable.queryStream({
             processAfter: this.createJobsTable
@@ -42,7 +46,11 @@ class Jobs {
             // if (global.environment === 'test') throw error;
         });
         // create the queue in & out streams
-        this.azureQueue = new AzureQueue_1.default({ account, key });
+        this.azureQueue = new AzureQueue_1.default({
+            account,
+            key,
+            useGlobalAgent: true
+        });
         const queueStreams = this.azureQueue.queueStream();
         this.queueIn = queueStreams.in.on('error', error => {
             global.logger.error(error.stack);
@@ -61,12 +69,16 @@ class Jobs {
         this.tableOut.pause();
         await this.tableOut.waitForIdle(1000 * 60 * 10); // 10 min max
         // create a new stream for fast delete
-        const table = new AzureTable_1.default({ service: this.azureTable.service });
+        const table = new AzureTable_1.default({
+            service: this.azureTable.service,
+            useGlobalAgent: true
+        });
         const streams = table.queryStream({
             processAfter: this.createJobsTable
         }, {
             batchSize: 100
         });
+        // monitor for errors
         let errors = 0;
         streams.in.on('error', error => {
             global.logger.error(error.stack);

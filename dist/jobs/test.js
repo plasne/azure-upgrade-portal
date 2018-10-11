@@ -25,7 +25,7 @@ before(done => {
     // read variables
     dotenv.config();
     const LOG_LEVEL = process.env.LOG_LEVEL;
-    globalExt.enableLogging(LOG_LEVEL || 'silly');
+    globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
     const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
     const STORAGE_KEY = process.env.STORAGE_KEY;
     if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
@@ -41,15 +41,15 @@ before(done => {
         'verbose'
     ]).on('message', message => {
         if (message === 'listening') {
-            console.log('Jobs server listening on port 8113...\n');
+            global.logger.verbose('Jobs server listening on port 8113...\n');
             done();
         }
     });
-    console.log('waiting for Jobs server...');
+    global.logger.verbose('waiting for Jobs server...');
 });
 // unit tests
 describe('Jobs Unit Tests', () => {
-    it('should delete the jobs container', async () => {
+    it('should delete all jobs', async () => {
         if (jobs) {
             await jobs.clear();
             const hasJobs = await jobs.hasJobs();
