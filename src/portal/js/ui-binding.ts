@@ -5,7 +5,8 @@ import * as api from './api-client';
 
 export interface IUIBinding {
     // Global event hook setup + busy / spinner mask control
-    InitializeEventHooks(): void;
+    SetGlobalCallbacks(): void;
+    SetDetailsLinkCallback(onDetailsClick: (id: string) => void): void;
     SetBusyState(busy: boolean): void;
 
     // Handles events raised / impacted by the navigation elements
@@ -20,13 +21,23 @@ export interface IUIBinding {
     RenderOverviewContent(data: api.IOverviewSummary): void;
     RenderRemediationNeededContent(data: api.IRemediationNeeded): void;
     RenderRemediationCompletedContent(data: api.IRemediationCompleted): void;
+    RenderScheduledJobsContent(data: api.IScheduledJobs): void;
+    RenderDetailsView(data: api.IDetailsData): void;
 }
 
 export class UIBinding implements IUIBinding {
-    public InitializeEventHooks() {
+    public SetGlobalCallbacks() {
+        $(document).on('click', 'button.dialogClose', (e: any) => {
+            console.log('Dialog close button clicked');
+            $(e.target)
+                .parents('.dialog-stage')
+                .hide();
+        });
+    }
+    public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
         $(document).on('click', 'a.detailsViewLink', (e: any) => {
-            /*do something*/
-            console.log($(e.target).data('item-name'));
+            // Notify app controller
+            onDetailsClick($(e.target).data('item-name'));
         });
     }
 
@@ -104,12 +115,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
@@ -118,6 +131,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        item.UpgradeDescription +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -132,12 +147,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
@@ -146,6 +163,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        item.UpgradeDescription +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -167,12 +186,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadComputeUpgraded.map(item => {
@@ -181,6 +202,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -195,12 +218,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadStorageUpgraded.map(item => {
@@ -209,6 +234,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -219,5 +246,65 @@ export class UIBinding implements IUIBinding {
         `;
 
         $('.content-stage .placeholder').html(markup);
+    }
+
+    public RenderScheduledJobsContent(data: api.IScheduledJobs) {
+        const markup = `
+            <div class="dataRegion">
+                <p><i class="far fa-clock"></i>Current scheduled job status:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="100px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>Name</td>
+                        <td>Status</td>
+                        <td>Duration</td>
+                        <td>Last Update</td>
+                    </tr>
+                ${data.JobList.map(item => {
+                    return (
+                        '<tr><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Status +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
+                        '</td><td>' +
+                        item.LastUpdate.toLocaleDateString() +
+                        ' ' +
+                        item.LastUpdate.toLocaleTimeString() +
+                        '</td></tr>'
+                    );
+                }).join('')}
+                </table>
+            </div>
+        `;
+
+        $('.content-stage .placeholder').html(markup);
+    }
+
+    public RenderDetailsView(data: api.IDetailsData) {
+        const markup = `
+            <h2>Remediation Details</h2>
+            <ul class="listNone marginBottom">
+                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Duration:</strong> ${
+                    data.Type
+                } (${this.formatDurationInMs(data.DurationInMs)})</li>
+            </ul>
+            <textarea>${data.UpgradeDescription}</textarea>
+        `;
+
+        $('.dialog-stage .placeholder').html(markup);
+        $('.dialog-stage').show();
+    }
+
+    private formatDurationInMs(durationInMs: number) {
+        const mins = durationInMs / (60 * 1000);
+        return `${mins.toFixed(2)} mins`;
     }
 }

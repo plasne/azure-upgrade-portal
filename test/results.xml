@@ -1,39 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="6.2540000000000004" tests="13" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-11T21:31:41" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.016" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-11T20:43:44" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="API Unit Tests" timestamp="2018-10-11T21:31:47" tests="4" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/api/test.js" failures="0" time="1.725">
-    <testcase name="API Unit Tests should respond with application/version" time="0.024" classname="should respond with application/version">
-    </testcase>
-    <testcase name="API Unit Tests should respond with a 400 due to missing scope" time="0.026" classname="should respond with a 400 due to missing scope">
-    </testcase>
-    <testcase name="API Unit Tests should respond with a 400 due to bad JSON" time="0.004" classname="should respond with a 400 due to bad JSON">
-    </testcase>
-    <testcase name="API Unit Tests should create a table entry and a job for remediate discovery" time="1.671" classname="should create a table entry and a job for remediate discovery">
-    </testcase>
-  </testsuite>
-  <testsuite name="Jobs Unit Tests" timestamp="2018-10-11T21:31:49" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="1.756">
-    <testcase name="Jobs Unit Tests should delete all jobs" time="1.571" classname="should delete all jobs">
-    </testcase>
-    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.185" classname="should be able to create a job without tasks">
-    </testcase>
-  </testsuite>
-  <testsuite name="LogCar Tests" timestamp="2018-10-11T21:31:51" tests="5" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="2.732">
-    <testcase name="LogCar Tests should connect to a running logcar" time="0.012" classname="should connect to a running logcar">
-    </testcase>
-    <testcase name="LogCar Tests should delete all system messages" time="0.224" classname="should delete all system messages">
-    </testcase>
-    <testcase name="LogCar Tests should log a system message" time="1.226" classname="should log a system message">
-    </testcase>
-    <testcase name="LogCar Tests should log a job message without a task" time="0.699" classname="should log a job message without a task">
-    </testcase>
-    <testcase name="LogCar Tests should log a job/task message" time="0.571" classname="should log a job/task message">
-    </testcase>
-  </testsuite>
-  <testsuite name="Application controller unit tests" timestamp="2018-10-11T21:31:53" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.040999999999999995">
+  <testsuite name="Application controller unit tests" timestamp="2018-10-11T20:43:44" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.016">
     <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.005" classname="Should pre-select the default nav item on initilization.">
     </testcase>
-    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.036" classname="Should set the content title corresponding to the nav item.">
+    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.011" classname="Should set the content title corresponding to the nav item.">
     </testcase>
   </testsuite>
 </testsuites>

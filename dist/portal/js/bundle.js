@@ -1,7 +1,14 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
-// Client shim for API calls to get/set data.
 Object.defineProperty(exports, "__esModule", { value: true });
+var JobStatus;
+(function (JobStatus) {
+    JobStatus["Pending"] = "Pending";
+    JobStatus["Running"] = "Running";
+    JobStatus["Complete"] = "Complete";
+    JobStatus["Failed"] = "Failed";
+})(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
+// Implements our ApiClient functionality
 class ApiClient {
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
@@ -26,36 +33,52 @@ class ApiClient {
             const storageUpgradable = [];
             const computeUpgradable = [];
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM01',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM05',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM13',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'ABC-123',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM-Z23',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-TR344',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-T23323',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-AB34534',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
             const mockResponse = {
                 NeedsComputeUpgrade: computeUpgradable,
@@ -72,24 +95,34 @@ class ApiClient {
             const computeUpgraded = [];
             const storageUpgraded = [];
             computeUpgraded.push({
+                DurationInMs: 5 * 60 * 1000,
                 Name: 'VM05',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
+                DurationInMs: 15 * 60 * 1000,
                 Name: 'VM75',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
+                DurationInMs: 4 * 60 * 1000,
                 Name: 'VM99',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
             storageUpgraded.push({
+                DurationInMs: 45 * 60 * 1000,
                 Name: 'VM05-x',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage account upgraded'
             });
             storageUpgraded.push({
+                DurationInMs: 56.2 * 60 * 1000,
                 Name: 'VM425-Z',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage account upgraded'
             });
             const mockResponse = {
                 HadComputeUpgraded: computeUpgraded,
@@ -101,13 +134,76 @@ class ApiClient {
             }, 1000);
         });
     }
+    LoadScheduledJobs() {
+        return new Promise(resolve => {
+            const mockResponse = {
+                JobList: []
+            };
+            const jobList = [];
+            jobList.push({
+                DurationInMs: 3 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 1',
+                Status: JobStatus.Pending
+            });
+            jobList.push({
+                DurationInMs: 6 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 2',
+                Status: JobStatus.Running
+            });
+            jobList.push({
+                DurationInMs: 12.4 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 3',
+                Status: JobStatus.Running
+            });
+            jobList.push({
+                DurationInMs: 7 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 4',
+                Status: JobStatus.Pending
+            });
+            jobList.push({
+                DurationInMs: 32 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 5',
+                Status: JobStatus.Complete
+            });
+            jobList.push({
+                DurationInMs: 43.1 * 60 * 1000,
+                LastUpdate: new Date(),
+                Name: 'Sample Job 6',
+                Status: JobStatus.Failed
+            });
+            mockResponse.JobList = jobList;
+            // TODO: This will be real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
+    LoadDetailsData(id) {
+        return new Promise(resolve => {
+            const mockResponse = {
+                DurationInMs: 15 * 60 * 1000,
+                Name: id,
+                Type: 'Virtual Machine Upgrade',
+                UpgradeDescription: 'This was a sample operation that involved the following upgrade steps:\n\n' +
+                    'Step 1: Do the foo\nStep 2: Read the bar\nStep 3: ???\nStep 4: Profit!!!'
+            };
+            // TODO: This will be a real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
 }
 exports.ApiClient = ApiClient;
 
 },{}],2:[function(require,module,exports){
 (function (global){
 "use strict";
-// Core application controller that handles top-level orchestration
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -116,18 +212,22 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Core application controller that handles top-level orchestration
 const api = __importStar(require("./api-client"));
 const ui_binding_1 = require("./ui-binding");
-/* Main Application Object */
+// Main Application Object
 class Application {
     constructor(ui) {
         this.ui = ui;
         this.apiClient = new api.ApiClient();
     }
+    // Initialize the applicaiton hooks
     Initialize() {
         console.log('Application initializing...');
-        this.ui.SetBusyState(false);
-        this.ui.InitializeEventHooks();
+        this.ui.SetGlobalCallbacks();
+        this.ui.SetDetailsLinkCallback((id) => {
+            this.LoadDetailsView(id);
+        });
         this.ui.SetNavigationCallback((path) => {
             console.log(`Location hash changed: ${path}`);
         });
@@ -137,8 +237,11 @@ class Application {
             this.ui.SetNavigationFragment(title);
         });
         this.ui.SelectDefaultNavigationItem();
+        this.ui.SetBusyState(false);
         console.log('Initialization complete.');
     }
+    // Depending on the current route path, set the appropriate
+    // content stage path (and fire off the content loading)
     LookupAndSetContentTitle(selectedTitle) {
         let title = selectedTitle;
         this.ui.ClearContentStage();
@@ -157,6 +260,7 @@ class Application {
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
+                this.LoadScheduledJobsContent();
                 break;
             case 'logs':
                 title = 'Logs';
@@ -167,22 +271,38 @@ class Application {
         }
         this.ui.SetContentStageTitle(title);
     }
+    // Loads the details data for the given remediation id (i.e., name, etc....TBD)
+    async LoadDetailsView(id) {
+        this.ui.SetBusyState(true);
+        const details = await this.apiClient.LoadDetailsData(id);
+        this.ui.RenderDetailsView(details);
+        this.ui.SetBusyState(false);
+    }
+    // Loads the overview content, and handles the UI state orchestration
     async LoadOverviewContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadOverviewData();
         this.ui.RenderOverviewContent(data);
         this.ui.SetBusyState(false);
     }
+    // Loads the remediation needed content, and handles the UI state orchestration
     async LoadRemediationNeededContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadNeededRemediations();
         this.ui.RenderRemediationNeededContent(data);
         this.ui.SetBusyState(false);
     }
+    // Loads the remediation complete content, and handles the UI state orchestration
     async LoadRemediationsCompletedContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
         this.ui.RenderRemediationCompletedContent(data);
+        this.ui.SetBusyState(false);
+    }
+    async LoadScheduledJobsContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadScheduledJobs();
+        this.ui.RenderScheduledJobsContent(data);
         this.ui.SetBusyState(false);
     }
 }
@@ -204,10 +324,18 @@ if (!isInTest) {
 // This is primarily done to enable testing.
 Object.defineProperty(exports, "__esModule", { value: true });
 class UIBinding {
-    InitializeEventHooks() {
+    SetGlobalCallbacks() {
+        $(document).on('click', 'button.dialogClose', (e) => {
+            console.log('Dialog close button clicked');
+            $(e.target)
+                .parents('.dialog-stage')
+                .hide();
+        });
+    }
+    SetDetailsLinkCallback(onDetailsClick) {
         $(document).on('click', 'a.detailsViewLink', (e) => {
-            /*do something*/
-            console.log($(e.target).data('item-name'));
+            // Notify app controller
+            onDetailsClick($(e.target).data('item-name'));
         });
     }
     SetBusyState(busy) {
@@ -271,12 +399,14 @@ class UIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
@@ -284,6 +414,8 @@ class UIBinding {
                 item.Name +
                 '</td><td>' +
                 item.Type +
+                '</td><td>' +
+                item.UpgradeDescription +
                 '</td><td><a class="detailsViewLink" data-item-name="' +
                 item.Name +
                 '">Click to view...</a></td></tr>');
@@ -297,12 +429,14 @@ class UIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
@@ -310,6 +444,8 @@ class UIBinding {
                 item.Name +
                 '</td><td>' +
                 item.Type +
+                '</td><td>' +
+                item.UpgradeDescription +
                 '</td><td><a class="detailsViewLink" data-item-name="' +
                 item.Name +
                 '">Click to view...</a></td></tr>');
@@ -328,12 +464,14 @@ class UIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadComputeUpgraded.map(item => {
@@ -341,6 +479,8 @@ class UIBinding {
                 item.Name +
                 '</td><td>' +
                 item.Type +
+                '</td><td>' +
+                this.formatDurationInMs(item.DurationInMs) +
                 '</td><td><a class="detailsViewLink" data-item-name="' +
                 item.Name +
                 '">Click to view...</a></td></tr>');
@@ -354,12 +494,14 @@ class UIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadStorageUpgraded.map(item => {
@@ -367,6 +509,8 @@ class UIBinding {
                 item.Name +
                 '</td><td>' +
                 item.Type +
+                '</td><td>' +
+                this.formatDurationInMs(item.DurationInMs) +
                 '</td><td><a class="detailsViewLink" data-item-name="' +
                 item.Name +
                 '">Click to view...</a></td></tr>');
@@ -375,6 +519,57 @@ class UIBinding {
             </div>
         `;
         $('.content-stage .placeholder').html(markup);
+    }
+    RenderScheduledJobsContent(data) {
+        const markup = `
+            <div class="dataRegion">
+                <p><i class="far fa-clock"></i>Current scheduled job status:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="100px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>Name</td>
+                        <td>Status</td>
+                        <td>Duration</td>
+                        <td>Last Update</td>
+                    </tr>
+                ${data.JobList.map(item => {
+            return ('<tr><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Status +
+                '</td><td>' +
+                this.formatDurationInMs(item.DurationInMs) +
+                '</td><td>' +
+                item.LastUpdate.toLocaleDateString() +
+                ' ' +
+                item.LastUpdate.toLocaleTimeString() +
+                '</td></tr>');
+        }).join('')}
+                </table>
+            </div>
+        `;
+        $('.content-stage .placeholder').html(markup);
+    }
+    RenderDetailsView(data) {
+        const markup = `
+            <h2>Remediation Details</h2>
+            <ul class="listNone marginBottom">
+                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Duration:</strong> ${data.Type} (${this.formatDurationInMs(data.DurationInMs)})</li>
+            </ul>
+            <textarea>${data.UpgradeDescription}</textarea>
+        `;
+        $('.dialog-stage .placeholder').html(markup);
+        $('.dialog-stage').show();
+    }
+    formatDurationInMs(durationInMs) {
+        const mins = durationInMs / (60 * 1000);
+        return `${mins.toFixed(2)} mins`;
     }
 }
 exports.UIBinding = UIBinding;
