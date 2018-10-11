@@ -20,6 +20,7 @@ export interface IUIBinding {
     RenderOverviewContent(data: api.IOverviewSummary): void;
     RenderRemediationNeededContent(data: api.IRemediationNeeded): void;
     RenderRemediationCompletedContent(data: api.IRemediationCompleted): void;
+    RenderScheduledJobsContent(data: api.IScheduledJobs): void;
 }
 
 export class UIBinding implements IUIBinding {
@@ -212,6 +213,41 @@ export class UIBinding implements IUIBinding {
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
+                    );
+                }).join('')}
+                </table>
+            </div>
+        `;
+
+        $('.content-stage .placeholder').html(markup);
+    }
+
+    public RenderScheduledJobsContent(data: api.IScheduledJobs) {
+        const markup = `
+            <div class="dataRegion">
+                <p><i class="far fa-clock"></i>Current scheduled job status:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>Name</td>
+                        <td>Status</td>
+                        <td>Last Update</td>
+                    </tr>
+                ${data.JobList.map(item => {
+                    return (
+                        '<tr><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Status +
+                        '</td><td>' +
+                        item.LastUpdate.toLocaleDateString() +
+                        ' ' +
+                        item.LastUpdate.toLocaleTimeString() +
+                        '</td></tr>'
                     );
                 }).join('')}
                 </table>

@@ -32,10 +32,10 @@ export interface IRemediationCompleted {
 }
 
 export enum JobStatus {
-    Pending = 1,
-    Running,
-    Complete,
-    Failed
+    Pending = 'Pending',
+    Running = 'Running',
+    Complete = 'Complete',
+    Failed = 'Failed'
 }
 
 export interface IJobDetails {

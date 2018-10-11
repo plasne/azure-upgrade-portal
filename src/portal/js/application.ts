@@ -53,6 +53,7 @@ export class Application {
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
+                this.LoadScheduledJobsContent();
                 break;
             case 'logs':
                 title = 'Logs';
@@ -86,6 +87,13 @@ export class Application {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
         this.ui.RenderRemediationCompletedContent(data);
+        this.ui.SetBusyState(false);
+    }
+
+    public async LoadScheduledJobsContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadScheduledJobs();
+        this.ui.RenderScheduledJobsContent(data);
         this.ui.SetBusyState(false);
     }
 }

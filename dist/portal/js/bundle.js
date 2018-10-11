@@ -1,6 +1,13 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var JobStatus;
+(function (JobStatus) {
+    JobStatus["Pending"] = "Pending";
+    JobStatus["Running"] = "Running";
+    JobStatus["Complete"] = "Complete";
+    JobStatus["Failed"] = "Failed";
+})(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
 // Implements our ApiClient functionality
 class ApiClient {
     // Loads data for the overview / landing page.
@@ -101,6 +108,49 @@ class ApiClient {
             }, 1000);
         });
     }
+    LoadScheduledJobs() {
+        return new Promise(resolve => {
+            const mockResponse = {
+                JobList: []
+            };
+            const jobList = [];
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 1',
+                Status: JobStatus.Pending
+            });
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 2',
+                Status: JobStatus.Running
+            });
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 3',
+                Status: JobStatus.Running
+            });
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 4',
+                Status: JobStatus.Pending
+            });
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 5',
+                Status: JobStatus.Complete
+            });
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 6',
+                Status: JobStatus.Failed
+            });
+            mockResponse.JobList = jobList;
+            // TODO: This will be real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
 }
 exports.ApiClient = ApiClient;
 
@@ -160,6 +210,7 @@ class Application {
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
+                this.LoadScheduledJobsContent();
                 break;
             case 'logs':
                 title = 'Logs';
@@ -189,6 +240,12 @@ class Application {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
         this.ui.RenderRemediationCompletedContent(data);
+        this.ui.SetBusyState(false);
+    }
+    async LoadScheduledJobsContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadScheduledJobs();
+        this.ui.RenderScheduledJobsContent(data);
         this.ui.SetBusyState(false);
     }
 }
@@ -376,6 +433,37 @@ class UIBinding {
                 '</td><td><a class="detailsViewLink" data-item-name="' +
                 item.Name +
                 '">Click to view...</a></td></tr>');
+        }).join('')}
+                </table>
+            </div>
+        `;
+        $('.content-stage .placeholder').html(markup);
+    }
+    RenderScheduledJobsContent(data) {
+        const markup = `
+            <div class="dataRegion">
+                <p><i class="far fa-clock"></i>Current scheduled job status:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>Name</td>
+                        <td>Status</td>
+                        <td>Last Update</td>
+                    </tr>
+                ${data.JobList.map(item => {
+            return ('<tr><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Status +
+                '</td><td>' +
+                item.LastUpdate.toLocaleDateString() +
+                ' ' +
+                item.LastUpdate.toLocaleTimeString() +
+                '</td></tr>');
         }).join('')}
                 </table>
             </div>
