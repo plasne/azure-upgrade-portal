@@ -10,6 +10,9 @@ var JobStatus;
 })(JobStatus = exports.JobStatus || (exports.JobStatus = {}));
 // Implements our ApiClient functionality
 class ApiClient {
+    constructor() {
+        this.mockSleepInterval = 500;
+    }
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
     // information.
@@ -23,7 +26,7 @@ class ApiClient {
             // TODO: This should be an API call, but for now simulate slow calls.
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
     // Loads data for the machines that currently need remediation applied.
@@ -95,7 +98,7 @@ class ApiClient {
             // TODO: This will be a real API call, bur for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
     LoadCompletedRemediations() {
@@ -104,35 +107,35 @@ class ApiClient {
             const storageUpgraded = [];
             computeUpgraded.push({
                 DurationInMs: 5 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Dev',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
                 DurationInMs: 15 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Dev',
                 Name: 'VM75',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
                 DurationInMs: 4 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Prod',
                 Name: 'VM99',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             storageUpgraded.push({
                 DurationInMs: 45 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Prod',
                 Name: 'VM05-x',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
             });
             storageUpgraded.push({
                 DurationInMs: 56.2 * 60 * 1000,
-                Group: '',
+                Group: 'Sandbox',
                 Name: 'VM425-Z',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -144,7 +147,7 @@ class ApiClient {
             // TODO: this will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
     LoadScheduledJobs() {
@@ -193,7 +196,7 @@ class ApiClient {
             // TODO: This will be real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
     LoadDetailsData(id) {
@@ -208,7 +211,7 @@ class ApiClient {
             // TODO: This will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 }
@@ -400,6 +403,10 @@ class UIBinding {
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
+
+            <div class="overviewHistory">
+                <h3>Remediation History</h3>
+            </div>
         `;
         $('.content-stage .placeholder').html(markup);
     }
@@ -416,7 +423,7 @@ class UIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -450,7 +457,7 @@ class UIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -489,7 +496,7 @@ class UIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -523,7 +530,7 @@ class UIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -560,7 +567,7 @@ class UIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>Job Type</td>
                         <td>Status</td>
                         <td>Duration</td>
@@ -588,7 +595,7 @@ class UIBinding {
         const markup = `
             <h2>Remediation Details</h2>
             <ul class="listNone marginBottom">
-                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Name:</strong> ${data.Name} (${data.Type})</li>
                 <li><strong>Duration:</strong> ${data.Type} (${this.formatDurationInMs(data.DurationInMs)})</li>
             </ul>
             <textarea readonly>${data.UpgradeDescription}</textarea>

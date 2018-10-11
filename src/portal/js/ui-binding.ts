@@ -101,6 +101,10 @@ export class UIBinding implements IUIBinding {
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
+
+            <div class="overviewHistory">
+                <h3>Remediation History</h3>
+            </div>
         `;
 
         $('.content-stage .placeholder').html(markup);
@@ -119,7 +123,7 @@ export class UIBinding implements IUIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -155,7 +159,7 @@ export class UIBinding implements IUIBinding {
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -198,7 +202,7 @@ export class UIBinding implements IUIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -234,7 +238,7 @@ export class UIBinding implements IUIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
@@ -275,7 +279,7 @@ export class UIBinding implements IUIBinding {
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
-                    <tr class="header">
+                    <tr class="headerRow">
                         <td>Job Type</td>
                         <td>Status</td>
                         <td>Duration</td>
@@ -307,7 +311,7 @@ export class UIBinding implements IUIBinding {
         const markup = `
             <h2>Remediation Details</h2>
             <ul class="listNone marginBottom">
-                <li><strong>Name:</strong> ${data.Name}</li>
+                <li><strong>Name:</strong> ${data.Name} (${data.Type})</li>
                 <li><strong>Duration:</strong> ${
                     data.Type
                 } (${this.formatDurationInMs(data.DurationInMs)})</li>

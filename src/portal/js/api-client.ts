@@ -62,6 +62,8 @@ export interface IDetailsData {
 
 // Implements our ApiClient functionality
 export class ApiClient implements IApiClient {
+    private mockSleepInterval: number = 500;
+
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
     // information.
@@ -75,7 +77,7 @@ export class ApiClient implements IApiClient {
             // TODO: This should be an API call, but for now simulate slow calls.
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 
@@ -158,7 +160,7 @@ export class ApiClient implements IApiClient {
             // TODO: This will be a real API call, bur for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 
@@ -169,7 +171,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 5 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Dev',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -177,7 +179,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 15 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Dev',
                 Name: 'VM75',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -185,7 +187,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 4 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Prod',
                 Name: 'VM99',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -193,7 +195,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgraded.push({
                 DurationInMs: 45 * 60 * 1000,
-                Group: '',
+                Group: 'CRM Prod',
                 Name: 'VM05-x',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -201,7 +203,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgraded.push({
                 DurationInMs: 56.2 * 60 * 1000,
-                Group: '',
+                Group: 'Sandbox',
                 Name: 'VM425-Z',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -215,7 +217,7 @@ export class ApiClient implements IApiClient {
             // TODO: this will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 
@@ -273,7 +275,7 @@ export class ApiClient implements IApiClient {
             // TODO: This will be real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 
@@ -290,7 +292,7 @@ export class ApiClient implements IApiClient {
             // TODO: This will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
-            }, 1000);
+            }, this.mockSleepInterval);
         });
     }
 }

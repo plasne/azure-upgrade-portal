@@ -70,15 +70,14 @@ ol {
     margin-bottom: 1em;
 }
 
-.thinRule {
-    height: 1px;
-    border: none;
-    background-color: #c0c0c0;
-    margin: 2em 0;
-    display: block;
-}
+/* HEADER */
 
 .header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2.7em;
     background-color: #24548e;
     color: #fff;
     padding: 1em;
@@ -93,11 +92,22 @@ ol {
     margin-right: 0.5em;
 }
 
-.header p.userLabel {
-    float: right;
-    margin-top: -1.1em;
-    font-size: 3em;
+.header .headerOptions {
+    position: absolute;
+    right: 1em;
+    top: 0;
+    height: 4.7em;
 }
+
+.header .headerOptions li {
+    line-height: 1.35em;
+    float: right;
+    margin-left: 0.5em;
+    font-size: 2em;
+    margin-top: 0.5em;
+}
+
+/* NAVIGATION */
 
 .navigation {
     position: absolute;
@@ -126,6 +136,18 @@ ol {
 .navigation ul li.selected {
     background-color: #c0c0c0;
 }
+
+.navigation .versionStamp {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.875em;
+    color: #555;
+}
+
+/* CONTENT AREA */
 
 .content-stage {
     position: absolute;
@@ -197,7 +219,7 @@ ol {
     margin-top: -1em;
 }
 
-/* Compontent Styles */
+/* Subsection Compontents */
 
 .content-stage .placeholder ul {
     margin-bottom: 1em;
@@ -214,6 +236,20 @@ ul.overview li span {
 ul.overview li.pending,
 ul.overview li.completed {
     font-size: 1.25em;
+}
+
+.overviewHistory {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 1em;
+    width: 25%;
+}
+
+.overviewHistory h3 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5em;
 }
 
 a.detailsViewLink {
@@ -241,14 +277,14 @@ table.dataGrid td {
     background-color: #fff;
 }
 
-table.dataGrid tr.header {
+table.dataGrid tr.headerRow {
     font-weight: bold;
     color: #333;
     background-color: #fff;
     font-size: 0.875em;
 }
 
-table.dataGrid tr.header:hover td {
+table.dataGrid tr.headerRow:hover td {
     cursor: default;
     background-color: #fff;
 }
