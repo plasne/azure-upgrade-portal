@@ -5,7 +5,7 @@ import * as api from './api-client';
 
 export interface IUIBinding {
     // Global event hook setup + busy / spinner mask control
-    InitializeEventHooks(): void;
+    SetDetailsLinkCallback(onDetailsClick: (id: string) => void): void;
     SetBusyState(busy: boolean): void;
 
     // Handles events raised / impacted by the navigation elements
@@ -21,13 +21,14 @@ export interface IUIBinding {
     RenderRemediationNeededContent(data: api.IRemediationNeeded): void;
     RenderRemediationCompletedContent(data: api.IRemediationCompleted): void;
     RenderScheduledJobsContent(data: api.IScheduledJobs): void;
+    RenderDetailsView(data: api.IDetailsData): void;
 }
 
 export class UIBinding implements IUIBinding {
-    public InitializeEventHooks() {
+    public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
         $(document).on('click', 'a.detailsViewLink', (e: any) => {
-            /*do something*/
-            console.log($(e.target).data('item-name'));
+            // Notify app controller
+            onDetailsClick($(e.target).data('item-name'));
         });
     }
 
@@ -275,6 +276,17 @@ export class UIBinding implements IUIBinding {
         `;
 
         $('.content-stage .placeholder').html(markup);
+    }
+
+    public RenderDetailsView(data: api.IDetailsData) {
+        const markup = `
+            <h2>Remediation Details</h2>
+            <textarea>${data.UpgradeDescription}</textarea>
+        `;
+
+        $('.content-stage .dialog')
+            .html(markup)
+            .show();
     }
 
     private formatDurationInMs(durationInMs: number) {

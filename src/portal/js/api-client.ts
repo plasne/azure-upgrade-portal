@@ -4,6 +4,7 @@ export interface IApiClient {
     LoadNeededRemediations(): Promise<IRemediationNeeded>;
     LoadCompletedRemediations(): Promise<IRemediationCompleted>;
     LoadScheduledJobs(): Promise<IScheduledJobs>;
+    LoadDetailsData(id: string): Promise<IDetailsData>;
 }
 
 // Defines return structure for the overview/landing page.
@@ -49,6 +50,13 @@ export interface IJobDetails {
 
 export interface IScheduledJobs {
     JobList: IJobDetails[];
+}
+
+export interface IDetailsData {
+    DurationInMs: number;
+    Name: string;
+    Type: string;
+    UpgradeDescription: string;
 }
 
 // Implements our ApiClient functionality
@@ -249,6 +257,23 @@ export class ApiClient implements IApiClient {
             mockResponse.JobList = jobList;
 
             // TODO: This will be real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
+
+    public LoadDetailsData(id: string) {
+        return new Promise<IDetailsData>(resolve => {
+            const mockResponse: IDetailsData = {
+                DurationInMs: 15 * 60 * 1000,
+                Name: `Sample operation details for systme ${id}`,
+                Type: 'Virtual Machine',
+                UpgradeDescription:
+                    'This was a sample operation that involved the following upgrade steps:\n\n' +
+                    'Step 1: Do the foo\nStep 2: Read the bar\nStep 3: ???\nStep 4: Profit!!!'
+            };
+            // TODO: This will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
             }, 1000);

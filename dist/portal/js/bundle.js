@@ -183,6 +183,21 @@ class ApiClient {
             }, 1000);
         });
     }
+    LoadDetailsData(id) {
+        return new Promise(resolve => {
+            const mockResponse = {
+                DurationInMs: 15 * 60 * 1000,
+                Name: `Sample operation details for systme ${id}`,
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'This was a sample operation that involved the following upgrade steps:\n\n' +
+                    'Step 1: Do the foo\nStep 2: Read the bar\nStep 3: ???\nStep 4: Profit!!!'
+            };
+            // TODO: This will be a real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
 }
 exports.ApiClient = ApiClient;
 
@@ -209,7 +224,9 @@ class Application {
     // Initialize the applicaiton hooks
     Initialize() {
         console.log('Application initializing...');
-        this.ui.InitializeEventHooks();
+        this.ui.SetDetailsLinkCallback((id) => {
+            this.LoadDetailsView(id);
+        });
         this.ui.SetNavigationCallback((path) => {
             console.log(`Location hash changed: ${path}`);
         });
@@ -252,6 +269,13 @@ class Application {
                 break;
         }
         this.ui.SetContentStageTitle(title);
+    }
+    // Loads the details data for the given remediation id (i.e., name, etc....TBD)
+    async LoadDetailsView(id) {
+        this.ui.SetBusyState(true);
+        const details = await this.apiClient.LoadDetailsData(id);
+        this.ui.RenderDetailsView(details);
+        this.ui.SetBusyState(false);
     }
     // Loads the overview content, and handles the UI state orchestration
     async LoadOverviewContent() {
@@ -299,10 +323,10 @@ if (!isInTest) {
 // This is primarily done to enable testing.
 Object.defineProperty(exports, "__esModule", { value: true });
 class UIBinding {
-    InitializeEventHooks() {
+    SetDetailsLinkCallback(onDetailsClick) {
         $(document).on('click', 'a.detailsViewLink', (e) => {
-            /*do something*/
-            console.log($(e.target).data('item-name'));
+            // Notify app controller
+            onDetailsClick($(e.target).data('item-name'));
         });
     }
     SetBusyState(busy) {
@@ -521,6 +545,15 @@ class UIBinding {
             </div>
         `;
         $('.content-stage .placeholder').html(markup);
+    }
+    RenderDetailsView(data) {
+        const markup = `
+            <h2>Remediation Details</h2>
+            <textarea>${data.UpgradeDescription}</textarea>
+        `;
+        $('.content-stage .dialog')
+            .html(markup)
+            .show();
     }
     formatDurationInMs(durationInMs) {
         const mins = durationInMs / (60 * 1000);

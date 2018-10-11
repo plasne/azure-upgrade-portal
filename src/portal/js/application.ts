@@ -15,7 +15,9 @@ export class Application {
     // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
-        this.ui.InitializeEventHooks();
+        this.ui.SetDetailsLinkCallback((id: string) => {
+            this.LoadDetailsView(id);
+        });
 
         this.ui.SetNavigationCallback((path: string) => {
             console.log(`Location hash changed: ${path}`);
@@ -64,6 +66,14 @@ export class Application {
         }
 
         this.ui.SetContentStageTitle(title);
+    }
+
+    // Loads the details data for the given remediation id (i.e., name, etc....TBD)
+    public async LoadDetailsView(id: string) {
+        this.ui.SetBusyState(true);
+        const details = await this.apiClient.LoadDetailsData(id);
+        this.ui.RenderDetailsView(details);
+        this.ui.SetBusyState(false);
     }
 
     // Loads the overview content, and handles the UI state orchestration
