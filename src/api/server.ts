@@ -1,4 +1,5 @@
 // includes
+import { json as bodyParserJson } from 'body-parser';
 import cmd = require('commander');
 import dotenv = require('dotenv');
 import express = require('express');
@@ -12,6 +13,7 @@ const readdirAsync = util.promisify(fs.readdir);
 
 // configure express
 const app = express();
+app.use(bodyParserJson());
 
 // define command line parameters
 let doStartup = true;
@@ -24,6 +26,14 @@ cmd.option(
         '-p, --port <i>',
         '[REQUIRED] PORT. The port that will host the API.',
         parseInt
+    )
+    .option(
+        '-s, --storage-account <s>',
+        '[REQUIRED] STORAGE_ACCOUNT. The Azure Storage Account that will be used for persistence.'
+    )
+    .option(
+        '-k, --storage-key <s>',
+        '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.'
     )
     .option(
         '-r, --socket-root <s>',
@@ -42,6 +52,8 @@ dotenv.config();
 const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8112;
 const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
+global.STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
+global.STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
 
 // enable logging
 globalExt.enableConsoleLogging(LOG_LEVEL);
@@ -57,6 +69,13 @@ async function startup() {
         // check requirements
         if (!PORT) {
             throw new Error('You must specify a PORT.');
+        }
+
+        if (!global.STORAGE_ACCOUNT) {
+            throw new Error('You must specify a STORAGE_ACCOUNT.');
+        }
+        if (!global.STORAGE_KEY) {
+            throw new Error('You must specify a STORAGE_KEY.');
         }
 
         // start persistent logging
