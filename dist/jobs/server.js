@@ -30,6 +30,7 @@ cmd.option('-l, --log-level <s>', `LOG_LEVEL. The minimum level to log (error, w
     .option('-p, --port <i>', '[REQUIRED] PORT. The port that will host the API.', parseInt)
     .option('-s, --storage-account <s>', '[REQUIRED] STORAGE_ACCOUNT. The Azure Storage Account that will be used for persistence.')
     .option('-k, --storage-key <s>', '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.')
+    .option('-r, --socket-root <s>', '[REQUIRED] SOCKET_ROOT. The root directory that will be used for sockets.')
     .option('-V, --version', 'Displays the version.')
     .on('option:version', async () => {
     doStartup = false;
@@ -43,6 +44,7 @@ const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const PORT = cmd.port || process.env.PORT || 8113;
 const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
 // modify the agents
 const httpAgent = http.globalAgent;
 httpAgent.keepAlive = true;
@@ -60,6 +62,7 @@ async function startup() {
         global.logger.verbose(`PORT = "${PORT}"`);
         global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
         global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
+        global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
         // check requirements
         if (!PORT) {
             throw new Error('You must specify a PORT.');
@@ -72,9 +75,9 @@ async function startup() {
         }
         // start persistent logging
         global.logger.info(`Attempting to connect to "logcar"...`);
-        await globalExt.enablePersistentLogging();
-        global.commitLog(`Jobs instance on "${os.hostname}" started up.`);
-        global.logger.info(`Connected to "logcar"...`);
+        await globalExt.enablePersistentLogging(SOCKET_ROOT);
+        global.logger.info(`Connected to "logcar".`);
+        await global.commitLog('info', `Jobs instance on "${os.hostname}" started up.`);
         // initialize the jobs collection
         const jobs = new Jobs_1.default(STORAGE_ACCOUNT, STORAGE_KEY);
         // function to create a job

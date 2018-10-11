@@ -9,9 +9,10 @@ import { ICreateJob } from './Job';
 import Jobs from './Jobs';
 
 // before
-let server: ChildProcess | undefined;
 let jobs: Jobs | undefined;
-before(done => {
+let server: ChildProcess | undefined;
+let logcar: ChildProcess | undefined;
+before(() => {
     // read variables
     dotenv.config();
     const LOG_LEVEL = process.env.LOG_LEVEL;
@@ -27,19 +28,53 @@ before(done => {
     // create the Jobs context
     jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
 
-    // startup the server
-    server = fork(`${__dirname}/server.js`, [
-        '--port',
-        '8113',
-        '--log-level',
-        'verbose'
-    ]).on('message', message => {
-        if (message === 'listening') {
-            global.logger.verbose('Jobs server listening on port 8113...\n');
-            done();
+    // startup the logcar
+    const p1 = new Promise<ChildProcess>((resolve, reject) => {
+        try {
+            const forked = fork(`${__dirname}/../logcar/server.js`, [
+                '--log-level',
+                'verbose'
+            ]).on('message', message => {
+                if (message === 'listening') {
+                    global.logger.info(
+                        'LogCar listening on "logcar", connecting...'
+                    );
+                    resolve(forked);
+                }
+            });
+        } catch (error) {
+            reject(error);
         }
+    }).then(cp => {
+        logcar = cp;
     });
-    global.logger.verbose('waiting for Jobs server...');
+
+    // startup the API server
+    const p2 = new Promise<ChildProcess>((resolve, reject) => {
+        try {
+            const forked = fork(`${__dirname}/server.js`, [
+                '--port',
+                '8113',
+                '--log-level',
+                'verbose'
+            ]).on('message', message => {
+                if (message === 'listening') {
+                    global.logger.verbose(
+                        'Jobs server listening on port 8113...'
+                    );
+                    resolve(forked);
+                }
+            });
+            global.logger.verbose('waiting for Jobs server...');
+        } catch (error) {
+            reject(error);
+        }
+    }).then(cp => {
+        server = cp;
+    });
+
+    // wait for both
+    return Promise.all([p1, p2]);
 });
 
 // unit tests
@@ -71,6 +106,8 @@ describe('Jobs Unit Tests', () => {
 
 // shutdown the API server
 after(() => {
+    globalExt.disablePersistentLogging();
     if (jobs) jobs.shutdown();
+    if (logcar) logcar.kill();
     if (server) server.kill();
 });
