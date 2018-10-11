@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 // UI Bindings allow the separation of the UI/DOM components from the core application logic.
 // This is primarily done to enable testing.
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });
 class UIBinding {
     InitializeEventHooks() {
-        $(document).on('click', 'a.detailsViewLink', (e) => {
+        $(document).on('click', 'a.detailsViewLink', e => {
             /*do something*/
             console.log($(e.target).data('item-name'));
         });
@@ -12,8 +12,7 @@ class UIBinding {
     SetBusyState(busy) {
         if (busy) {
             $('.loadingSpinner').css('display', 'block');
-        }
-        else {
+        } else {
             $('.loadingSpinner').css('display', 'none');
         }
     }
@@ -29,7 +28,7 @@ class UIBinding {
         $('.navigation li.selected').click();
     }
     SetupNavigationEvents(onTitleSelected) {
-        $('.navigation li').on('click', (e) => {
+        $('.navigation li').on('click', e => {
             const contentTitle = $(e.target).data('action-name');
             if (onTitleSelected) {
                 onTitleSelected(contentTitle);
@@ -50,8 +49,12 @@ class UIBinding {
     RenderOverviewContent(data) {
         const markup = `
             <ul class="overview">
-                <li class="pending">Remediations Pending: <span>${data.RemediationsPending}</span></li>
-                <li class="completed">Remediations Completed: <span>${data.RemediationsCompleted}</span></li>
+                <li class="pending">Remediations Pending: <span>${
+                    data.RemediationsPending
+                }</span></li>
+                <li class="completed">Remediations Completed: <span>${
+                    data.RemediationsCompleted
+                }</span></li>
                 <li class="lastUpdated"><em>Last updated on ${data.LastRefreshed.toLocaleDateString()} at
                     ${data.LastRefreshed.toLocaleTimeString()}</em></li>
             </ul>
@@ -79,14 +82,16 @@ class UIBinding {
                         <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Type +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    return (
+                        '<tr><td><input type="checkbox" /></td><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Type +
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
+                    );
+                }).join('')}
                 </table>
             </div>
             <div class="dataRegion">
@@ -105,14 +110,16 @@ class UIBinding {
                         <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Type +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    return (
+                        '<tr><td><input type="checkbox" /></td><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Type +
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
+                    );
+                }).join('')}
                 </table>
             </div>
         `;
@@ -136,14 +143,16 @@ class UIBinding {
                         <td>Details</td>
                     </tr>
                 ${data.HadComputeUpgraded.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Type +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    return (
+                        '<tr><td><input type="checkbox" /></td><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Type +
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
+                    );
+                }).join('')}
                 </table>
             </div>
             <div class="dataRegion">
@@ -162,14 +171,16 @@ class UIBinding {
                         <td>Details</td>
                     </tr>
                 ${data.HadStorageUpgraded.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Type +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    return (
+                        '<tr><td><input type="checkbox" /></td><td>' +
+                        item.Name +
+                        '</td><td>' +
+                        item.Type +
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
+                    );
+                }).join('')}
                 </table>
             </div>
         `;

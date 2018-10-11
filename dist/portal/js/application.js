@@ -1,15 +1,19 @@
-"use strict";
+'use strict';
 // Core application controller that handles top-level orchestration
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const api = __importStar(require("./api-client"));
-const ui_binding_1 = require("./ui-binding");
+var __importStar =
+    (this && this.__importStar) ||
+    function(mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null)
+            for (var k in mod)
+                if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+        result['default'] = mod;
+        return result;
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
+const api = __importStar(require('./api-client'));
+const ui_binding_1 = require('./ui-binding');
 /* Main Application Object */
 class Application {
     constructor(ui) {
@@ -20,10 +24,10 @@ class Application {
         console.log('Application initializing...');
         this.ui.SetBusyState(false);
         this.ui.InitializeEventHooks();
-        this.ui.SetNavigationCallback((path) => {
+        this.ui.SetNavigationCallback(path => {
             console.log(`Location hash changed: ${path}`);
         });
-        this.ui.SetupNavigationEvents((title) => {
+        this.ui.SetupNavigationEvents(title => {
             console.log(`Navigation selected: ${title}`);
             this.LookupAndSetContentTitle(title);
             this.ui.SetNavigationFragment(title);

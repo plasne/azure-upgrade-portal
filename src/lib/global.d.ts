@@ -1,5 +1,6 @@
 // includes
 import * as winston from 'winston';
+import { LogLevels } from '../logcar/server';
 
 // add to global
 declare global {
@@ -8,6 +9,7 @@ declare global {
             version: () => Promise<string>;
             logger: winston.Logger;
             commitLog: (
+                level: LogLevels,
                 message: any,
                 jobId?: string,
                 taskName?: string

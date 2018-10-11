@@ -19,6 +19,10 @@ cmd.option(
         '-k, --storage-key <s>',
         '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.'
     )
+    .option(
+        '-r, --socket-root <s>',
+        '[REQUIRED] SOCKET_ROOT. The root directory that will be used for sockets.'
+    )
     .parse(process.argv);
 
 // globals
@@ -26,6 +30,7 @@ dotenv.config();
 const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
 const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
 const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
 
 // connect to the blob service
 const service = azs.createBlobService(STORAGE_ACCOUNT, STORAGE_KEY);
@@ -33,11 +38,21 @@ const service = azs.createBlobService(STORAGE_ACCOUNT, STORAGE_KEY);
 // enable logging
 globalExt.enableConsoleLogging(LOG_LEVEL);
 
+// define the log levels
+export type LogLevels =
+    | 'error'
+    | 'warn'
+    | 'info'
+    | 'verbose'
+    | 'debug'
+    | 'silly';
+
 // define the entry
 export interface ILogEntry {
     coorelationId: string;
     jobId?: string;
     taskName?: string;
+    level?: LogLevels;
     message?: string;
 }
 
@@ -59,8 +74,9 @@ function write(entry: ILogEntry) {
 
     // optimistically write
     return new Promise<void>((resolve, reject) => {
-        const message = entry.message || '';
-        console.log(`message: ${message}`);
+        const level = entry.level ? entry.level.padStart(7) : '   info';
+        const now = new Date().toISOString();
+        const message = `${now} ${level} ${entry.message}\n`;
         service.appendBlockFromText('logs', blob, message, error1 => {
             if (!error1) {
                 resolve();
@@ -102,6 +118,12 @@ function clear(entry: ILogEntry) {
 // define startup
 async function startup() {
     try {
+        // log startup
+        console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
+        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}".`);
+        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}".`);
+        global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
+
         // create the container
         await new Promise(resolve => {
             service.createContainerIfNotExists('logs', error => {
@@ -118,6 +140,7 @@ async function startup() {
 
         // startup IPC server
         ipc.config.id = 'logcar';
+        ipc.config.socketRoot = SOCKET_ROOT;
         ipc.config.retry = 1500;
         ipc.config.silent = true;
         ipc.serve(() => {
@@ -131,6 +154,9 @@ async function startup() {
             // listening for logs
             ipc.server.on('log', async (message, socket) => {
                 try {
+                    global.logger.verbose(
+                        `received log message: "${JSON.stringify(message)}".`
+                    );
                     await write(message);
                     ipc.server.emit(socket, 'receipt', {
                         id: message.coorelationId
@@ -149,6 +175,9 @@ async function startup() {
             // listening for clear
             ipc.server.on('clear', async (message, socket) => {
                 try {
+                    global.logger.verbose(
+                        `received clear message: "${JSON.stringify(message)}".`
+                    );
                     await clear(message);
                     ipc.server.emit(socket, 'receipt', {
                         if: message.coorelationId
