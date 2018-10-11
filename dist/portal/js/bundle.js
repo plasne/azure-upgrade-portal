@@ -591,7 +591,7 @@ class UIBinding {
                 <li><strong>Name:</strong> ${data.Name}</li>
                 <li><strong>Duration:</strong> ${data.Type} (${this.formatDurationInMs(data.DurationInMs)})</li>
             </ul>
-            <textarea>${data.UpgradeDescription}</textarea>
+            <textarea readonly>${data.UpgradeDescription}</textarea>
         `;
         $('.dialog-stage .placeholder').html(markup);
         $('.dialog-stage').show();
