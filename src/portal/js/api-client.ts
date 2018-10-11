@@ -1,32 +1,54 @@
 // Client shim for API calls to get/set data.
-
 export interface IApiClient {
     LoadOverviewData(): Promise<IOverviewSummary>;
     LoadNeededRemediations(): Promise<IRemediationNeeded>;
     LoadCompletedRemediations(): Promise<IRemediationCompleted>;
+    LoadScheduledJobs(): Promise<IScheduledJobs>;
 }
 
+// Defines return structure for the overview/landing page.
 export interface IOverviewSummary {
     LastRefreshed: Date;
     RemediationsCompleted: number;
     RemediationsPending: number;
 }
 
+// Defines a system that requires upgranding, including the reason / etc.
 export interface IUpgradableSystem {
     Name: string;
     Type: string;
 }
 
+// Defines return structure for systems that require upgrades
 export interface IRemediationNeeded {
     NeedsStorageUpgrade: IUpgradableSystem[];
     NeedsComputeUpgrade: IUpgradableSystem[];
 }
 
+// Defines return structure for systems that have completed upgrades
 export interface IRemediationCompleted {
     HadComputeUpgraded: IUpgradableSystem[];
     HadStorageUpgraded: IUpgradableSystem[];
 }
 
+export enum JobStatus {
+    Pending = 'Pending',
+    Running = 'Running',
+    Complete = 'Complete',
+    Failed = 'Failed'
+}
+
+export interface IJobDetails {
+    Name: string;
+    Status: JobStatus;
+    LastUpdate: Date;
+}
+
+export interface IScheduledJobs {
+    JobList: IJobDetails[];
+}
+
+// Implements our ApiClient functionality
 export class ApiClient implements IApiClient {
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
@@ -140,6 +162,58 @@ export class ApiClient implements IApiClient {
             };
 
             // TODO: this will be a real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
+
+    public LoadScheduledJobs() {
+        return new Promise<IScheduledJobs>(resolve => {
+            const mockResponse: IScheduledJobs = {
+                JobList: []
+            };
+            const jobList: IJobDetails[] = [];
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 1',
+                Status: JobStatus.Pending
+            });
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 2',
+                Status: JobStatus.Running
+            });
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 3',
+                Status: JobStatus.Running
+            });
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 4',
+                Status: JobStatus.Pending
+            });
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 5',
+                Status: JobStatus.Complete
+            });
+
+            jobList.push({
+                LastUpdate: new Date(),
+                Name: 'Sample Job 6',
+                Status: JobStatus.Failed
+            });
+
+            mockResponse.JobList = jobList;
+
+            // TODO: This will be real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
             }, 1000);

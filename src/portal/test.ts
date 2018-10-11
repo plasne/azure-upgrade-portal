@@ -65,6 +65,10 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         );
     }
 
+    public RenderScheduledJobsContent(data: api.IScheduledJobs) {
+        console.log(`Scheduled jobs content loaded ${JSON.stringify(data)}`);
+    }
+
     // Methods to force / simulate UI calls from the tests below
     public ClickNavigationItem(itemName: string) {
         this.TitleSelectionCallback(itemName);

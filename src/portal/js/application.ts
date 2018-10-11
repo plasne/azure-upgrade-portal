@@ -1,9 +1,8 @@
 // Core application controller that handles top-level orchestration
-
 import * as api from './api-client';
 import { IUIBinding, UIBinding } from './ui-binding';
 
-/* Main Application Object */
+// Main Application Object
 export class Application {
     private ui: UIBinding;
     private apiClient: api.ApiClient;
@@ -13,10 +12,9 @@ export class Application {
         this.apiClient = new api.ApiClient();
     }
 
+    // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
-        this.ui.SetBusyState(false);
-
         this.ui.InitializeEventHooks();
 
         this.ui.SetNavigationCallback((path: string) => {
@@ -30,9 +28,12 @@ export class Application {
         });
 
         this.ui.SelectDefaultNavigationItem();
+        this.ui.SetBusyState(false);
         console.log('Initialization complete.');
     }
 
+    // Depending on the current route path, set the appropriate
+    // content stage path (and fire off the content loading)
     public LookupAndSetContentTitle(selectedTitle: string) {
         let title = selectedTitle;
         this.ui.ClearContentStage();
@@ -52,6 +53,7 @@ export class Application {
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
+                this.LoadScheduledJobsContent();
                 break;
             case 'logs':
                 title = 'Logs';
@@ -64,6 +66,7 @@ export class Application {
         this.ui.SetContentStageTitle(title);
     }
 
+    // Loads the overview content, and handles the UI state orchestration
     public async LoadOverviewContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadOverviewData();
@@ -71,6 +74,7 @@ export class Application {
         this.ui.SetBusyState(false);
     }
 
+    // Loads the remediation needed content, and handles the UI state orchestration
     public async LoadRemediationNeededContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadNeededRemediations();
@@ -78,10 +82,18 @@ export class Application {
         this.ui.SetBusyState(false);
     }
 
+    // Loads the remediation complete content, and handles the UI state orchestration
     public async LoadRemediationsCompletedContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
         this.ui.RenderRemediationCompletedContent(data);
+        this.ui.SetBusyState(false);
+    }
+
+    public async LoadScheduledJobsContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadScheduledJobs();
+        this.ui.RenderScheduledJobsContent(data);
         this.ui.SetBusyState(false);
     }
 }

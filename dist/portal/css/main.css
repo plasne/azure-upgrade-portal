@@ -13,7 +13,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 13px;
     color: #333;
-    background-color: #fafafa;
+    background-color: #fff;
 }
 
 input,
@@ -107,6 +107,10 @@ ol {
     padding: 0.25em 0.5em;
 }
 
+.navigation ul li:hover {
+    background-color: #e0e0e0;
+}
+
 .navigation ul li.selected {
     background-color: #c0c0c0;
 }
@@ -185,13 +189,10 @@ table.dataGrid {
 }
 
 table.dataGrid td {
-    padding: 0.5em;
+    padding: 0.4em;
     border: 1px solid #e0e0e0;
     text-align: left;
-}
-
-table.dataGrid tr:hover {
-    background-color: #e0eff9;
+    background-color: #fff;
 }
 
 table.dataGrid tr.header {
@@ -201,7 +202,11 @@ table.dataGrid tr.header {
     font-size: 0.875em;
 }
 
-table.dataGrid tr.header:hover {
+table.dataGrid tr.header:hover td {
     cursor: default;
     background-color: #fff;
+}
+
+table.dataGrid tr:hover td {
+    background-color: #e0eff9;
 }
