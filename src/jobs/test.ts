@@ -1,33 +1,17 @@
 // includes
 import assert = require('assert');
 import axios from 'axios';
+import * as azs from 'azure-storage';
 import { ChildProcess, fork } from 'child_process';
 import dotenv = require('dotenv');
 import 'mocha';
 import * as globalExt from '../lib/global-ext';
 import { ICreateJob } from './Job';
-import Jobs from './Jobs';
 
 // before
-let jobs: Jobs | undefined;
 let server: ChildProcess | undefined;
 let logcar: ChildProcess | undefined;
 before(() => {
-    // read variables
-    dotenv.config();
-    const LOG_LEVEL = process.env.LOG_LEVEL;
-    globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
-    const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
-    const STORAGE_KEY = process.env.STORAGE_KEY;
-    if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
-        throw new Error(
-            'You must have environmental variables set for STORAGE_ACCOUNT and STORAGE_KEY.'
-        );
-    }
-
-    // create the Jobs context
-    jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
-
     // startup the logcar
     const p1 = new Promise<ChildProcess>((resolve, reject) => {
         try {
@@ -80,34 +64,74 @@ before(() => {
 // unit tests
 describe('Jobs Unit Tests', () => {
     it('should delete all jobs', async () => {
-        if (jobs) {
-            await jobs.clear();
-            const hasJobs = await jobs.hasJobs();
-            assert.ok(hasJobs === false);
-        } else {
-            throw new Error(`Jobs context not created.`);
+        const response = await axios.delete('http://localhost:8113/jobs');
+        assert.ok(response.status >= 200 && response.status < 300);
+        dotenv.config();
+        const STORAGE_ACCOUNT = process.env.STORAGE_ACCOUNT;
+        const STORAGE_KEY = process.env.STORAGE_KEY;
+        if (!STORAGE_ACCOUNT || !STORAGE_KEY) {
+            throw new Error('need STORAGE_ACCOUNT and STORAGE_KEY.');
         }
+        const service = azs.createTableService(STORAGE_ACCOUNT, STORAGE_KEY);
+        await new Promise((resolve, reject) => {
+            service.queryEntities(
+                'jobs',
+                new azs.TableQuery(),
+                undefined,
+                (error, result) => {
+                    if (!error) {
+                        if (result.entries.length < 1) {
+                            resolve();
+                        } else {
+                            reject(
+                                new Error(
+                                    'objects were still found in the table.'
+                                )
+                            );
+                        }
+                    } else {
+                        reject(error);
+                    }
+                }
+            );
+        });
     });
 
     it('should be able to create a job without tasks', async () => {
-        if (server) {
-            const job: ICreateJob = {};
-            const response = await axios.post<any>(
-                'http://localhost:8113/job',
-                job
-            );
-            assert.ok(response.status >= 200 && response.status < 300);
-            assert.ok(typeof response.data.id === 'string');
-        } else {
-            throw new Error(`Server does not exist.`);
-        }
+        const job: ICreateJob = {};
+        const create = await axios.post<any>('http://localhost:8113/job', job);
+        assert.ok(create.status >= 200 && create.status < 300);
+        assert.ok(typeof create.data.id === 'string');
+        const verify = await axios.get<any>(
+            `http://localhost:8113/job/${create.data.id}`
+        );
+        assert.ok(verify.status >= 200 && verify.status < 300);
+        assert.ok(verify.data.tasks.length === 0);
+    });
+
+    it('should be able to create a job with tasks', async () => {
+        const job: ICreateJob = {
+            tasks: [
+                {
+                    name: 'task1'
+                },
+                {
+                    name: 'task2'
+                }
+            ]
+        };
+        const create = await axios.post<any>('http://localhost:8113/job', job);
+        const verify = await axios.get<any>(
+            `http://localhost:8113/job/${create.data.id}`
+        );
+        assert.ok(verify.status >= 200 && verify.status < 300);
+        assert.ok(verify.data.tasks.length === 2);
     });
 });
 
 // shutdown the API server
 after(() => {
     globalExt.disablePersistentLogging();
-    if (jobs) jobs.shutdown();
     if (logcar) logcar.kill();
     if (server) server.kill();
 });

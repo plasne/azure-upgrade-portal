@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.016" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-11T20:43:44" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="4.322" tests="11" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-11T21:31:18" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="Application controller unit tests" timestamp="2018-10-11T20:43:44" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.016">
-    <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.005" classname="Should pre-select the default nav item on initilization.">
+  <testsuite name="API Unit Tests" timestamp="2018-10-11T21:31:23" tests="1" file="/mnt/c/temp/azure-upgrade-portal/dist/api/test.js" failures="0" time="0.574">
+    <testcase name="API Unit Tests should respond with application/version" time="0.574" classname="should respond with application/version">
     </testcase>
-    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.011" classname="Should set the content title corresponding to the nav item.">
+  </testsuite>
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-11T21:31:24" tests="3" file="/mnt/c/temp/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="1.737">
+    <testcase name="Jobs Unit Tests should delete all jobs" time="1.081" classname="should delete all jobs">
+    </testcase>
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.203" classname="should be able to create a job without tasks">
+    </testcase>
+    <testcase name="Jobs Unit Tests should be able to create a job with tasks" time="0.453" classname="should be able to create a job with tasks">
+    </testcase>
+  </testsuite>
+  <testsuite name="LogCar Tests" timestamp="2018-10-11T21:31:25" tests="5" file="/mnt/c/temp/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="1.805">
+    <testcase name="LogCar Tests should connect to a running logcar" time="0.003" classname="should connect to a running logcar">
+    </testcase>
+    <testcase name="LogCar Tests should delete all system messages" time="0.206" classname="should delete all system messages">
+    </testcase>
+    <testcase name="LogCar Tests should log a system message" time="0.711" classname="should log a system message">
+    </testcase>
+    <testcase name="LogCar Tests should log a job message without a task" time="0.439" classname="should log a job message without a task">
+    </testcase>
+    <testcase name="LogCar Tests should log a job/task message" time="0.446" classname="should log a job/task message">
+    </testcase>
+  </testsuite>
+  <testsuite name="Application controller unit tests" timestamp="2018-10-11T21:31:27" tests="2" file="/mnt/c/temp/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.20600000000000002">
+    <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.012" classname="Should pre-select the default nav item on initilization.">
+    </testcase>
+    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.194" classname="Should set the content title corresponding to the nav item.">
     </testcase>
   </testsuite>
 </testsuites>

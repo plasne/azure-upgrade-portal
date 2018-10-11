@@ -15,6 +15,9 @@ class PromiseImposter {
         this.events.emit('catch', ...args);
         this.events.emit('finally', ...args);
     }
+    push(...args) {
+        this.events.emit('while', ...args);
+    }
     then(resolve, reject) {
         this.events.on('resolve', (...args) => {
             resolve.call(this, ...args);
@@ -41,6 +44,13 @@ class PromiseImposter {
     }
     timeout(onevent, ms) {
         setTimeout(onevent, ms);
+        return this;
+    }
+    while(onevent) {
+        this.events.on('while', (...args) => {
+            if (onevent)
+                onevent.call(this, ...args);
+        });
         return this;
     }
 }

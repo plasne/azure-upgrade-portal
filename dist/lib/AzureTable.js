@@ -139,7 +139,6 @@ class AzureTable {
                                     else {
                                         streams.out.emit('success', opresult.response);
                                         operation.resolve(opresult.response);
-                                        operation.reject(new Error('cry break'));
                                     }
                                 }
                                 else {
@@ -166,7 +165,8 @@ class AzureTable {
                     return this.service.queryEntities(operation.table, operation.query || new azs.TableQuery(), operation.token, (error, result) => {
                         if (!error) {
                             for (const entity of result.entries) {
-                                streams.out.push(entity, operations);
+                                streams.out.push(entity, operation);
+                                operation.push(entity);
                             }
                             if (result.continuationToken) {
                                 operation.token =

@@ -7,7 +7,7 @@ import * as http from 'http';
 import * as https from 'https';
 import * as os from 'os';
 import * as globalExt from '../lib/global-ext';
-import { ICreateJob } from './Job';
+import { ICreateJob, IPatchJob } from './Job';
 import Jobs from './Jobs';
 
 // THIS SHOULD ALSO BE THE SCHEDULER
@@ -100,6 +100,37 @@ async function startup() {
         // initialize the jobs collection
         const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
 
+        // function to clear jobs
+        app.delete('/jobs', async (_, res) => {
+            try {
+                await jobs.clear();
+                res.status(200).end();
+            } catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send(
+                    'Jobs could not be deleted. Please check the logs.'
+                );
+            }
+        });
+
+        // function to load a job
+        app.get('/job/:id', async (req, res) => {
+            try {
+                const id: string = req.params.id;
+                const job = await jobs.loadJob(id);
+                if (job) {
+                    res.status(200).send(job.toJSON());
+                } else {
+                    res.status(404).end();
+                }
+            } catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send(
+                    'The job could not be fetched. Please check the logs.'
+                );
+            }
+        });
+
         // function to create a job
         app.post('/job', async (req, res) => {
             try {
@@ -112,6 +143,25 @@ async function startup() {
                 global.logger.error(error.stack);
                 res.status(500).send(
                     'The job could not be created. Please check the logs.'
+                );
+            }
+        });
+
+        // function to patch a job
+        app.patch('/job', async (req, res) => {
+            try {
+                const definition: IPatchJob = req.body;
+                const job = await jobs.loadJob(definition.id);
+                if (job) {
+                    job.patch(definition);
+                    res.status(200).end();
+                } else {
+                    res.status(404).end();
+                }
+            } catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send(
+                    'The job could not be patched. Please check the logs.'
                 );
             }
         });

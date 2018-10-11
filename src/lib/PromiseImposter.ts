@@ -17,6 +17,10 @@ export default abstract class PromiseImposter {
         this.events.emit('finally', ...args);
     }
 
+    public push(...args: any[]) {
+        this.events.emit('while', ...args);
+    }
+
     public then(resolve: anyfunc, reject?: anyfunc) {
         this.events.on('resolve', (...args: any[]) => {
             resolve.call(this, ...args);
@@ -43,6 +47,13 @@ export default abstract class PromiseImposter {
 
     public timeout(onevent: anyfunc, ms: number) {
         setTimeout(onevent, ms);
+        return this;
+    }
+
+    public while(onevent: anyfunc) {
+        this.events.on('while', (...args: any[]) => {
+            if (onevent) onevent.call(this, ...args);
+        });
         return this;
     }
 }
