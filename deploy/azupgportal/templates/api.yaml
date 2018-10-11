@@ -57,8 +57,6 @@ spec:
           value: /shared/
       imagePullSecrets:
       - name: azupgportal-registry
-      imagePullSecrets:
-      - name: azupgportal-registry
 ---
 apiVersion: v1
 kind: Service
