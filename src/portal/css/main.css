@@ -184,7 +184,7 @@ ul.overview li.completed {
 
 .computeUpgradable table,
 .storageUpgradable table {
-    border: 1px solid #c0c0c0;
+    border: 1px solid #e0e0e0;
     border-collapse: collapse;
     width: 100%;
 }
@@ -192,13 +192,13 @@ ul.overview li.completed {
 .computeUpgradable table td,
 .storageUpgradable table td {
     padding: 0.5em;
-    border: 1px solid #c0c0c0;
+    border: 1px solid #e0e0e0;
     text-align: left;
 }
 
 .computeUpgradable table tr:hover,
 .storageUpgradable table tr:hover {
-    background-color: #afdfff;
+    background-color: #e0eff9;
     cursor: pointer;
 }
 
@@ -207,6 +207,7 @@ ul.overview li.completed {
     font-weight: bold;
     color: #333;
     background-color: #fff;
+    font-size: 0.875em;
 }
 
 .computeUpgradable table tr.header:hover,
