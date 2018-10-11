@@ -107,6 +107,10 @@ ol {
     padding: 0.25em 0.5em;
 }
 
+.navigation ul li:hover {
+    background-color: #e0e0e0;
+}
+
 .navigation ul li.selected {
     background-color: #c0c0c0;
 }
