@@ -45,6 +45,7 @@ class Application {
                 break;
             case 'remediation-complete':
                 title = 'Remediations Complete';
+                this.LoadRemediationsCompletedContent();
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
@@ -68,6 +69,12 @@ class Application {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadNeededRemediations();
         this.ui.RenderRemediationNeededContent(data);
+        this.ui.SetBusyState(false);
+    }
+    async LoadRemediationsCompletedContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadCompletedRemediations();
+        this.ui.RenderRemediationCompletedContent(data);
         this.ui.SetBusyState(false);
     }
 }

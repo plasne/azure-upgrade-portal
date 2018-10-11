@@ -59,6 +59,13 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         console.log(`Remediation needed data loaded: ${JSON.stringify(data)}`);
     }
 
+    public RenderRemediationCompletedContent(data: api.IRemediationCompleted) {
+        console.log(
+            `Remediation complete data loaded: ${JSON.stringify(data)}`
+        );
+    }
+
+    // Methods to force / simulate UI calls from the tests below
     public ClickNavigationItem(itemName: string) {
         this.TitleSelectionCallback(itemName);
     }

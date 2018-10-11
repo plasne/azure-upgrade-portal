@@ -43,6 +43,10 @@ class TestUIBinding {
     RenderRemediationNeededContent(data) {
         console.log(`Remediation needed data loaded: ${JSON.stringify(data)}`);
     }
+    RenderRemediationCompletedContent(data) {
+        console.log(`Remediation complete data loaded: ${JSON.stringify(data)}`);
+    }
+    // Methods to force / simulate UI calls from the tests below
     ClickNavigationItem(itemName) {
         this.TitleSelectionCallback(itemName);
     }

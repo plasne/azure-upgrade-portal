@@ -3,6 +3,7 @@
 export interface IApiClient {
     LoadOverviewData(): Promise<IOverviewSummary>;
     LoadNeededRemediations(): Promise<IRemediationNeeded>;
+    LoadCompletedRemediations(): Promise<IRemediationCompleted>;
 }
 
 export interface IOverviewSummary {
@@ -19,6 +20,11 @@ export interface IUpgradableSystem {
 export interface IRemediationNeeded {
     NeedsStorageUpgrade: IUpgradableSystem[];
     NeedsComputeUpgrade: IUpgradableSystem[];
+}
+
+export interface IRemediationCompleted {
+    HadComputeUpgraded: IUpgradableSystem[];
+    HadStorageUpgraded: IUpgradableSystem[];
 }
 
 export class ApiClient implements IApiClient {
@@ -43,8 +49,8 @@ export class ApiClient implements IApiClient {
     // Note this may return other resources beyond machines, but we'll stop there for now.
     public LoadNeededRemediations() {
         return new Promise<IRemediationNeeded>(resolve => {
-            const storageUpgradable = [];
-            const computeUpgradable = [];
+            const storageUpgradable: IUpgradableSystem[] = [];
+            const computeUpgradable: IUpgradableSystem[] = [];
 
             storageUpgradable.push({
                 Name: 'VM01',
@@ -92,6 +98,48 @@ export class ApiClient implements IApiClient {
             };
 
             // TODO: This will be a real API call, bur for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
+
+    public LoadCompletedRemediations() {
+        return new Promise<IRemediationCompleted>(resolve => {
+            const computeUpgraded: IUpgradableSystem[] = [];
+            const storageUpgraded: IUpgradableSystem[] = [];
+
+            computeUpgraded.push({
+                Name: 'VM05',
+                Type: 'Virtual Machine'
+            });
+
+            computeUpgraded.push({
+                Name: 'VM75',
+                Type: 'Virtual Machine'
+            });
+
+            computeUpgraded.push({
+                Name: 'VM99',
+                Type: 'Virtual Machine'
+            });
+
+            storageUpgraded.push({
+                Name: 'VM05-x',
+                Type: 'Virtual Machine'
+            });
+
+            storageUpgraded.push({
+                Name: 'VM425-Z',
+                Type: 'Virtual Machine'
+            });
+
+            const mockResponse = {
+                HadComputeUpgraded: computeUpgraded,
+                HadStorageUpgraded: storageUpgraded
+            };
+
+            // TODO: this will be a real API call, but for now simulate delays
             setTimeout(() => {
                 resolve(mockResponse);
             }, 1000);

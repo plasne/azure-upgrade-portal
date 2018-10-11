@@ -66,5 +66,39 @@ class ApiClient {
             }, 1000);
         });
     }
+    LoadCompletedRemediations() {
+        return new Promise(resolve => {
+            const computeUpgraded = [];
+            const storageUpgraded = [];
+            computeUpgraded.push({
+                Name: 'VM05',
+                Type: 'Virtual Machine'
+            });
+            computeUpgraded.push({
+                Name: 'VM75',
+                Type: 'Virtual Machine'
+            });
+            computeUpgraded.push({
+                Name: 'VM99',
+                Type: 'Virtual Machine'
+            });
+            storageUpgraded.push({
+                Name: 'VM05-x',
+                Type: 'Virtual Machine'
+            });
+            storageUpgraded.push({
+                Name: 'VM425-Z',
+                Type: 'Virtual Machine'
+            });
+            const mockResponse = {
+                HadComputeUpgraded: computeUpgraded,
+                HadStorageUpgraded: storageUpgraded
+            };
+            // TODO: this will be a real API call, but for now simulate delays
+            setTimeout(() => {
+                resolve(mockResponse);
+            }, 1000);
+        });
+    }
 }
 exports.ApiClient = ApiClient;

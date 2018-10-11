@@ -118,5 +118,62 @@ class UIBinding {
         `;
         $('.content-stage .placeholder').html(markup);
     }
+    RenderRemediationCompletedContent(data) {
+        const markup = `
+            <div class="dataRegion">
+                <p><i class="fas fa-server"></i>The following systems have completed compute ugprades:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="25px" />
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>&nbsp;</td>
+                        <td>Name</td>
+                        <td>Type</td>
+                        <td>Details</td>
+                    </tr>
+                ${data.HadComputeUpgraded.map(item => {
+            return ('<tr><td><input type="checkbox" /></td><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Type +
+                '</td><td><a class="detailsViewLink" data-item-name="' +
+                item.Name +
+                '">Click to view...</a></td></tr>');
+        }).join('')}
+                </table>
+            </div>
+            <div class="dataRegion">
+                <p><i class="far fa-hdd"></i>The following systems have completed storage account upgrades:</p>
+                <table class="dataGrid">
+                    <colgroup>
+                        <col width="25px" />
+                        <col width="200px" />
+                        <col width="200px" />
+                        <col width="*" />
+                    </colgroup>
+                    <tr class="header">
+                        <td>&nbsp;</td>
+                        <td>Name</td>
+                        <td>Type</td>
+                        <td>Details</td>
+                    </tr>
+                ${data.HadStorageUpgraded.map(item => {
+            return ('<tr><td><input type="checkbox" /></td><td>' +
+                item.Name +
+                '</td><td>' +
+                item.Type +
+                '</td><td><a class="detailsViewLink" data-item-name="' +
+                item.Name +
+                '">Click to view...</a></td></tr>');
+        }).join('')}
+                </table>
+            </div>
+        `;
+        $('.content-stage .placeholder').html(markup);
+    }
 }
 exports.UIBinding = UIBinding;
