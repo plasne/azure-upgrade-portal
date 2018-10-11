@@ -34,48 +34,56 @@ class ApiClient {
             const computeUpgradable = [];
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM01',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM13',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
             });
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'ABC-123',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
             });
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM-Z23',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-TR344',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-T23323',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
             });
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-AB34534',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
@@ -96,30 +104,35 @@ class ApiClient {
             const storageUpgraded = [];
             computeUpgraded.push({
                 DurationInMs: 5 * 60 * 1000,
+                Group: '',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
                 DurationInMs: 15 * 60 * 1000,
+                Group: '',
                 Name: 'VM75',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             computeUpgraded.push({
                 DurationInMs: 4 * 60 * 1000,
+                Group: '',
                 Name: 'VM99',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
             });
             storageUpgraded.push({
                 DurationInMs: 45 * 60 * 1000,
+                Group: '',
                 Name: 'VM05-x',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
             });
             storageUpgraded.push({
                 DurationInMs: 56.2 * 60 * 1000,
+                Group: '',
                 Name: 'VM425-Z',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -142,38 +155,38 @@ class ApiClient {
             const jobList = [];
             jobList.push({
                 DurationInMs: 3 * 60 * 1000,
+                JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 1',
                 Status: JobStatus.Pending
             });
             jobList.push({
                 DurationInMs: 6 * 60 * 1000,
+                JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 2',
                 Status: JobStatus.Running
             });
             jobList.push({
                 DurationInMs: 12.4 * 60 * 1000,
+                JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 3',
                 Status: JobStatus.Running
             });
             jobList.push({
                 DurationInMs: 7 * 60 * 1000,
+                JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 4',
                 Status: JobStatus.Pending
             });
             jobList.push({
                 DurationInMs: 32 * 60 * 1000,
+                JobType: 'Storage Migration',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 5',
                 Status: JobStatus.Complete
             });
             jobList.push({
                 DurationInMs: 43.1 * 60 * 1000,
+                JobType: 'Storage Migration',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 6',
                 Status: JobStatus.Failed
             });
             mockResponse.JobList = jobList;
@@ -398,6 +411,7 @@ class UIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
@@ -405,6 +419,7 @@ class UIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Description</td>
                         <td>Details</td>
@@ -412,6 +427,8 @@ class UIBinding {
                 ${data.NeedsComputeUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
+                '</td><td>' +
+                item.Group +
                 '</td><td>' +
                 item.Type +
                 '</td><td>' +
@@ -428,6 +445,7 @@ class UIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
@@ -435,6 +453,7 @@ class UIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Description</td>
                         <td>Details</td>
@@ -442,6 +461,8 @@ class UIBinding {
                 ${data.NeedsStorageUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
+                '</td><td>' +
+                item.Group +
                 '</td><td>' +
                 item.Type +
                 '</td><td>' +
@@ -463,6 +484,7 @@ class UIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="*" />
@@ -470,6 +492,7 @@ class UIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Duration</td>
                         <td>Details</td>
@@ -477,6 +500,8 @@ class UIBinding {
                 ${data.HadComputeUpgraded.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
+                '</td><td>' +
+                item.Group +
                 '</td><td>' +
                 item.Type +
                 '</td><td>' +
@@ -493,6 +518,7 @@ class UIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="*" />
@@ -500,6 +526,7 @@ class UIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Duration</td>
                         <td>Details</td>
@@ -507,6 +534,8 @@ class UIBinding {
                 ${data.HadStorageUpgraded.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
+                '</td><td>' +
+                item.Group +
                 '</td><td>' +
                 item.Type +
                 '</td><td>' +
@@ -532,14 +561,14 @@ class UIBinding {
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
-                        <td>Name</td>
+                        <td>Job Type</td>
                         <td>Status</td>
                         <td>Duration</td>
                         <td>Last Update</td>
                     </tr>
                 ${data.JobList.map(item => {
             return ('<tr><td>' +
-                item.Name +
+                item.JobType +
                 '</td><td>' +
                 item.Status +
                 '</td><td>' +

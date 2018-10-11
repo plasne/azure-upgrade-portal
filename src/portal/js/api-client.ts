@@ -17,6 +17,7 @@ export interface IOverviewSummary {
 // Defines a system that requires upgranding, including the reason / etc.
 export interface IUpgradableSystem {
     DurationInMs: number;
+    Group: string;
     Name: string;
     Type: string;
     UpgradeDescription: string;
@@ -43,7 +44,7 @@ export enum JobStatus {
 
 export interface IJobDetails {
     DurationInMs: number;
-    Name: string;
+    JobType: string;
     Status: JobStatus;
     LastUpdate: Date;
 }
@@ -87,6 +88,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM01',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
@@ -94,6 +96,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
@@ -101,6 +104,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM13',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
@@ -108,6 +112,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'ABC-123',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage upgrade required'
@@ -115,6 +120,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'VM-Z23',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgrade required'
@@ -122,6 +128,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-TR344',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
@@ -129,6 +136,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-T23323',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
@@ -136,6 +144,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgradable.push({
                 DurationInMs: 0,
+                Group: '',
                 Name: 'CS-AB34534',
                 Type: 'Cloud Service',
                 UpgradeDescription: 'VM series upgrade required'
@@ -160,6 +169,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 5 * 60 * 1000,
+                Group: '',
                 Name: 'VM05',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -167,6 +177,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 15 * 60 * 1000,
+                Group: '',
                 Name: 'VM75',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -174,6 +185,7 @@ export class ApiClient implements IApiClient {
 
             computeUpgraded.push({
                 DurationInMs: 4 * 60 * 1000,
+                Group: '',
                 Name: 'VM99',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'VM series upgraded'
@@ -181,6 +193,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgraded.push({
                 DurationInMs: 45 * 60 * 1000,
+                Group: '',
                 Name: 'VM05-x',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -188,6 +201,7 @@ export class ApiClient implements IApiClient {
 
             storageUpgraded.push({
                 DurationInMs: 56.2 * 60 * 1000,
+                Group: '',
                 Name: 'VM425-Z',
                 Type: 'Virtual Machine',
                 UpgradeDescription: 'Storage account upgraded'
@@ -214,43 +228,43 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 3 * 60 * 1000,
+                JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 1',
                 Status: JobStatus.Pending
             });
 
             jobList.push({
                 DurationInMs: 6 * 60 * 1000,
+                JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 2',
                 Status: JobStatus.Running
             });
 
             jobList.push({
                 DurationInMs: 12.4 * 60 * 1000,
+                JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 3',
                 Status: JobStatus.Running
             });
 
             jobList.push({
                 DurationInMs: 7 * 60 * 1000,
+                JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 4',
                 Status: JobStatus.Pending
             });
 
             jobList.push({
                 DurationInMs: 32 * 60 * 1000,
+                JobType: 'Storage Migration',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 5',
                 Status: JobStatus.Complete
             });
 
             jobList.push({
                 DurationInMs: 43.1 * 60 * 1000,
+                JobType: 'Storage Migration',
                 LastUpdate: new Date(),
-                Name: 'Sample Job 6',
                 Status: JobStatus.Failed
             });
 

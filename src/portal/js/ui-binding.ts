@@ -114,6 +114,7 @@ export class UIBinding implements IUIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
@@ -121,6 +122,7 @@ export class UIBinding implements IUIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Description</td>
                         <td>Details</td>
@@ -129,6 +131,8 @@ export class UIBinding implements IUIBinding {
                     return (
                         '<tr><td><input type="checkbox" /></td><td>' +
                         item.Name +
+                        '</td><td>' +
+                        item.Group +
                         '</td><td>' +
                         item.Type +
                         '</td><td>' +
@@ -146,6 +150,7 @@ export class UIBinding implements IUIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
@@ -153,6 +158,7 @@ export class UIBinding implements IUIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Description</td>
                         <td>Details</td>
@@ -161,6 +167,8 @@ export class UIBinding implements IUIBinding {
                     return (
                         '<tr><td><input type="checkbox" /></td><td>' +
                         item.Name +
+                        '</td><td>' +
+                        item.Group +
                         '</td><td>' +
                         item.Type +
                         '</td><td>' +
@@ -185,6 +193,7 @@ export class UIBinding implements IUIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="*" />
@@ -192,6 +201,7 @@ export class UIBinding implements IUIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Duration</td>
                         <td>Details</td>
@@ -200,6 +210,8 @@ export class UIBinding implements IUIBinding {
                     return (
                         '<tr><td><input type="checkbox" /></td><td>' +
                         item.Name +
+                        '</td><td>' +
+                        item.Group +
                         '</td><td>' +
                         item.Type +
                         '</td><td>' +
@@ -217,6 +229,7 @@ export class UIBinding implements IUIBinding {
                     <colgroup>
                         <col width="25px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="*" />
@@ -224,6 +237,7 @@ export class UIBinding implements IUIBinding {
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
+                        <td>Group</td>
                         <td>Type</td>
                         <td>Duration</td>
                         <td>Details</td>
@@ -232,6 +246,8 @@ export class UIBinding implements IUIBinding {
                     return (
                         '<tr><td><input type="checkbox" /></td><td>' +
                         item.Name +
+                        '</td><td>' +
+                        item.Group +
                         '</td><td>' +
                         item.Type +
                         '</td><td>' +
@@ -260,7 +276,7 @@ export class UIBinding implements IUIBinding {
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
-                        <td>Name</td>
+                        <td>Job Type</td>
                         <td>Status</td>
                         <td>Duration</td>
                         <td>Last Update</td>
@@ -268,7 +284,7 @@ export class UIBinding implements IUIBinding {
                 ${data.JobList.map(item => {
                     return (
                         '<tr><td>' +
-                        item.Name +
+                        item.JobType +
                         '</td><td>' +
                         item.Status +
                         '</td><td>' +
