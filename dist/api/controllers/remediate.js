@@ -6,9 +6,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const azs = __importStar(require("azure-storage"));
 const uuid_1 = require("uuid");
+const Jobs_1 = __importDefault(require("../../jobs/Jobs"));
 class RemediateTable {
     constructor() {
         this.name = 'remediation';
@@ -62,11 +66,12 @@ class RemediateTable {
 }
 exports.default = {
     /** Creates a remediation request */
-    create: async (req, res) => {
+    create: async (req, res, job) => {
         const body = req.body;
         try {
             const bwhen = body.when;
             const bscope = body.scope;
+            const bopt = JSON.stringify(body.options);
             const table = 'remediate';
             // validate body contents
             if (!bwhen || !bscope) {
@@ -79,16 +84,19 @@ exports.default = {
             await storage.AddTask({
                 PartitionKey: 'remediate',
                 RowKey: id,
+                options: bopt,
                 scope: bscope,
                 when: bwhen
             });
             global.logger.info('Remediation record added');
+            // send to job engine to queue to run
+            const jobs = new Jobs_1.default(global.STORAGE_ACCOUNT, global.STORAGE_KEY);
+            await jobs.createJob(job);
         }
         catch (error) {
             global.logger.error(error.stack);
             res.status(500).send('The remediation request could not be created. Please check the logs.');
         }
-        // send to job engine to queue to run
         res.send({
             success: true
         });

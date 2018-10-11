@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.008" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-10T23:03:55" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="5.771" tests="11" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-11T19:29:25" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="Application controller unit tests" timestamp="2018-10-10T23:03:55" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.008">
-    <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.001" classname="Should pre-select the default nav item on initilization.">
+  <testsuite name="API Unit Tests" timestamp="2018-10-11T19:29:32" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/api/test.js" failures="0" time="1.835">
+    <testcase name="API Unit Tests should respond with application/version" time="0.032" classname="should respond with application/version">
     </testcase>
-    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.007" classname="Should set the content title corresponding to the nav item.">
+    <testcase name="API Unit Tests should create a table entry" time="1.803" classname="should create a table entry">
+    </testcase>
+  </testsuite>
+  <testsuite name="Jobs Unit Tests" timestamp="2018-10-11T19:29:34" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/jobs/test.js" failures="0" time="1.668">
+    <testcase name="Jobs Unit Tests should delete all jobs" time="1.516" classname="should delete all jobs">
+    </testcase>
+    <testcase name="Jobs Unit Tests should be able to create a job without tasks" time="0.152" classname="should be able to create a job without tasks">
+    </testcase>
+  </testsuite>
+  <testsuite name="LogCar Tests" timestamp="2018-10-11T19:29:36" tests="5" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/logcar/test.js" failures="0" time="2.247">
+    <testcase name="LogCar Tests should connect to a running logcar" time="0.011" classname="should connect to a running logcar">
+    </testcase>
+    <testcase name="LogCar Tests should delete all system messages" time="0.247" classname="should delete all system messages">
+    </testcase>
+    <testcase name="LogCar Tests should log a system message" time="0.919" classname="should log a system message">
+    </testcase>
+    <testcase name="LogCar Tests should log a job message without a task" time="0.467" classname="should log a job message without a task">
+    </testcase>
+    <testcase name="LogCar Tests should log a job/task message" time="0.603" classname="should log a job/task message">
+    </testcase>
+  </testsuite>
+  <testsuite name="Application controller unit tests" timestamp="2018-10-11T19:29:38" tests="2" file="/mnt/c/Users/kakader/source/repos/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.020999999999999998">
+    <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.002" classname="Should pre-select the default nav item on initilization.">
+    </testcase>
+    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.019" classname="Should set the content title corresponding to the nav item.">
     </testcase>
   </testsuite>
 </testsuites>

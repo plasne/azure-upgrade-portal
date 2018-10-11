@@ -77,11 +77,15 @@ describe('API Unit Tests', () => {
         assert.ok(typeof response.data.application === 'string');
         assert.ok(typeof response.data.version === 'string');
     });
-    it('should create a table entry', async () => {
-        const rem = { when: 'now', scope: 'abc123' };
-        const response = await axios_1.default.post('http://localhost:8112/remediate', rem);
+    it('should create a table entry and a job for remediate discovery', async () => {
+        const rem = {
+            options: { foo: 'bar' },
+            scope: 'abc123',
+            when: 'now'
+        };
+        const response = await axios_1.default.post('http://localhost:8112/remediate/discovery', rem);
         assert.ok(response.status >= 200 && response.status < 300);
-        assert.ok(response.data.success);
+        // assert.ok(response.data.success);
     });
 }).timeout(20000);
 // shutdown the API server

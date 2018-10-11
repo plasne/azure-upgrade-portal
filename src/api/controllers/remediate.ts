@@ -1,6 +1,8 @@
 import * as azs from 'azure-storage';
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
+import { ICreateJob } from '../../jobs/Job';
+import Jobs from '../../jobs/Jobs';
 
 export interface IRemediate {
     when: string;
@@ -76,12 +78,13 @@ class RemediateTable {
 
 export default {
     /** Creates a remediation request */
-    create: async (req: Request, res: Response) => {
+    create: async (req: Request, res: Response, job: ICreateJob) => {
         const body: IRemediate = req.body;
 
         try {
             const bwhen = body.when;
             const bscope = body.scope;
+            const bopt = JSON.stringify(body.options);
             const table = 'remediate';
 
             // validate body contents
@@ -97,18 +100,21 @@ export default {
             await storage.AddTask({
                 PartitionKey: 'remediate',
                 RowKey: id,
+                options: bopt,
                 scope: bscope,
                 when: bwhen
             });
             global.logger.info('Remediation record added');
+
+            // send to job engine to queue to run
+            const jobs = new Jobs(global.STORAGE_ACCOUNT, global.STORAGE_KEY);
+            await jobs.createJob(job);
         } catch (error) {
             global.logger.error(error.stack);
             res.status(500).send(
                 'The remediation request could not be created. Please check the logs.'
             );
         }
-
-        // send to job engine to queue to run
 
         res.send({
             success: true
