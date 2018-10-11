@@ -15,8 +15,6 @@ export class Application {
     // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
-        this.ui.SetBusyState(false);
-
         this.ui.InitializeEventHooks();
 
         this.ui.SetNavigationCallback((path: string) => {
@@ -30,6 +28,7 @@ export class Application {
         });
 
         this.ui.SelectDefaultNavigationItem();
+        this.ui.SetBusyState(false);
         console.log('Initialization complete.');
     }
 

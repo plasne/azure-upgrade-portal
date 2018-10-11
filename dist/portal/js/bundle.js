@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
-// Client shim for API calls to get/set data.
 Object.defineProperty(exports, "__esModule", { value: true });
+// Implements our ApiClient functionality
 class ApiClient {
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
@@ -107,7 +107,6 @@ exports.ApiClient = ApiClient;
 },{}],2:[function(require,module,exports){
 (function (global){
 "use strict";
-// Core application controller that handles top-level orchestration
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -116,17 +115,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Core application controller that handles top-level orchestration
 const api = __importStar(require("./api-client"));
 const ui_binding_1 = require("./ui-binding");
-/* Main Application Object */
+// Main Application Object
 class Application {
     constructor(ui) {
         this.ui = ui;
         this.apiClient = new api.ApiClient();
     }
+    // Initialize the applicaiton hooks
     Initialize() {
         console.log('Application initializing...');
-        this.ui.SetBusyState(false);
         this.ui.InitializeEventHooks();
         this.ui.SetNavigationCallback((path) => {
             console.log(`Location hash changed: ${path}`);
@@ -137,8 +137,11 @@ class Application {
             this.ui.SetNavigationFragment(title);
         });
         this.ui.SelectDefaultNavigationItem();
+        this.ui.SetBusyState(false);
         console.log('Initialization complete.');
     }
+    // Depending on the current route path, set the appropriate
+    // content stage path (and fire off the content loading)
     LookupAndSetContentTitle(selectedTitle) {
         let title = selectedTitle;
         this.ui.ClearContentStage();
@@ -167,18 +170,21 @@ class Application {
         }
         this.ui.SetContentStageTitle(title);
     }
+    // Loads the overview content, and handles the UI state orchestration
     async LoadOverviewContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadOverviewData();
         this.ui.RenderOverviewContent(data);
         this.ui.SetBusyState(false);
     }
+    // Loads the remediation needed content, and handles the UI state orchestration
     async LoadRemediationNeededContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadNeededRemediations();
         this.ui.RenderRemediationNeededContent(data);
         this.ui.SetBusyState(false);
     }
+    // Loads the remediation complete content, and handles the UI state orchestration
     async LoadRemediationsCompletedContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
