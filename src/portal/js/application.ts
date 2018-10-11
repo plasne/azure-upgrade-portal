@@ -1,9 +1,8 @@
 // Core application controller that handles top-level orchestration
-
 import * as api from './api-client';
 import { IUIBinding, UIBinding } from './ui-binding';
 
-/* Main Application Object */
+// Main Application Object
 export class Application {
     private ui: UIBinding;
     private apiClient: api.ApiClient;
@@ -13,6 +12,7 @@ export class Application {
         this.apiClient = new api.ApiClient();
     }
 
+    // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
         this.ui.SetBusyState(false);
@@ -33,6 +33,8 @@ export class Application {
         console.log('Initialization complete.');
     }
 
+    // Depending on the current route path, set the appropriate
+    // content stage path (and fire off the content loading)
     public LookupAndSetContentTitle(selectedTitle: string) {
         let title = selectedTitle;
         this.ui.ClearContentStage();
@@ -64,6 +66,7 @@ export class Application {
         this.ui.SetContentStageTitle(title);
     }
 
+    // Loads the overview content, and handles the UI state orchestration
     public async LoadOverviewContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadOverviewData();
@@ -71,6 +74,7 @@ export class Application {
         this.ui.SetBusyState(false);
     }
 
+    // Loads the remediation needed content, and handles the UI state orchestration
     public async LoadRemediationNeededContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadNeededRemediations();
@@ -78,6 +82,7 @@ export class Application {
         this.ui.SetBusyState(false);
     }
 
+    // Loads the remediation complete content, and handles the UI state orchestration
     public async LoadRemediationsCompletedContent() {
         this.ui.SetBusyState(true);
         const data = await this.apiClient.LoadCompletedRemediations();
