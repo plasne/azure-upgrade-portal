@@ -378,7 +378,7 @@ class UIBinding {
     }
     RenderOverviewContent(data) {
         const markup = `
-            <ul class="overview">
+            <ul class="overview listNone">
                 <li class="pending">Remediations Pending: <span>${data.RemediationsPending}</span></li>
                 <li class="completed">Remediations Completed: <span>${data.RemediationsCompleted}</span></li>
                 <li class="lastUpdated"><em>Last updated on ${data.LastRefreshed.toLocaleDateString()} at

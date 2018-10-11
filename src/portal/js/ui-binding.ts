@@ -88,7 +88,7 @@ export class UIBinding implements IUIBinding {
 
     public RenderOverviewContent(data: api.IOverviewSummary) {
         const markup = `
-            <ul class="overview">
+            <ul class="overview listNone">
                 <li class="pending">Remediations Pending: <span>${
                     data.RemediationsPending
                 }</span></li>

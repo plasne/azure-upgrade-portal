@@ -29,7 +29,7 @@ button {
     background-color: #097d02;
     border: 1px solid #003300;
     color: #fff;
-    padding: 0.5em;
+    padding: 0.5em 1em;
     cursor: pointer;
     font-size: 13px;
     border-radius: 3px;
@@ -128,12 +128,12 @@ ol {
 
 .content-stage {
     position: absolute;
-    left: 18em;
+    left: 17em;
     right: 0;
     bottom: 0;
     overflow-y: scroll;
     top: 4.7em;
-    padding: 0.5em;
+    padding: 0.5em 1em;
 }
 
 .dialog-stage {
@@ -184,7 +184,7 @@ ol {
 
 .loadingSpinner i {
     font-size: 3em;
-    color: #888;
+    color: #06a;
     display: block;
     text-align: center;
     position: absolute;
