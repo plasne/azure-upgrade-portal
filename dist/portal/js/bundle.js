@@ -93,6 +93,7 @@ class Application {
     Initialize() {
         console.log('Application initializing...');
         this.ui.SetBusyState(false);
+        this.ui.InitializeEventHooks();
         this.ui.SetNavigationCallback((path) => {
             console.log(`Location hash changed: ${path}`);
         });
@@ -162,6 +163,12 @@ if (!isInTest) {
 // This is primarily done to enable testing.
 Object.defineProperty(exports, "__esModule", { value: true });
 class UIBinding {
+    InitializeEventHooks() {
+        $(document).on('click', 'a.detailsViewLink', (e) => {
+            /*do something*/
+            console.log($(e.target).data('item-name'));
+        });
+    }
     SetBusyState(busy) {
         if (busy) {
             $('.loadingSpinner').css('display', 'block');
@@ -216,11 +223,12 @@ class UIBinding {
     }
     RenderRemediationNeededContent(data) {
         const markup = `
-            <div class="computeUpgradable">
+            <div class="dataRegion">
                 <p><i class="fas fa-server"></i>The following systems are found to need compute upgrades:</p>
-                <table>
+                <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
+                        <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
@@ -228,21 +236,25 @@ class UIBinding {
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
                 '</td><td>' +
                 item.Type +
-                '</td></tr>');
+                '</td><td><a class="detailsViewLink" data-item-name="' +
+                item.Name +
+                '">Click to view...</a></td></tr>');
         }).join('')}
                 </table>
             </div>
-            <div class="storageUpgradable">
+            <div class="dataRegion">
                 <p><i class="far fa-hdd"></i>The following systems are found to need storage account upgrades:</p>
-                <table>
+                <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
+                        <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
@@ -250,13 +262,16 @@ class UIBinding {
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
             return ('<tr><td><input type="checkbox" /></td><td>' +
                 item.Name +
                 '</td><td>' +
                 item.Type +
-                '</td></tr>');
+                '</td><td><a class="detailsViewLink" data-item-name="' +
+                item.Name +
+                '">Click to view...</a></td></tr>');
         }).join('')}
                 </table>
             </div>

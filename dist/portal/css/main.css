@@ -166,52 +166,42 @@ ul.overview li.completed {
     font-size: 1.25em;
 }
 
-.computeUpgradable i,
-.storageUpgradable i {
+a.detailsViewLink {
+    color: #00f;
+    cursor: pointer;
+}
+
+.dataRegion i {
     float: left;
     font-size: 1.5em;
     color: #aaa;
-    /* padding-top: 0.1em; */
     margin-right: 0.5em;
 }
 
-/* .computeUpgradable p,
-.computeUpgradable table,
-.storageUpgradable p,
-.storageUpgradable table {
-    margin-left: 7em;
-} */
-
-.computeUpgradable table,
-.storageUpgradable table {
+table.dataGrid {
     border: 1px solid #e0e0e0;
     border-collapse: collapse;
     width: 100%;
 }
 
-.computeUpgradable table td,
-.storageUpgradable table td {
+table.dataGrid td {
     padding: 0.5em;
     border: 1px solid #e0e0e0;
     text-align: left;
 }
 
-.computeUpgradable table tr:hover,
-.storageUpgradable table tr:hover {
+table.dataGrid tr:hover {
     background-color: #e0eff9;
-    cursor: pointer;
 }
 
-.computeUpgradable table tr.header,
-.storageUpgradable table tr.header {
+table.dataGrid tr.header {
     font-weight: bold;
     color: #333;
     background-color: #fff;
     font-size: 0.875em;
 }
 
-.computeUpgradable table tr.header:hover,
-.storageUpgradable table tr.header:hover {
+table.dataGrid tr.header:hover {
     cursor: default;
     background-color: #fff;
 }

@@ -19,6 +19,7 @@ class Application {
     Initialize() {
         console.log('Application initializing...');
         this.ui.SetBusyState(false);
+        this.ui.InitializeEventHooks();
         this.ui.SetNavigationCallback((path) => {
             console.log(`Location hash changed: ${path}`);
         });

@@ -13,6 +13,9 @@ class TestUIBinding {
             console.log(`TitleSelectionCallback defeault implementation: ${title}`);
         };
     }
+    InitializeEventHooks() {
+        console.log('Called InitializeEventHooks');
+    }
     SetBusyState(busy) {
         console.log(`Setting busy state to: ${busy}`);
     }

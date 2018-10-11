@@ -4,18 +4,31 @@
 import * as api from './api-client';
 
 export interface IUIBinding {
+    // Global event hook setup + busy / spinner mask control
+    InitializeEventHooks(): void;
     SetBusyState(busy: boolean): void;
+
+    // Handles events raised / impacted by the navigation elements
     SetNavigationCallback(onNavigation: (path: string) => void): void;
     SetupNavigationEvents(onTitleSelected: (title: string) => void): void;
     SelectDefaultNavigationItem(): void;
     SetContentStageTitle(title: string): void;
     SetNavigationFragment(path: string): void;
+
+    // Methods that modify the content stage region
     ClearContentStage(): void;
     RenderOverviewContent(data: api.IOverviewSummary): void;
     RenderRemediationNeededContent(data: api.IRemediationNeeded): void;
 }
 
 export class UIBinding implements IUIBinding {
+    public InitializeEventHooks() {
+        $(document).on('click', 'a.detailsViewLink', (e: any) => {
+            /*do something*/
+            console.log($(e.target).data('item-name'));
+        });
+    }
+
     public SetBusyState(busy: boolean) {
         if (busy) {
             $('.loadingSpinner').css('display', 'block');
@@ -83,11 +96,12 @@ export class UIBinding implements IUIBinding {
 
     public RenderRemediationNeededContent(data: api.IRemediationNeeded) {
         const markup = `
-            <div class="computeUpgradable">
+            <div class="dataRegion">
                 <p><i class="fas fa-server"></i>The following systems are found to need compute upgrades:</p>
-                <table>
+                <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
+                        <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
@@ -95,6 +109,7 @@ export class UIBinding implements IUIBinding {
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
                     return (
@@ -102,16 +117,19 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
-                        '</td></tr>'
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
                     );
                 }).join('')}
                 </table>
             </div>
-            <div class="storageUpgradable">
+            <div class="dataRegion">
                 <p><i class="far fa-hdd"></i>The following systems are found to need storage account upgrades:</p>
-                <table>
+                <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
+                        <col width="200px" />
                         <col width="200px" />
                         <col width="*" />
                     </colgroup>
@@ -119,6 +137,7 @@ export class UIBinding implements IUIBinding {
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
                     return (
@@ -126,7 +145,9 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
-                        '</td></tr>'
+                        '</td><td><a class="detailsViewLink" data-item-name="' +
+                        item.Name +
+                        '">Click to view...</a></td></tr>'
                     );
                 }).join('')}
                 </table>

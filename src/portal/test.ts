@@ -19,6 +19,10 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         };
     }
 
+    public InitializeEventHooks() {
+        console.log('Called InitializeEventHooks');
+    }
+
     public SetBusyState(busy: boolean) {
         console.log(`Setting busy state to: ${busy}`);
     }
