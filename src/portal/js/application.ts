@@ -4,7 +4,7 @@ import { IUIBinding, UIBinding } from './ui-binding';
 
 // Main Application Object
 export class Application {
-    private ui: UIBinding;
+    private ui: IUIBinding;
     private apiClient: api.ApiClient;
 
     constructor(ui: IUIBinding) {

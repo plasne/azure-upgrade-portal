@@ -105,12 +105,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsComputeUpgrade.map(item => {
@@ -119,6 +121,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        item.UpgradeDescription +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -133,12 +137,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="200px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Description</td>
                         <td>Details</td>
                     </tr>
                 ${data.NeedsStorageUpgrade.map(item => {
@@ -147,6 +153,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        item.UpgradeDescription +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -168,12 +176,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadComputeUpgraded.map(item => {
@@ -182,6 +192,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -196,12 +208,14 @@ export class UIBinding implements IUIBinding {
                         <col width="25px" />
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Type</td>
+                        <td>Duration</td>
                         <td>Details</td>
                     </tr>
                 ${data.HadStorageUpgraded.map(item => {
@@ -210,6 +224,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Type +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
                         '</td><td><a class="detailsViewLink" data-item-name="' +
                         item.Name +
                         '">Click to view...</a></td></tr>'
@@ -230,11 +246,13 @@ export class UIBinding implements IUIBinding {
                     <colgroup>
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="*" />
                     </colgroup>
                     <tr class="header">
                         <td>Name</td>
                         <td>Status</td>
+                        <td>Duration</td>
                         <td>Last Update</td>
                     </tr>
                 ${data.JobList.map(item => {
@@ -243,6 +261,8 @@ export class UIBinding implements IUIBinding {
                         item.Name +
                         '</td><td>' +
                         item.Status +
+                        '</td><td>' +
+                        this.formatDurationInMs(item.DurationInMs) +
                         '</td><td>' +
                         item.LastUpdate.toLocaleDateString() +
                         ' ' +
@@ -255,5 +275,10 @@ export class UIBinding implements IUIBinding {
         `;
 
         $('.content-stage .placeholder').html(markup);
+    }
+
+    private formatDurationInMs(durationInMs: number) {
+        const mins = durationInMs / (60 * 1000);
+        return `${mins.toFixed(2)} mins`;
     }
 }

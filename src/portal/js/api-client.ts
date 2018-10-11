@@ -15,8 +15,10 @@ export interface IOverviewSummary {
 
 // Defines a system that requires upgranding, including the reason / etc.
 export interface IUpgradableSystem {
+    DurationInMs: number;
     Name: string;
     Type: string;
+    UpgradeDescription: string;
 }
 
 // Defines return structure for systems that require upgrades
@@ -39,6 +41,7 @@ export enum JobStatus {
 }
 
 export interface IJobDetails {
+    DurationInMs: number;
     Name: string;
     Status: JobStatus;
     LastUpdate: Date;
@@ -75,43 +78,59 @@ export class ApiClient implements IApiClient {
             const computeUpgradable: IUpgradableSystem[] = [];
 
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM01',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
 
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM05',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
 
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM13',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
 
             storageUpgradable.push({
+                DurationInMs: 0,
                 Name: 'ABC-123',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage upgrade required'
             });
 
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'VM-Z23',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgrade required'
             });
 
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-TR344',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
 
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-T23323',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
 
             computeUpgradable.push({
+                DurationInMs: 0,
                 Name: 'CS-AB34534',
-                Type: 'Cloud Service'
+                Type: 'Cloud Service',
+                UpgradeDescription: 'VM series upgrade required'
             });
 
             const mockResponse = {
@@ -132,28 +151,38 @@ export class ApiClient implements IApiClient {
             const storageUpgraded: IUpgradableSystem[] = [];
 
             computeUpgraded.push({
+                DurationInMs: 5 * 60 * 1000,
                 Name: 'VM05',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
 
             computeUpgraded.push({
+                DurationInMs: 15 * 60 * 1000,
                 Name: 'VM75',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
 
             computeUpgraded.push({
+                DurationInMs: 4 * 60 * 1000,
                 Name: 'VM99',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'VM series upgraded'
             });
 
             storageUpgraded.push({
+                DurationInMs: 45 * 60 * 1000,
                 Name: 'VM05-x',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage account upgraded'
             });
 
             storageUpgraded.push({
+                DurationInMs: 56.2 * 60 * 1000,
                 Name: 'VM425-Z',
-                Type: 'Virtual Machine'
+                Type: 'Virtual Machine',
+                UpgradeDescription: 'Storage account upgraded'
             });
 
             const mockResponse = {
@@ -176,36 +205,42 @@ export class ApiClient implements IApiClient {
             const jobList: IJobDetails[] = [];
 
             jobList.push({
+                DurationInMs: 3 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 1',
                 Status: JobStatus.Pending
             });
 
             jobList.push({
+                DurationInMs: 6 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 2',
                 Status: JobStatus.Running
             });
 
             jobList.push({
+                DurationInMs: 12.4 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 3',
                 Status: JobStatus.Running
             });
 
             jobList.push({
+                DurationInMs: 7 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 4',
                 Status: JobStatus.Pending
             });
 
             jobList.push({
+                DurationInMs: 32 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 5',
                 Status: JobStatus.Complete
             });
 
             jobList.push({
+                DurationInMs: 43.1 * 60 * 1000,
                 LastUpdate: new Date(),
                 Name: 'Sample Job 6',
                 Status: JobStatus.Failed
