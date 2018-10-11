@@ -1,37 +1,55 @@
-"use strict";
+'use strict';
 // Core application controller that handles top-level orchestration
-Object.defineProperty(exports, "__esModule", { value: true });
-const ui_binding_1 = require("./ui-binding");
+var __importStar =
+    (this && this.__importStar) ||
+    function(mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null)
+            for (var k in mod)
+                if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+        result['default'] = mod;
+        return result;
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
+const api = __importStar(require('./api-client'));
+const ui_binding_1 = require('./ui-binding');
 /* Main Application Object */
 class Application {
     constructor(ui) {
         this.ui = ui;
+        this.apiClient = new api.ApiClient();
     }
     Initialize() {
         console.log('Application initializing...');
-        this.ui.SetNavigationCallback((path) => {
+        this.ui.SetBusyState(false);
+        this.ui.InitializeEventHooks();
+        this.ui.SetNavigationCallback(path => {
             console.log(`Location hash changed: ${path}`);
         });
-        this.ui.SetupNavigationEvents((title) => {
+        this.ui.SetupNavigationEvents(title => {
             console.log(`Navigation selected: ${title}`);
             this.LookupAndSetContentTitle(title);
             this.ui.SetNavigationFragment(title);
         });
         this.ui.SelectDefaultNavigationItem();
-        // this.ui.DisplaySummaryInformation();
         console.log('Initialization complete.');
     }
     LookupAndSetContentTitle(selectedTitle) {
         let title = selectedTitle;
+        this.ui.ClearContentStage();
         switch (selectedTitle) {
             case 'overview':
                 title = 'Overview';
+                this.LoadOverviewContent();
                 break;
             case 'remediation-needed':
                 title = 'Remediations Needed';
+                this.LoadRemediationNeededContent();
                 break;
             case 'remediation-complete':
                 title = 'Remediations Complete';
+                this.LoadRemediationsCompletedContent();
                 break;
             case 'scheduled-jobs':
                 title = 'Scheduled Jobs';
@@ -44,6 +62,24 @@ class Application {
                 break;
         }
         this.ui.SetContentStageTitle(title);
+    }
+    async LoadOverviewContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadOverviewData();
+        this.ui.RenderOverviewContent(data);
+        this.ui.SetBusyState(false);
+    }
+    async LoadRemediationNeededContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadNeededRemediations();
+        this.ui.RenderRemediationNeededContent(data);
+        this.ui.SetBusyState(false);
+    }
+    async LoadRemediationsCompletedContent() {
+        this.ui.SetBusyState(true);
+        const data = await this.apiClient.LoadCompletedRemediations();
+        this.ui.RenderRemediationCompletedContent(data);
+        this.ui.SetBusyState(false);
     }
 }
 exports.Application = Application;
