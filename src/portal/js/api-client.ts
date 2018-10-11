@@ -1,32 +1,36 @@
 // Client shim for API calls to get/set data.
-
 export interface IApiClient {
     LoadOverviewData(): Promise<IOverviewSummary>;
     LoadNeededRemediations(): Promise<IRemediationNeeded>;
     LoadCompletedRemediations(): Promise<IRemediationCompleted>;
 }
 
+// Defines return structure for the overview/landing page.
 export interface IOverviewSummary {
     LastRefreshed: Date;
     RemediationsCompleted: number;
     RemediationsPending: number;
 }
 
+// Defines a system that requires upgranding, including the reason / etc.
 export interface IUpgradableSystem {
     Name: string;
     Type: string;
 }
 
+// Defines return structure for systems that require upgrades
 export interface IRemediationNeeded {
     NeedsStorageUpgrade: IUpgradableSystem[];
     NeedsComputeUpgrade: IUpgradableSystem[];
 }
 
+// Defines return structure for systems that have completed upgrades
 export interface IRemediationCompleted {
     HadComputeUpgraded: IUpgradableSystem[];
     HadStorageUpgraded: IUpgradableSystem[];
 }
 
+// Implements our ApiClient functionality
 export class ApiClient implements IApiClient {
     // Loads data for the overview / landing page.
     // This data isn't updated directly; instead, it is reflective of last run
