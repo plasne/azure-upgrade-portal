@@ -4,7 +4,7 @@ import * as ipc from 'node-ipc';
 import * as util from 'util';
 import { v4 as uuid } from 'uuid';
 import * as winston from 'winston';
-import { ILogEntry } from '../logcar/server';
+import { ILogEntry, LogLevels } from '../logcar/server';
 
 // promisify
 const readFileAsync = util.promisify(fs.readFile);
@@ -56,9 +56,15 @@ export function enableConsoleLogging(logLevel: string) {
     });
 }
 
-async function connectToIpc(sourceName: string, targetName: string) {
+// connect to IPC
+async function connectToIpc(
+    socketRoot: string,
+    sourceName: string,
+    targetName: string
+) {
     await new Promise(resolve => {
         ipc.config.id = sourceName;
+        ipc.config.socketRoot = socketRoot;
         ipc.config.retry = 1500;
         ipc.config.stopRetrying = false;
         ipc.config.silent = true;
@@ -73,23 +79,30 @@ async function connectToIpc(sourceName: string, targetName: string) {
     });
 }
 
-export async function enablePersistentLogging() {
-    return connectToIpc('logcar-client', 'logcar');
+// start persistent logging
+export async function enablePersistentLogging(socketRoot: string) {
+    return connectToIpc(socketRoot, 'logcar-client', 'logcar');
 }
 
+// stop persistent logging
 export async function disablePersistentLogging() {
     ipc.disconnect('logcar');
 }
 
-global.commitLog = (message: string, jobId?: string, taskName?: string) => {
+// commit to the persistent log
+global.commitLog = (
+    level: LogLevels,
+    message: string,
+    jobId?: string,
+    taskName?: string
+) => {
     return new Promise<void>(async (resolve, reject) => {
-        if (!ipc.of.logcar) {
-            reject(new Error('You must enablePersistentLogging() first.'));
-        } else {
+        if (ipc.of.logcar) {
             // create the message
             const logEntry: ILogEntry = {
                 coorelationId: uuid(),
                 jobId,
+                level,
                 message,
                 taskName
             };
@@ -97,11 +110,18 @@ global.commitLog = (message: string, jobId?: string, taskName?: string) => {
             // commit the log and wait for response
             ipc.of.logcar.emit('log', logEntry);
             ipc.of.logcar.once('receipt', (msg: any) => {
+                global.logger.verbose(
+                    `receipt from "logcar": ${JSON.stringify(msg)}`
+                );
                 resolve(msg);
             });
             ipc.of.logcar.once('failure', (msg: any) => {
+                global.logger.error(`failure from "logcar".`);
+                global.logger.error(msg.error.stack);
                 reject(msg.error);
             });
+        } else {
+            reject(new Error('You must enablePersistentLogging() first.'));
         }
     });
 };

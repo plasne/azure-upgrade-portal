@@ -1,5 +1,6 @@
 // includes
 import * as winston from 'winston';
+import { LogLevels } from '../logcar/server';
 
 // add to global
 declare global {
@@ -10,6 +11,7 @@ declare global {
             STORAGE_ACCOUNT: string;
             STORAGE_KEY: string;
             commitLog: (
+                level: LogLevels,
                 message: any,
                 jobId?: string,
                 taskName?: string
