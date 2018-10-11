@@ -85,7 +85,6 @@ describe('API Unit Tests', () => {
             rem
         );
         assert.ok(response.status >= 200 && response.status < 300);
-        // assert.ok(response.data.success);
     });
 }).timeout(20000);
 
