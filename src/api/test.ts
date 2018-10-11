@@ -74,6 +74,35 @@ describe('API Unit Tests', () => {
         assert.ok(typeof response.data.version === 'string');
     });
 
+    it('should respond with a 400 due to missing scope', async () => {
+        const rem: any = {
+            scope: null,
+            when: 'now'
+        };
+        await axios.post<any>(
+            'http://localhost:8112/remediate/discovery',
+            rem,
+            {
+                validateStatus: status => {
+                    return status === 400;
+                }
+            }
+        );
+    });
+
+    it('should respond with a 400 due to bad JSON', async () => {
+        const rem: any = {};
+        await axios.post<any>(
+            'http://localhost:8112/remediate/discovery',
+            rem,
+            {
+                validateStatus: status => {
+                    return status === 400;
+                }
+            }
+        );
+    });
+
     it('should create a table entry and a job for remediate discovery', async () => {
         const rem: IRemediate = {
             options: { foo: 'bar' },

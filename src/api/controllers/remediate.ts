@@ -89,8 +89,13 @@ export default {
 
             // validate body contents
             if (!bwhen || !bscope) {
-                global.logger.error('Incomplete JSON body: ' + req.body);
-                res.status(400).end();
+                global.logger.error(
+                    'Incomplete JSON body: ' + JSON.stringify(req.body)
+                );
+                res.status(400).send(
+                    'Remdiation request could not be completed.  Incomplete JSON body.'
+                );
+                return;
             }
 
             // generate a unique row key
@@ -109,15 +114,13 @@ export default {
             // send to job engine to queue to run
             const jobs = new Jobs(global.STORAGE_ACCOUNT, global.STORAGE_KEY);
             await jobs.createJob(job);
+
+            res.status(200).send();
         } catch (error) {
             global.logger.error(error.stack);
             res.status(500).send(
                 'The remediation request could not be created. Please check the logs.'
             );
         }
-
-        res.send({
-            success: true
-        });
     }
 };
