@@ -15,7 +15,6 @@ export class Application {
 
     public Initialize() {
         console.log('Application initializing...');
-
         this.ui.SetBusyState(false);
 
         this.ui.SetNavigationCallback((path: string) => {
@@ -34,7 +33,6 @@ export class Application {
 
     public LookupAndSetContentTitle(selectedTitle: string) {
         let title = selectedTitle;
-
         this.ui.ClearContentStage();
 
         switch (selectedTitle) {
