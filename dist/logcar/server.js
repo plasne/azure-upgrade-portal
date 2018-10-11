@@ -47,7 +47,9 @@ function write(entry) {
     const blob = identify(entry);
     // optimistically write
     return new Promise((resolve, reject) => {
-        const message = entry.message || '';
+        const level = entry.level ? entry.level.padStart(7) : '   info';
+        const now = new Date().toISOString();
+        const message = `${now} ${level} ${entry.message}\n`;
         service.appendBlockFromText('logs', blob, message, error1 => {
             if (!error1) {
                 resolve();
@@ -117,6 +119,7 @@ async function startup() {
             // listening for logs
             ipc.server.on('log', async (message, socket) => {
                 try {
+                    global.logger.verbose(`received log message: "${JSON.stringify(message)}".`);
                     await write(message);
                     ipc.server.emit(socket, 'receipt', {
                         id: message.coorelationId
@@ -134,6 +137,7 @@ async function startup() {
             // listening for clear
             ipc.server.on('clear', async (message, socket) => {
                 try {
+                    global.logger.verbose(`received clear message: "${JSON.stringify(message)}".`);
                     await clear(message);
                     ipc.server.emit(socket, 'receipt', {
                         if: message.coorelationId

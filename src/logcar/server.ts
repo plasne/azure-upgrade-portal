@@ -38,11 +38,21 @@ const service = azs.createBlobService(STORAGE_ACCOUNT, STORAGE_KEY);
 // enable logging
 globalExt.enableConsoleLogging(LOG_LEVEL);
 
+// define the log levels
+export type LogLevels =
+    | 'error'
+    | 'warn'
+    | 'info'
+    | 'verbose'
+    | 'debug'
+    | 'silly';
+
 // define the entry
 export interface ILogEntry {
     coorelationId: string;
     jobId?: string;
     taskName?: string;
+    level?: LogLevels;
     message?: string;
 }
 
@@ -64,7 +74,9 @@ function write(entry: ILogEntry) {
 
     // optimistically write
     return new Promise<void>((resolve, reject) => {
-        const message = entry.message || '';
+        const level = entry.level ? entry.level.padStart(7) : '   info';
+        const now = new Date().toISOString();
+        const message = `${now} ${level} ${entry.message}\n`;
         service.appendBlockFromText('logs', blob, message, error1 => {
             if (!error1) {
                 resolve();

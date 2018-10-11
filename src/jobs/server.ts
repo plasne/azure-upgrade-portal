@@ -92,7 +92,10 @@ async function startup() {
         global.logger.info(`Attempting to connect to "logcar"...`);
         await globalExt.enablePersistentLogging(SOCKET_ROOT);
         global.logger.info(`Connected to "logcar".`);
-        await global.commitLog(`Jobs instance on "${os.hostname}" started up.`);
+        await global.commitLog(
+            'info',
+            `Jobs instance on "${os.hostname}" started up.`
+        );
 
         // initialize the jobs collection
         const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);

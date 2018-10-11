@@ -77,27 +77,31 @@ async function disablePersistentLogging() {
 }
 exports.disablePersistentLogging = disablePersistentLogging;
 // commit to the persistent log
-global.commitLog = (message, jobId, taskName) => {
+global.commitLog = (level, message, jobId, taskName) => {
     return new Promise(async (resolve, reject) => {
-        if (!ipc.of.logcar) {
-            reject(new Error('You must enablePersistentLogging() first.'));
-        }
-        else {
+        if (ipc.of.logcar) {
             // create the message
             const logEntry = {
                 coorelationId: uuid_1.v4(),
                 jobId,
+                level,
                 message,
                 taskName
             };
             // commit the log and wait for response
             ipc.of.logcar.emit('log', logEntry);
             ipc.of.logcar.once('receipt', (msg) => {
+                global.logger.verbose(`receipt from "logcar": ${JSON.stringify(msg)}`);
                 resolve(msg);
             });
             ipc.of.logcar.once('failure', (msg) => {
+                global.logger.error(`failure from "logcar".`);
+                global.logger.error(msg.error.stack);
                 reject(msg.error);
             });
+        }
+        else {
+            reject(new Error('You must enablePersistentLogging() first.'));
         }
     });
 };

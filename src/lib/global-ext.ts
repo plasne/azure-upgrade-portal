@@ -4,7 +4,7 @@ import * as ipc from 'node-ipc';
 import * as util from 'util';
 import { v4 as uuid } from 'uuid';
 import * as winston from 'winston';
-import { ILogEntry } from '../logcar/server';
+import { ILogEntry, LogLevels } from '../logcar/server';
 
 // promisify
 const readFileAsync = util.promisify(fs.readFile);
@@ -90,13 +90,19 @@ export async function disablePersistentLogging() {
 }
 
 // commit to the persistent log
-global.commitLog = (message: string, jobId?: string, taskName?: string) => {
+global.commitLog = (
+    level: LogLevels,
+    message: string,
+    jobId?: string,
+    taskName?: string
+) => {
     return new Promise<void>(async (resolve, reject) => {
         if (ipc.of.logcar) {
             // create the message
             const logEntry: ILogEntry = {
                 coorelationId: uuid(),
                 jobId,
+                level,
                 message,
                 taskName
             };

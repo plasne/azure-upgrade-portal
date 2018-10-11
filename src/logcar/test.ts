@@ -67,7 +67,7 @@ describe('LogCar Tests', () => {
     });
 
     it('should log a system message', async () => {
-        await global.commitLog('example system message');
+        await global.commitLog('silly', 'TEST: should log a system message');
         const blob = new Date().toISOString().split('T')[0] + '.txt';
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
@@ -78,12 +78,16 @@ describe('LogCar Tests', () => {
                 }
             });
         });
-        assert.ok(content === 'example system message');
+        assert.ok(content.includes('TEST: should log a system message'));
     });
 
     it('should log a job message without a task', async () => {
         const jobId = uuid();
-        await global.commitLog('example system message', jobId);
+        await global.commitLog(
+            'silly',
+            'TEST: should log a job message without a task',
+            jobId
+        );
         const blob = `${jobId}.txt`;
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
@@ -94,13 +98,20 @@ describe('LogCar Tests', () => {
                 }
             });
         });
-        assert.ok(content === 'example system message');
+        assert.ok(
+            content.includes('TEST: should log a job message without a task')
+        );
     });
 
     it('should log a job/task message', async () => {
         const jobId = uuid();
         const taskId = uuid();
-        await global.commitLog('example system message', jobId, taskId);
+        await global.commitLog(
+            'silly',
+            'TEST: should log a job/task message',
+            jobId,
+            taskId
+        );
         const blob = `${jobId}.${taskId}.txt`;
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
@@ -111,7 +122,8 @@ describe('LogCar Tests', () => {
                 }
             });
         });
-        assert.ok(content === 'example system message');
+        console.log(`content: "${content}"`);
+        assert.ok(content.includes('TEST: should log a job/task message'));
     });
 });
 

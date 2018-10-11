@@ -52,8 +52,8 @@ async function startup() {
         // start persistent logging
         global.logger.info(`Attempting to connect to "logcar"...`);
         await globalExt.enablePersistentLogging(SOCKET_ROOT);
-        global.commitLog(`API instance on "${os.hostname}" started up.`);
-        global.logger.info(`Connected to "logcar"...`);
+        global.logger.info(`Connected to "logcar".`);
+        await global.commitLog('info', `API instance on "${os.hostname}" started up.`);
         // mount all routes
         const routePaths = await readdirAsync(`${__dirname}/routes`);
         for (const routePath of routePaths) {
