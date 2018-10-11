@@ -77,6 +77,34 @@ describe('API Unit Tests', () => {
         assert.ok(typeof response.data.application === 'string');
         assert.ok(typeof response.data.version === 'string');
     });
+    it('should respond with a 400 due to missing scope', async () => {
+        const rem = {
+            scope: null,
+            when: 'now'
+        };
+        await axios_1.default.post('http://localhost:8112/remediate/discovery', rem, {
+            validateStatus: status => {
+                return status === 400;
+            }
+        });
+    });
+    it('should respond with a 400 due to bad JSON', async () => {
+        const rem = {};
+        await axios_1.default.post('http://localhost:8112/remediate/discovery', rem, {
+            validateStatus: status => {
+                return status === 400;
+            }
+        });
+    });
+    it('should create a table entry and a job for remediate discovery', async () => {
+        const rem = {
+            options: { foo: 'bar' },
+            scope: 'abc123',
+            when: 'now'
+        };
+        const response = await axios_1.default.post('http://localhost:8112/remediate/discovery', rem);
+        assert.ok(response.status >= 200 && response.status < 300);
+    });
 }).timeout(20000);
 // shutdown the API server
 after(() => {
