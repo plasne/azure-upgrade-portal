@@ -19,8 +19,12 @@ class TestUIBinding implements IUIBinding.IUIBinding {
         };
     }
 
-    public InitializeEventHooks() {
-        console.log('Called InitializeEventHooks');
+    public SetGlobalCallbacks() {
+        console.log('SetGlobalCallbacks called');
+    }
+
+    public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
+        onDetailsClick('test');
     }
 
     public SetBusyState(busy: boolean) {
@@ -67,6 +71,10 @@ class TestUIBinding implements IUIBinding.IUIBinding {
 
     public RenderScheduledJobsContent(data: api.IScheduledJobs) {
         console.log(`Scheduled jobs content loaded ${JSON.stringify(data)}`);
+    }
+
+    public RenderDetailsView(data: api.IDetailsData) {
+        console.log(`Remediation details data loaded: ${JSON.stringify(data)}`);
     }
 
     // Methods to force / simulate UI calls from the tests below

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.22" tests="2" failures="0">
-  <testsuite name="Root Suite" timestamp="2018-10-11T17:53:53" tests="0" failures="0" time="0">
+<testsuites name="Mocha Tests" time="0.016" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2018-10-11T20:43:44" tests="0" failures="0" time="0">
   </testsuite>
-  <testsuite name="Application controller unit tests" timestamp="2018-10-11T17:53:53" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.22">
+  <testsuite name="Application controller unit tests" timestamp="2018-10-11T20:43:44" tests="2" file="/mnt/c/Projects/azure-upgrade-portal/dist/portal/test.js" failures="0" time="0.016">
     <testcase name="Application controller unit tests Should pre-select the default nav item on initilization." time="0.005" classname="Should pre-select the default nav item on initilization.">
     </testcase>
-    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.215" classname="Should set the content title corresponding to the nav item.">
+    <testcase name="Application controller unit tests Should set the content title corresponding to the nav item." time="0.011" classname="Should set the content title corresponding to the nav item.">
     </testcase>
   </testsuite>
 </testsuites>

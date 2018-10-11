@@ -13,8 +13,11 @@ class TestUIBinding {
             console.log(`TitleSelectionCallback defeault implementation: ${title}`);
         };
     }
-    InitializeEventHooks() {
-        console.log('Called InitializeEventHooks');
+    SetGlobalCallbacks() {
+        console.log('SetGlobalCallbacks called');
+    }
+    SetDetailsLinkCallback(onDetailsClick) {
+        onDetailsClick('test');
     }
     SetBusyState(busy) {
         console.log(`Setting busy state to: ${busy}`);
@@ -48,6 +51,9 @@ class TestUIBinding {
     }
     RenderScheduledJobsContent(data) {
         console.log(`Scheduled jobs content loaded ${JSON.stringify(data)}`);
+    }
+    RenderDetailsView(data) {
+        console.log(`Remediation details data loaded: ${JSON.stringify(data)}`);
     }
     // Methods to force / simulate UI calls from the tests below
     ClickNavigationItem(itemName) {

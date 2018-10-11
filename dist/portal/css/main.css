@@ -37,6 +37,10 @@ button {
 button i {
     padding-left: 1em;
 }
+button.dialogClose {
+    background-color: #4286f4;
+    border-color: #0236a4;
+}
 h1,
 h2,
 h3 {
@@ -51,6 +55,13 @@ h3 {
 }
 .clear {
     clear: both;
+}
+.marginBottom {
+    margin-bottom: 1em;
+}
+
+ul.listNone {
+    list-style-type: none;
 }
 
 table,
@@ -125,9 +136,41 @@ ol {
     padding: 0.5em;
 }
 
+.dialog-stage {
+    position: absolute;
+    display: none;
+    width: 58em;
+    height: 31em;
+    border: 1px solid #888;
+    background-color: #fff;
+    top: 20%;
+    left: 50%;
+    margin-left: -30em;
+    box-shadow: 0 0 3em #aaa;
+    padding: 1em;
+}
+
 .content-stage h2,
-.content-stage h3 {
+.content-stage h3,
+.dialog-stage h2,
+.dialog-stage h3 {
     margin-bottom: 1em;
+}
+
+.dialog-stage textarea {
+    display: block;
+    width: 100%;
+    height: 20em;
+    resize: none;
+}
+
+.dialog-stage .dialog-buttons {
+    text-align: right;
+    padding: 1em 0;
+}
+
+.dialog-stage .dialog-buttons button {
+    padding: 0.5em 2em;
 }
 
 .loadingSpinner {
