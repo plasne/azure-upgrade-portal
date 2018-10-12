@@ -26,8 +26,10 @@ textarea {
 }
 
 button {
-    background-color: #097d02;
-    border: 1px solid #003300;
+    /*background-color: #097d02;
+    border: 1px solid #003300;*/
+    background-color: #4286f4;
+    border: 1px solid #0236a4;
     color: #fff;
     padding: 0.5em 1em;
     cursor: pointer;
@@ -102,7 +104,7 @@ ol {
 .header .headerOptions li {
     line-height: 1.35em;
     float: right;
-    margin-left: 0.5em;
+    margin-left: 0.75em;
     font-size: 2em;
     margin-top: 0.5em;
 }
@@ -234,27 +236,38 @@ ul.overview li span {
 }
 
 ul.overview li.pending,
-ul.overview li.completed {
+ul.overview li.completed,
+ul.overview li.failed {
     font-size: 1.25em;
 }
 
-.overviewHistory {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding: 1em;
-    width: 25%;
+.overview.successChart {
+    margin-bottom: 2em;
 }
 
-.overviewHistory h3 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 0.5em;
+.overview.successChart .failedBar {
+    width: 30em;
+    height: 2em;
+    background-color: #c00;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #111;
 }
 
-a.detailsViewLink {
-    color: #00f;
-    cursor: pointer;
+.overview.successChart .successBar {
+    height: 2em;
+    background-color: #080;
+}
+
+.overview.successChart .successBar p {
+    text-align: center;
+    font-size: 1em;
+    color: #fff;
+    line-height: 1.75em;
+}
+
+.dataRegion {
+    margin-bottom: 2em;
 }
 
 .dataRegion i {
@@ -264,10 +277,30 @@ a.detailsViewLink {
     margin-right: 0.5em;
 }
 
+.dataRegion p {
+    margin-bottom: 2em;
+}
+
+.dataGridToolbar {
+    height: 2em;
+}
+
+.dataGridToolbar li {
+    float: left;
+    margin-right: 1.5em;
+    color: #111;
+    cursor: pointer;
+}
+
+.dataGridToolbar li:hover i {
+    color: #111;
+}
+
 table.dataGrid {
     border: 1px solid #e0e0e0;
     border-collapse: collapse;
     width: 100%;
+    table-layout: fixed;
 }
 
 table.dataGrid td {
@@ -275,6 +308,13 @@ table.dataGrid td {
     border: 1px solid #e0e0e0;
     text-align: left;
     background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+table.dataGrid td a.detailsViewLink {
+    color: #00f;
+    cursor: pointer;
 }
 
 table.dataGrid tr.headerRow {

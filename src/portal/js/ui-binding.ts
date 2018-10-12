@@ -5,7 +5,10 @@ import * as api from './api-client';
 
 export interface IUIBinding {
     // Global event hook setup + busy / spinner mask control
-    SetGlobalCallbacks(): void;
+    SetGlobalCallbacks(
+        onDialogClose: () => void,
+        onRefreshContent: () => void
+    ): void;
     SetDetailsLinkCallback(onDetailsClick: (id: string) => void): void;
     SetBusyState(busy: boolean): void;
 
@@ -26,12 +29,25 @@ export interface IUIBinding {
 }
 
 export class UIBinding implements IUIBinding {
-    public SetGlobalCallbacks() {
+    public SetGlobalCallbacks(
+        onDialogClose: () => void,
+        onRefreshContent: () => void
+    ) {
+        // Handle closing of dialogs, and let app know
         $(document).on('click', 'button.dialogClose', (e: any) => {
-            console.log('Dialog close button clicked');
             $(e.target)
                 .parents('.dialog-stage')
                 .hide();
+            if (onDialogClose) {
+                onDialogClose();
+            }
+        });
+
+        // Handle any clicks from 'Refresh' toolbar items.
+        $(document).on('click', '.dataGridToolbar .refreshContent', () => {
+            if (onRefreshContent) {
+                onRefreshContent();
+            }
         });
     }
     public SetDetailsLinkCallback(onDetailsClick: (id: string) => void) {
@@ -88,12 +104,24 @@ export class UIBinding implements IUIBinding {
 
     public RenderOverviewContent(data: api.IOverviewSummary) {
         const markup = `
+            <div class="overview successChart">
+                <div class="failedBar">
+                    <div class="successBar" style="width: ${data.SuccessPercentage *
+                        100}%">
+                        <p>Success rate: ${data.SuccessPercentage * 100}%</p>
+                    </div>
+                </div>
+            </div>
+
             <ul class="overview listNone">
                 <li class="pending">Remediations Pending: <span>${
                     data.RemediationsPending
                 }</span></li>
                 <li class="completed">Remediations Completed: <span>${
                     data.RemediationsCompleted
+                }</span></li>
+                <li class="failed">Remediations Failed: <span>${
+                    data.RemediationsFailed
                 }</span></li>
                 <li class="lastUpdated"><em>Last updated on ${data.LastRefreshed.toLocaleDateString()} at
                     ${data.LastRefreshed.toLocaleTimeString()}</em></li>
@@ -102,10 +130,6 @@ export class UIBinding implements IUIBinding {
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
-
-            <div class="overviewHistory">
-                <h3>Remediation History</h3>
-            </div>
         `;
 
         $('.content-stage .placeholder').html(markup);
@@ -114,7 +138,14 @@ export class UIBinding implements IUIBinding {
     public RenderRemediationNeededContent(data: api.IRemediationNeeded) {
         const markup = `
             <div class="dataRegion">
-                <p><i class="fas fa-server"></i>The following systems are found to need compute upgrades:</p>
+                <p>The following systems are found to need compute upgrades:</p>
+                <div class="dataGridToolbar">
+                    <ul class="listNone">
+                        <li title="Group Selected"><i class="far fa-object-group"></i>Group Selected</li>
+                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup Selected</li>
+                        <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
+                    </ul>
+                </div>
                 <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
@@ -136,7 +167,14 @@ export class UIBinding implements IUIBinding {
                 </table>
             </div>
             <div class="dataRegion">
-                <p><i class="far fa-hdd"></i>The following systems are found to need storage account upgrades:</p>
+                <p>The following systems are found to need storage account upgrades:</p>
+                <div class="dataGridToolbar">
+                    <ul class="listNone">
+                        <li title="Group Selected"><i class="far fa-object-group"></i>Group Selected</li>
+                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup Selected</li>
+                        <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
+                    </ul>
+                </div>
                 <table class="dataGrid">
                     <colgroup>
                         <col width="25px" />
@@ -165,10 +203,14 @@ export class UIBinding implements IUIBinding {
     public RenderRemediationCompletedContent(data: api.IRemediationCompleted) {
         const markup = `
             <div class="dataRegion">
-                <p><i class="fas fa-server"></i>The following systems have completed compute ugprades:</p>
+                <p></i>The following systems have completed compute ugprades:</p>
+                <div class="dataGridToolbar">
+                    <ul class="listNone">
+                        <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
+                    </ul>
+                </div>
                 <table class="dataGrid">
                     <colgroup>
-                        <col width="25px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="200px" />
@@ -176,7 +218,6 @@ export class UIBinding implements IUIBinding {
                         <col width="*" />
                     </colgroup>
                     <tr class="headerRow">
-                        <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
                         <td>Type</td>
@@ -187,10 +228,14 @@ export class UIBinding implements IUIBinding {
                 </table>
             </div>
             <div class="dataRegion">
-                <p><i class="far fa-hdd"></i>The following systems have completed storage account upgrades:</p>
+                <p>The following systems have completed storage account upgrades:</p>
+                <div class="dataGridToolbar">
+                    <ul class="listNone">
+                        <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
+                    </ul>
+                </div>
                 <table class="dataGrid">
                     <colgroup>
-                        <col width="25px" />
                         <col width="200px" />
                         <col width="100px" />
                         <col width="200px" />
@@ -198,7 +243,6 @@ export class UIBinding implements IUIBinding {
                         <col width="*" />
                     </colgroup>
                     <tr class="headerRow">
-                        <td>&nbsp;</td>
                         <td>Name</td>
                         <td>Group</td>
                         <td>Type</td>
@@ -216,11 +260,17 @@ export class UIBinding implements IUIBinding {
     public RenderScheduledJobsContent(data: api.IScheduledJobs) {
         const markup = `
             <div class="dataRegion">
-                <p><i class="far fa-clock"></i>Current scheduled job status:</p>
+                <p></i>Current scheduled job status:</p>
+                <div class="dataGridToolbar">
+                    <ul class="listNone">
+                        <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
+                    </ul>
+                </div>
                 <table class="dataGrid">
                     <colgroup>
                         <col width="200px" />
                         <col width="200px" />
+                        <col width="100px" />
                         <col width="100px" />
                         <col width="*" />
                     </colgroup>
@@ -228,6 +278,7 @@ export class UIBinding implements IUIBinding {
                         <td>Job Type</td>
                         <td>Status</td>
                         <td>Duration</td>
+                        <td>Job Log</td>
                         <td>Last Update</td>
                     </tr>
                     ${this.renderScheduledJobsRows(data)}
@@ -243,9 +294,9 @@ export class UIBinding implements IUIBinding {
             <h2>Remediation Details</h2>
             <ul class="listNone marginBottom">
                 <li><strong>Name:</strong> ${data.Name} (${data.Type})</li>
-                <li><strong>Duration:</strong> ${
-                    data.Type
-                } (${this.formatDurationInMs(data.DurationInMs)})</li>
+                <li><strong>Duration:</strong> ${this.formatDurationInMs(
+                    data.DurationInMs
+                )}</li>
             </ul>
             <textarea readonly>${data.UpgradeDescription}</textarea>
         `;
@@ -280,7 +331,6 @@ export class UIBinding implements IUIBinding {
         return data.HadComputeUpgraded.map(item => {
             return `
             <tr>
-                <td><input type="checkbox" /></td>
                 <td>${item.Name}</td>
                 <td>${item.Group}</td>
                 <td>${item.Type}</td>
@@ -300,6 +350,9 @@ export class UIBinding implements IUIBinding {
                 <td>${item.JobType}</td>
                 <td>${item.Status}</td>
                 <td>${this.formatDurationInMs(item.DurationInMs)}</td>
+                <td><a class="detailsViewLink" data-item-name="${
+                    item.JobId
+                }">View Log...</a></td>
                 <td>${item.LastUpdate.toLocaleDateString()} ${item.LastUpdate.toLocaleTimeString()}</td>
             </tr>
             `;

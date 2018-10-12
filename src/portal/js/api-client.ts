@@ -1,3 +1,6 @@
+import 'uuid';
+import uuid = require('uuid');
+
 // Client shim for API calls to get/set data.
 export interface IApiClient {
     LoadOverviewData(): Promise<IOverviewSummary>;
@@ -11,7 +14,9 @@ export interface IApiClient {
 export interface IOverviewSummary {
     LastRefreshed: Date;
     RemediationsCompleted: number;
+    RemediationsFailed: number;
     RemediationsPending: number;
+    SuccessPercentage: number;
 }
 
 // Defines a system that requires upgranding, including the reason / etc.
@@ -35,6 +40,7 @@ export interface IRemediationCompleted {
     HadStorageUpgraded: IUpgradableSystem[];
 }
 
+// Defines the status that the job is in
 export enum JobStatus {
     Pending = 'Pending',
     Running = 'Running',
@@ -42,17 +48,21 @@ export enum JobStatus {
     Failed = 'Failed'
 }
 
+// Details about a specific job
 export interface IJobDetails {
     DurationInMs: number;
+    JobId: string;
     JobType: string;
     Status: JobStatus;
     LastUpdate: Date;
 }
 
+// Defines return structure of a list of scheduled jobs
 export interface IScheduledJobs {
     JobList: IJobDetails[];
 }
 
+// Defines the details of a specific remediation case
 export interface IDetailsData {
     DurationInMs: number;
     Name: string;
@@ -72,7 +82,9 @@ export class ApiClient implements IApiClient {
             const mockResponse = {
                 LastRefreshed: new Date(),
                 RemediationsCompleted: 7,
-                RemediationsPending: 2
+                RemediationsFailed: 3,
+                RemediationsPending: 2,
+                SuccessPercentage: 7 / (7 + 3)
             };
             // TODO: This should be an API call, but for now simulate slow calls.
             setTimeout(() => {
@@ -230,6 +242,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 3 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
                 Status: JobStatus.Pending
@@ -237,6 +250,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 6 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'Remediation Scan',
                 LastUpdate: new Date(),
                 Status: JobStatus.Running
@@ -244,6 +258,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 12.4 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
                 Status: JobStatus.Running
@@ -251,6 +266,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 7 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'VM Upgrade',
                 LastUpdate: new Date(),
                 Status: JobStatus.Pending
@@ -258,6 +274,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 32 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'Storage Migration',
                 LastUpdate: new Date(),
                 Status: JobStatus.Complete
@@ -265,6 +282,7 @@ export class ApiClient implements IApiClient {
 
             jobList.push({
                 DurationInMs: 43.1 * 60 * 1000,
+                JobId: uuid(),
                 JobType: 'Storage Migration',
                 LastUpdate: new Date(),
                 Status: JobStatus.Failed

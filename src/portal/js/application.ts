@@ -15,7 +15,14 @@ export class Application {
     // Initialize the applicaiton hooks
     public Initialize() {
         console.log('Application initializing...');
-        this.ui.SetGlobalCallbacks();
+        this.ui.SetGlobalCallbacks(
+            () => {
+                console.log('Dialog was closed!!');
+            },
+            () => {
+                console.log('Content fresh selected!!');
+            }
+        );
 
         this.ui.SetDetailsLinkCallback((id: string) => {
             this.LoadDetailsView(id);
