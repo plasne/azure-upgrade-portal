@@ -80,6 +80,34 @@ async function startup() {
         await global.commitLog('info', `Jobs instance on "${os.hostname}" started up.`);
         // initialize the jobs collection
         const jobs = new Jobs_1.default(STORAGE_ACCOUNT, STORAGE_KEY);
+        // function to clear jobs
+        app.delete('/jobs', async (_, res) => {
+            try {
+                await jobs.clear();
+                res.status(200).end();
+            }
+            catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send('Jobs could not be deleted. Please check the logs.');
+            }
+        });
+        // function to load a job
+        app.get('/job/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const job = await jobs.loadJob(id);
+                if (job) {
+                    res.status(200).send(job.toJSON());
+                }
+                else {
+                    res.status(404).end();
+                }
+            }
+            catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send('The job could not be fetched. Please check the logs.');
+            }
+        });
         // function to create a job
         app.post('/job', async (req, res) => {
             try {
@@ -92,6 +120,24 @@ async function startup() {
             catch (error) {
                 global.logger.error(error.stack);
                 res.status(500).send('The job could not be created. Please check the logs.');
+            }
+        });
+        // function to patch a job
+        app.patch('/job', async (req, res) => {
+            try {
+                const definition = req.body;
+                const job = await jobs.loadJob(definition.id);
+                if (job) {
+                    await job.patch(definition);
+                    res.status(200).end();
+                }
+                else {
+                    res.status(404).end();
+                }
+            }
+            catch (error) {
+                global.logger.error(error.stack);
+                res.status(500).send('The job could not be patched. Please check the logs.');
             }
         });
         // start listening

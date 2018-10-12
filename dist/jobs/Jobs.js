@@ -16,6 +16,7 @@ const AzureQueue_1 = __importDefault(require("../lib/AzureQueue"));
 const AzureTable_1 = __importDefault(require("../lib/AzureTable"));
 const AzureTableOperation_1 = __importDefault(require("../lib/AzureTableOperation"));
 const Job_1 = __importDefault(require("./Job"));
+const Task_1 = __importDefault(require("./Task"));
 //  extends Array<Job>
 class Jobs {
     constructor(account, key) {
@@ -39,11 +40,9 @@ class Jobs {
         });
         this.tableIn = tableStreams.in.on('error', error => {
             global.logger.error(error.stack);
-            // if (global.environment === 'test') throw error;
         });
         this.tableOut = tableStreams.out.on('error', error => {
             global.logger.error(error.stack);
-            // if (global.environment === 'test') throw error;
         });
         // create the queue in & out streams
         this.azureQueue = new AzureQueue_1.default({
@@ -51,7 +50,11 @@ class Jobs {
             key,
             useGlobalAgent: true
         });
-        const queueStreams = this.azureQueue.queueStream();
+        const createQs = [];
+        createQs.push(this.azureQueue.createQueueIfNotExists('discovery'));
+        const queueStreams = this.azureQueue.queueStream({
+            processAfter: Promise.all(createQs)
+        }, {});
         this.queueIn = queueStreams.in.on('error', error => {
             global.logger.error(error.stack);
         });
@@ -114,6 +117,26 @@ class Jobs {
         const job = new Job_1.default(this);
         await job.create(definition);
         return job;
+    }
+    async loadJob(id) {
+        const job = new Job_1.default(this);
+        const query = new azs.TableQuery();
+        query.where('PartitionKey == ?', id);
+        let jobWasLoaded = false;
+        const top = new AzureTableOperation_1.default('jobs', 'query', query);
+        top.while(entity => {
+            if (entity.RowKey._ === 'root') {
+                job.load(entity);
+                jobWasLoaded = true;
+            }
+            else {
+                const task = new Task_1.default(job, entity);
+                job.tasks.push(task);
+            }
+        });
+        this.tableIn.push(top);
+        await top;
+        return jobWasLoaded ? job : null;
     }
 }
 exports.default = Jobs;

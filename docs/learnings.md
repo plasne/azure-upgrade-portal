@@ -82,3 +82,17 @@ spec:
 # Smaller branches
 
 Using branches for a smaller number of changes made it easier to review and deploy.
+
+# Assertions
+
+Given the number of unit tests and the number of things we are checking in each test, it is beneficial to use the following pattern for assertions whereby the failure will give some meaningful explanation of the actual problem.
+
+```typescript
+assert.equal(
+    verify.data.status,
+    'closed',
+    `job "${create.data.id}" status is "${
+        verify.data.status
+    }" instead of "closed".`
+);
+```

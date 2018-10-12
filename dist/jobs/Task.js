@@ -15,23 +15,68 @@ const azs = __importStar(require("azure-storage"));
 const AzureQueueOperation_1 = __importDefault(require("../lib/AzureQueueOperation"));
 const AzureTableOperation_1 = __importDefault(require("../lib/AzureTableOperation"));
 class Task {
-    constructor(job, name) {
-        this.name = name;
-        this.job = job;
+    constructor(job, nameOrObj) {
+        this.name = '?';
         this.status = 'unknown';
+        this.job = job;
+        if (typeof nameOrObj === 'string') {
+            this.name = nameOrObj;
+        }
+        else if (typeof nameOrObj === 'object' &&
+            nameOrObj.RowKey._ !== 'root') {
+            this.load(nameOrObj);
+        }
+        else {
+            this.name = name;
+        }
+    }
+    toJSON() {
+        return {
+            name: this.name,
+            status: this.status
+        };
+    }
+    load(obj) {
+        if (obj.RowKey && obj.RowKey.hasOwnProperty('_')) {
+            this.name = obj.RowKey._;
+        }
+        if (obj.Status && obj.Status.hasOwnProperty('_')) {
+            this.status = obj.Status._;
+        }
     }
     close() {
         // support auto-close once all tasks are closed
     }
+    async patch(definition) {
+        // patch the task properties
+        let changed = false;
+        if (definition.status !== undefined &&
+            this.status !== definition.status) {
+            this.status = definition.status;
+            changed = true;
+        }
+        // record this patched object
+        if (changed) {
+            const generator = azs.TableUtilities.entityGenerator;
+            const top = new AzureTableOperation_1.default('jobs', 'replace', {
+                PartitionKey: generator.String(this.job.id),
+                RowKey: generator.String(this.name),
+                Status: generator.String(this.status)
+            });
+            this.job.jobs.tableIn.push(top);
+            await top;
+        }
+    }
     async create(definition) {
         const promises = [];
-        // use a generator
-        const generator = azs.TableUtilities.entityGenerator;
+        // set properties
+        this.status = definition.status || 'initializing';
         // insert into table
+        const generator = azs.TableUtilities.entityGenerator;
         const top = new AzureTableOperation_1.default('jobs', 'insert', {
             PartitionKey: generator.String(this.job.id),
             RowKey: generator.String(this.name),
-            Status: generator.String('initializing')
+            Status: generator.String(this.status)
         });
         promises.push(top);
         this.job.jobs.tableIn.push(top);

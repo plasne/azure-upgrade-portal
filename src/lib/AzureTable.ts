@@ -179,9 +179,6 @@ export default class AzureTable {
                                                 operation.resolve(
                                                     opresult.response
                                                 );
-                                                operation.reject(
-                                                    new Error('cry break')
-                                                );
                                             }
                                         } else {
                                             streams.out.emit(
@@ -219,7 +216,8 @@ export default class AzureTable {
                             (error, result) => {
                                 if (!error) {
                                     for (const entity of result.entries) {
-                                        streams.out.push(entity, operations);
+                                        streams.out.push(entity, operation);
+                                        operation.push(entity);
                                     }
                                     if (result.continuationToken) {
                                         operation.token =

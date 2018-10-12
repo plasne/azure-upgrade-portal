@@ -7,6 +7,7 @@ import AzureTableOperation from '../lib/AzureTableOperation';
 import ReadableStream from '../lib/ReadableStream';
 import WriteableStream from '../lib/WriteableStream';
 import Job, { ICreateJob } from './Job';
+import Task from './Task';
 
 //  extends Array<Job>
 export default class Jobs {
@@ -45,11 +46,9 @@ export default class Jobs {
         );
         this.tableIn = tableStreams.in.on('error', error => {
             global.logger.error(error.stack);
-            // if (global.environment === 'test') throw error;
         });
         this.tableOut = tableStreams.out.on('error', error => {
             global.logger.error(error.stack);
-            // if (global.environment === 'test') throw error;
         });
 
         // create the queue in & out streams
@@ -58,10 +57,17 @@ export default class Jobs {
             key,
             useGlobalAgent: true
         });
+        const createQs: Array<Promise<any>> = [];
+        createQs.push(this.azureQueue.createQueueIfNotExists('discovery'));
         const queueStreams = this.azureQueue.queueStream<
             AzureQueueOperation,
             any
-        >();
+        >(
+            {
+                processAfter: Promise.all(createQs)
+            },
+            {}
+        );
         this.queueIn = queueStreams.in.on('error', error => {
             global.logger.error(error.stack);
         });
@@ -141,5 +147,25 @@ export default class Jobs {
         const job = new Job(this);
         await job.create(definition);
         return job;
+    }
+
+    public async loadJob(id: string) {
+        const job: Job = new Job(this);
+        const query = new azs.TableQuery();
+        query.where('PartitionKey == ?', id);
+        let jobWasLoaded = false;
+        const top = new AzureTableOperation('jobs', 'query', query);
+        top.while(entity => {
+            if (entity.RowKey._ === 'root') {
+                job.load(entity);
+                jobWasLoaded = true;
+            } else {
+                const task = new Task(job, entity);
+                job.tasks.push(task);
+            }
+        });
+        this.tableIn.push(top);
+        await top;
+        return jobWasLoaded ? job : null;
     }
 }
