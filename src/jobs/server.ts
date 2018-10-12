@@ -153,7 +153,7 @@ async function startup() {
                 const definition: IPatchJob = req.body;
                 const job = await jobs.loadJob(definition.id);
                 if (job) {
-                    job.patch(definition);
+                    await job.patch(definition);
                     res.status(200).end();
                 } else {
                     res.status(404).end();

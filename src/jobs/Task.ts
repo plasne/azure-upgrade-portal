@@ -8,6 +8,12 @@ import Job from './Job';
 // define the job types
 export type TaskStatus = 'unknown' | 'initializing' | 'closed';
 
+// definition for fetching a task
+export interface IFetchTask {
+    name: string;
+    status: TaskStatus;
+}
+
 // definition for creating a task
 export interface ICreateTask {
     name: string;
@@ -39,7 +45,7 @@ export default class Task {
         return {
             name: this.name,
             status: this.status
-        };
+        } as IFetchTask;
     }
 
     public load(obj: any) {

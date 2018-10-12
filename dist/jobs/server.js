@@ -128,7 +128,7 @@ async function startup() {
                 const definition = req.body;
                 const job = await jobs.loadJob(definition.id);
                 if (job) {
-                    job.patch(definition);
+                    await job.patch(definition);
                     res.status(200).end();
                 }
                 else {

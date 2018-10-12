@@ -6,10 +6,18 @@ import AzureQueueOperation from '../lib/AzureQueueOperation';
 import AzureTableOperation from '../lib/AzureTableOperation';
 import PromiseImposter from '../lib/PromiseImposter';
 import Jobs from './Jobs';
-import Task, { ICreateTask } from './Task';
+import Task, { ICreateTask, IFetchTask } from './Task';
 
 // definitions
 export type JobStatus = 'unknown' | 'initializing' | 'closed';
+
+// definition for fetching a job
+export interface IFetchJob {
+    id: string;
+    status: JobStatus;
+    autoClose: boolean;
+    tasks: IFetchTask[];
+}
 
 // definition for creating a job
 export interface ICreateJob {
@@ -50,7 +58,7 @@ export default class Job {
             id: this.id,
             status: this.status,
             tasks: this.tasks.map(t => t.toJSON())
-        };
+        } as IFetchJob;
     }
 
     public load(obj: any) {
