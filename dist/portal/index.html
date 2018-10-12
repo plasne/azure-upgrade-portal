@@ -3,7 +3,7 @@
 
 <head>
     <title>Azure Upgrade Portal</title>
-    <link rel="stylesheet" type="text/css" href="/css/main.css?ver=1.02" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css?ver=1.03" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
         crossorigin="anonymous">
 </head>
@@ -12,7 +12,10 @@
     <div class="header">
         <h1><i class="fas fa-upload"></i>Azure Upgrade Portal</h1>
 
-        <p class="userLabel"><i class="fas fa-user-circle"></i></p>
+        <ul class="headerOptions listNone">
+            <li class="userLabel" title="User Options"><i class="fas fa-user-circle"></i></li>
+            <li class="settingsWidget" title="Settings"><i class="fas fa-cog"></i></li>
+        </ul>
     </div>
 
     <div class="navigation">
@@ -22,16 +25,15 @@
             <li data-action-name="remediation-complete">Remediations Complete</li>
             <li data-action-name="scheduled-jobs">Scheduled Jobs</li>
             <li data-action-name="logs">Logs</li>
-            <li data-action-name="settings">Settings</li>
         </ul>
+
+        <p class="versionStamp">Upgrade UI Build 1.03</p>
     </div>
 
     <div class="content-stage">
         <h2></h2>
         <div class="placeholder"></div>
     </div>
-
-    <div id="message"></div>
 
     <div class="dialog-stage">
         <div class="placeholder"></div>
@@ -45,7 +47,7 @@
     </div>
 
     <script src="/lib/jquery-3.3.1.min.js"></script>
-    <script src="/js/bundle.js?ver=1.02"></script>
+    <script src="/js/bundle.js?ver=1.03"></script>
 </body>
 
 </html>
