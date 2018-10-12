@@ -400,6 +400,7 @@ class UIBinding {
                 <li class="lastUpdated"><em>Last updated on ${data.LastRefreshed.toLocaleDateString()} at
                     ${data.LastRefreshed.toLocaleTimeString()}</em></li>
             </ul>
+
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
@@ -431,19 +432,7 @@ class UIBinding {
                         <td>Description</td>
                         <td>Details</td>
                     </tr>
-                ${data.NeedsComputeUpgrade.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Group +
-                '</td><td>' +
-                item.Type +
-                '</td><td>' +
-                item.UpgradeDescription +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    ${this.renderRemediationNeededRows(data)}
                 </table>
             </div>
             <div class="dataRegion">
@@ -465,19 +454,7 @@ class UIBinding {
                         <td>Description</td>
                         <td>Details</td>
                     </tr>
-                ${data.NeedsStorageUpgrade.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Group +
-                '</td><td>' +
-                item.Type +
-                '</td><td>' +
-                item.UpgradeDescription +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    ${this.renderRemediationNeededRows(data)}
                 </table>
             </div>
         `;
@@ -504,19 +481,7 @@ class UIBinding {
                         <td>Duration</td>
                         <td>Details</td>
                     </tr>
-                ${data.HadComputeUpgraded.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Group +
-                '</td><td>' +
-                item.Type +
-                '</td><td>' +
-                this.formatDurationInMs(item.DurationInMs) +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    ${this.renderRemediationCompletedRows(data)}
                 </table>
             </div>
             <div class="dataRegion">
@@ -538,19 +503,7 @@ class UIBinding {
                         <td>Duration</td>
                         <td>Details</td>
                     </tr>
-                ${data.HadStorageUpgraded.map(item => {
-            return ('<tr><td><input type="checkbox" /></td><td>' +
-                item.Name +
-                '</td><td>' +
-                item.Group +
-                '</td><td>' +
-                item.Type +
-                '</td><td>' +
-                this.formatDurationInMs(item.DurationInMs) +
-                '</td><td><a class="detailsViewLink" data-item-name="' +
-                item.Name +
-                '">Click to view...</a></td></tr>');
-        }).join('')}
+                    ${this.renderRemediationCompletedRows(data)}
                 </table>
             </div>
         `;
@@ -573,19 +526,7 @@ class UIBinding {
                         <td>Duration</td>
                         <td>Last Update</td>
                     </tr>
-                ${data.JobList.map(item => {
-            return ('<tr><td>' +
-                item.JobType +
-                '</td><td>' +
-                item.Status +
-                '</td><td>' +
-                this.formatDurationInMs(item.DurationInMs) +
-                '</td><td>' +
-                item.LastUpdate.toLocaleDateString() +
-                ' ' +
-                item.LastUpdate.toLocaleTimeString() +
-                '</td></tr>');
-        }).join('')}
+                    ${this.renderScheduledJobsRows(data)}
                 </table>
             </div>
         `;
@@ -606,6 +547,46 @@ class UIBinding {
     formatDurationInMs(durationInMs) {
         const mins = durationInMs / (60 * 1000);
         return `${mins.toFixed(2)} mins`;
+    }
+    renderRemediationNeededRows(data) {
+        return data.NeedsComputeUpgrade.map(item => {
+            return `
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>${item.Name}</td>
+                <td>${item.Group}</td>
+                <td>${item.Type}</td>
+                <td>${item.UpgradeDescription}</td>
+                <td><a class="detailsViewLink" data-item-name="${item.Name}">Click to view...</a></td>
+            </tr>
+            `;
+        }).join('');
+    }
+    renderRemediationCompletedRows(data) {
+        return data.HadComputeUpgraded.map(item => {
+            return `
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>${item.Name}</td>
+                <td>${item.Group}</td>
+                <td>${item.Type}</td>
+                <td>${this.formatDurationInMs(item.DurationInMs)}</td>
+                <td><a class="detailsViewLink" data-item-name="${item.Name}">Click to view...</a></td>
+            </tr>
+            `;
+        }).join('');
+    }
+    renderScheduledJobsRows(data) {
+        return data.JobList.map(item => {
+            return `
+            <tr>
+                <td>${item.JobType}</td>
+                <td>${item.Status}</td>
+                <td>${this.formatDurationInMs(item.DurationInMs)}</td>
+                <td>${item.LastUpdate.toLocaleDateString()} ${item.LastUpdate.toLocaleTimeString()}</td>
+            </tr>
+            `;
+        }).join('');
     }
 }
 exports.UIBinding = UIBinding;

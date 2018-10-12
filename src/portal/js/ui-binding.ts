@@ -98,6 +98,7 @@ export class UIBinding implements IUIBinding {
                 <li class="lastUpdated"><em>Last updated on ${data.LastRefreshed.toLocaleDateString()} at
                     ${data.LastRefreshed.toLocaleTimeString()}</em></li>
             </ul>
+
             <h3>Next Steps</h3>
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
@@ -131,21 +132,7 @@ export class UIBinding implements IUIBinding {
                         <td>Description</td>
                         <td>Details</td>
                     </tr>
-                ${data.NeedsComputeUpgrade.map(item => {
-                    return (
-                        '<tr><td><input type="checkbox" /></td><td>' +
-                        item.Name +
-                        '</td><td>' +
-                        item.Group +
-                        '</td><td>' +
-                        item.Type +
-                        '</td><td>' +
-                        item.UpgradeDescription +
-                        '</td><td><a class="detailsViewLink" data-item-name="' +
-                        item.Name +
-                        '">Click to view...</a></td></tr>'
-                    );
-                }).join('')}
+                    ${this.renderRemediationNeededRows(data)}
                 </table>
             </div>
             <div class="dataRegion">
@@ -167,21 +154,7 @@ export class UIBinding implements IUIBinding {
                         <td>Description</td>
                         <td>Details</td>
                     </tr>
-                ${data.NeedsStorageUpgrade.map(item => {
-                    return (
-                        '<tr><td><input type="checkbox" /></td><td>' +
-                        item.Name +
-                        '</td><td>' +
-                        item.Group +
-                        '</td><td>' +
-                        item.Type +
-                        '</td><td>' +
-                        item.UpgradeDescription +
-                        '</td><td><a class="detailsViewLink" data-item-name="' +
-                        item.Name +
-                        '">Click to view...</a></td></tr>'
-                    );
-                }).join('')}
+                    ${this.renderRemediationNeededRows(data)}
                 </table>
             </div>
         `;
@@ -210,21 +183,7 @@ export class UIBinding implements IUIBinding {
                         <td>Duration</td>
                         <td>Details</td>
                     </tr>
-                ${data.HadComputeUpgraded.map(item => {
-                    return (
-                        '<tr><td><input type="checkbox" /></td><td>' +
-                        item.Name +
-                        '</td><td>' +
-                        item.Group +
-                        '</td><td>' +
-                        item.Type +
-                        '</td><td>' +
-                        this.formatDurationInMs(item.DurationInMs) +
-                        '</td><td><a class="detailsViewLink" data-item-name="' +
-                        item.Name +
-                        '">Click to view...</a></td></tr>'
-                    );
-                }).join('')}
+                    ${this.renderRemediationCompletedRows(data)}
                 </table>
             </div>
             <div class="dataRegion">
@@ -246,21 +205,7 @@ export class UIBinding implements IUIBinding {
                         <td>Duration</td>
                         <td>Details</td>
                     </tr>
-                ${data.HadStorageUpgraded.map(item => {
-                    return (
-                        '<tr><td><input type="checkbox" /></td><td>' +
-                        item.Name +
-                        '</td><td>' +
-                        item.Group +
-                        '</td><td>' +
-                        item.Type +
-                        '</td><td>' +
-                        this.formatDurationInMs(item.DurationInMs) +
-                        '</td><td><a class="detailsViewLink" data-item-name="' +
-                        item.Name +
-                        '">Click to view...</a></td></tr>'
-                    );
-                }).join('')}
+                    ${this.renderRemediationCompletedRows(data)}
                 </table>
             </div>
         `;
@@ -285,21 +230,7 @@ export class UIBinding implements IUIBinding {
                         <td>Duration</td>
                         <td>Last Update</td>
                     </tr>
-                ${data.JobList.map(item => {
-                    return (
-                        '<tr><td>' +
-                        item.JobType +
-                        '</td><td>' +
-                        item.Status +
-                        '</td><td>' +
-                        this.formatDurationInMs(item.DurationInMs) +
-                        '</td><td>' +
-                        item.LastUpdate.toLocaleDateString() +
-                        ' ' +
-                        item.LastUpdate.toLocaleTimeString() +
-                        '</td></tr>'
-                    );
-                }).join('')}
+                    ${this.renderScheduledJobsRows(data)}
                 </table>
             </div>
         `;
@@ -326,5 +257,52 @@ export class UIBinding implements IUIBinding {
     private formatDurationInMs(durationInMs: number) {
         const mins = durationInMs / (60 * 1000);
         return `${mins.toFixed(2)} mins`;
+    }
+
+    private renderRemediationNeededRows(data: api.IRemediationNeeded) {
+        return data.NeedsComputeUpgrade.map(item => {
+            return `
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>${item.Name}</td>
+                <td>${item.Group}</td>
+                <td>${item.Type}</td>
+                <td>${item.UpgradeDescription}</td>
+                <td><a class="detailsViewLink" data-item-name="${
+                    item.Name
+                }">Click to view...</a></td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    private renderRemediationCompletedRows(data: api.IRemediationCompleted) {
+        return data.HadComputeUpgraded.map(item => {
+            return `
+            <tr>
+                <td><input type="checkbox" /></td>
+                <td>${item.Name}</td>
+                <td>${item.Group}</td>
+                <td>${item.Type}</td>
+                <td>${this.formatDurationInMs(item.DurationInMs)}</td>
+                <td><a class="detailsViewLink" data-item-name="${
+                    item.Name
+                }">Click to view...</a></td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    private renderScheduledJobsRows(data: api.IScheduledJobs) {
+        return data.JobList.map(item => {
+            return `
+            <tr>
+                <td>${item.JobType}</td>
+                <td>${item.Status}</td>
+                <td>${this.formatDurationInMs(item.DurationInMs)}</td>
+                <td>${item.LastUpdate.toLocaleDateString()} ${item.LastUpdate.toLocaleTimeString()}</td>
+            </tr>
+            `;
+        }).join('');
     }
 }
