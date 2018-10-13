@@ -1,9 +1,9 @@
 // includes
 import assert = require('assert');
 import 'mocha';
-import * as api from './js/api-client';
-import Application = require('./js/application.js');
-import IUIBinding = require('./js/ui-binding.js');
+import * as api from './api-client';
+import Application = require('./application.js');
+import IUIBinding = require('./ui-binding.js');
 
 // This is a mock implementation of the UI layer which lets of invoke and inspect calls.
 class TestUIBinding implements IUIBinding.IUIBinding {
