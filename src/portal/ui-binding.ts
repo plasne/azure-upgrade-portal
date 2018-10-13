@@ -103,6 +103,10 @@ export class UIBinding implements IUIBinding {
     }
 
     public RenderOverviewContent(data: api.IOverviewSummary) {
+        // NOTE: Instead of the bar-chart idea, let's put a donut chart in with dynamic
+        // SVG. See this article for a formal implementation:
+        // https://medium.com/@heyoka/scratch-made-svg-donut-pie-charts-in-html5-2c587e935d72
+
         const markup = `
             <div class="overview successChart">
                 <div class="failedBar">
