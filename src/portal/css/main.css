@@ -14,7 +14,7 @@ body {
     font-size: 13px;
     color: #333;
     background-color: #fff;
-    line-height: 1.333em;
+    line-height: 1.5em;
 }
 
 input,
@@ -89,7 +89,7 @@ ol {
 
 .header h1 {
     font-weight: 100;
-    line-height: 1.5em;
+    line-height: 1.4em;
 }
 
 .header h1 i {
