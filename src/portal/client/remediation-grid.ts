@@ -8,8 +8,8 @@ export default class RemediationGrid {
                 <p>The following systems are found to need compute upgrades:</p>
                 <div class="dataGridToolbar">
                     <ul class="listNone">
-                        <li title="Group Selected"><i class="far fa-object-group"></i>Group Selected</li>
-                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup Selected</li>
+                        <li title="Group Selected"><i class="far fa-object-group"></i>Group</li>
+                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup</li>
                         <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
                     </ul>
                 </div>
@@ -37,8 +37,8 @@ export default class RemediationGrid {
                 <p>The following systems are found to need storage account upgrades:</p>
                 <div class="dataGridToolbar">
                     <ul class="listNone">
-                        <li title="Group Selected"><i class="far fa-object-group"></i>Group Selected</li>
-                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup Selected</li>
+                        <li title="Group Selected"><i class="far fa-object-group"></i>Group</li>
+                        <li title="Ungroup Selected"><i class="far fa-object-ungroup"></i>Ungroup</li>
                         <li class="refreshContent" title="Refresh"><i class="fas fa-sync"></i>Refresh</li>
                     </ul>
                 </div>

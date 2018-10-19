@@ -104,10 +104,10 @@ ol {
 }
 
 .header .headerOptions li {
-    line-height: 1.35em;
+    line-height: 1.75;
     float: right;
     margin-left: 0.75em;
-    font-size: 2em;
+    font-size: 1.75em;
     margin-top: 0.5em;
 }
 
@@ -160,7 +160,7 @@ ol {
     bottom: 0;
     overflow-y: scroll;
     top: 4.75em;
-    padding: 0.5em 1em;
+    padding: 1em;
 }
 
 .dialog-stage {
@@ -272,13 +272,6 @@ ul.overview li.failed {
     margin-bottom: 2em;
 }
 
-.dataRegion i {
-    float: left;
-    font-size: 1.5em;
-    color: #aaa;
-    margin-right: 0.5em;
-}
-
 .dataRegion p {
     margin-bottom: 2em;
 }
@@ -296,6 +289,14 @@ ul.overview li.failed {
 
 .dataGridToolbar li:hover i {
     color: #111;
+}
+
+.dataGridToolbar i {
+    float: left;
+    font-size: 1.25em;
+    color: #aaa;
+    margin-right: 0.5em;
+    line-height: 1.25em;
 }
 
 table.dataGrid {
