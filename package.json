@@ -4,7 +4,7 @@
     "description": "A tool to identify what resources in Azure need upgrading and help you upgrade them.",
     "main": "dist/api/server.js",
     "scripts": {
-        "build": "tsc && npm run build-portal && npm run copy-portal-assets",
+        "build": "npm run clean-portal && tsc && npm run build-portal && npm run copy-portal-assets",
         "start-api": "node dist/api/server.js",
         "start-jobs": "node dist/jobs/server.js",
         "build-portal": "rm -f ./dist/portal/bundle.js && ./node_modules/browserify/bin/cmd.js ./dist/portal/*.js -o ./dist/portal/bundle.js",
@@ -19,7 +19,7 @@
         "url": "git+https://github.com/plasne/azure-upgrade-portal.git"
     },
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/plasne/azure-upgrade-portal/issues"
     },
