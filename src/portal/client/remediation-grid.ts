@@ -120,8 +120,8 @@ export default class RemediationGrid {
     }
 
     private renderRemediationNeededRows(data: api.IRemediationNeeded) {
-        return data.NeedsComputeUpgrade.map(item => {
-            return `
+        return data.NeedsComputeUpgrade.reduce((prev, item) => {
+            const thisItem = `
             <tr>
                 <td><input type="checkbox" /></td>
                 <td>${item.Name}</td>
@@ -133,12 +133,13 @@ export default class RemediationGrid {
                 }">Click to view...</a></td>
             </tr>
             `;
-        }).join('');
+            return prev + thisItem;
+        }, '');
     }
 
     private renderRemediationCompletedRows(data: api.IRemediationCompleted) {
-        return data.HadComputeUpgraded.map(item => {
-            return `
+        return data.HadComputeUpgraded.reduce((prev, item) => {
+            const thisItem = `
             <tr>
                 <td>${item.Name}</td>
                 <td>${item.Group}</td>
@@ -149,6 +150,7 @@ export default class RemediationGrid {
                 }">Click to view...</a></td>
             </tr>
             `;
-        }).join('');
+            return prev + thisItem;
+        }, '');
     }
 }

@@ -45,9 +45,12 @@ button.dialogClose {
     border-color: #0236a4;
 }
 h1,
-h2,
-h3 {
+h2 {
     font-weight: normal;
+}
+
+h3 {
+    font-weight: 500;
 }
 
 .fLeft {
@@ -170,7 +173,7 @@ ol {
     height: 31em;
     border: 1px solid #888;
     background-color: #fff;
-    top: 20%;
+    top: 15%;
     left: 50%;
     margin-left: -30em;
     box-shadow: 0 0 3em #aaa;
@@ -225,8 +228,10 @@ ol {
 
 /* Subsection Compontents */
 
-.content-stage .placeholder ul {
+ul.overview {
     margin-bottom: 1em;
+    padding-top: 2.5em;
+    margin-left: 2em;
 }
 
 ul.overview li {
@@ -244,28 +249,13 @@ ul.overview li.failed {
 }
 
 .overview.successChart {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
-.overview.successChart .failedBar {
-    width: 30em;
-    height: 2em;
-    background-color: #c00;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 1px solid #111;
-}
-
-.overview.successChart .successBar {
-    height: 2em;
-    background-color: #080;
-}
-
-.overview.successChart .successBar p {
-    text-align: center;
-    font-size: 1em;
-    color: #fff;
-    line-height: 2em;
+.overview.successChart .chart-text {
+    font-size: 0.6em;
+    transform: translateY(0.35em);
+    text-anchor: middle;
 }
 
 .dataRegion {

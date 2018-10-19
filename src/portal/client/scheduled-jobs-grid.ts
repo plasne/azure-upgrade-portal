@@ -33,18 +33,21 @@ export default class ScheduledJobsGrid {
     }
 
     private renderScheduledJobsRows(data: api.IScheduledJobs) {
-        return data.JobList.map(item => {
-            return `
-            <tr>
-                <td>${item.JobType}</td>
-                <td>${item.Status}</td>
-                <td>${UiCommon.FormatDurationInMs(item.DurationInMs)}</td>
-                <td><a class="detailsViewLink" data-item-name="${
-                    item.JobId
-                }">View Log...</a></td>
-                <td>${item.LastUpdate.toLocaleDateString()} ${item.LastUpdate.toLocaleTimeString()}</td>
-            </tr>
-            `;
-        }).join('');
+        return data.JobList.reduce((prev, item) => {
+            return (
+                prev +
+                `
+                <tr>
+                    <td>${item.JobType}</td>
+                    <td>${item.Status}</td>
+                    <td>${UiCommon.FormatDurationInMs(item.DurationInMs)}</td>
+                    <td><a class="detailsViewLink" data-item-name="${
+                        item.JobId
+                    }">View Log...</a></td>
+                    <td>${item.LastUpdate.toLocaleDateString()} ${item.LastUpdate.toLocaleTimeString()}</td>
+                </tr>
+                `
+            );
+        }, '');
     }
 }
