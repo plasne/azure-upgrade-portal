@@ -11,7 +11,9 @@ export default class OverviewSummary {
                     <svg width="12em" viewBox="0 0 42 42" class="donut">
                         <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
                         <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#c44" stroke-width="4"></circle>
-                        <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#080" stroke-width="4" stroke-dasharray="85 15" stroke-dashoffset="0"></circle>
+                        <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#080" stroke-width="4" stroke-dasharray="${this.computeStrokeDash(
+                            data.SuccessPercentage
+                        )}" stroke-dashoffset="0"></circle>
                         <g class="chart-text">
                             <text x="50%" y="50%" class="chart-number">${data.SuccessPercentage *
                                 100.0}%</text>
@@ -39,5 +41,11 @@ export default class OverviewSummary {
             <p>To schedule a new remediation scan, click the button below:</p>
             <button>Schedule Scan<i class="fas fa-arrow-right"></i></button>
         `;
+    }
+
+    private computeStrokeDash(successPercentage: number) {
+        const hiNumber = successPercentage * 100.0;
+        const loNumber = 100.0 - hiNumber;
+        return `${hiNumber} ${loNumber}`;
     }
 }

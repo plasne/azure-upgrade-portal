@@ -5,6 +5,7 @@ export default class RemediationGrid {
     public RenderNeeded(data: api.IRemediationNeeded) {
         return `
             <div class="dataRegion">
+                <h3>Compute Upgrade</h3>
                 <p>The following systems are found to need compute upgrades:</p>
                 <div class="dataGridToolbar">
                     <ul class="listNone">
@@ -34,6 +35,7 @@ export default class RemediationGrid {
                 </table>
             </div>
             <div class="dataRegion">
+                <h3>Storage Upgrade</h3>
                 <p>The following systems are found to need storage account upgrades:</p>
                 <div class="dataGridToolbar">
                     <ul class="listNone">
