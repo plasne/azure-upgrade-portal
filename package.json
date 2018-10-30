@@ -4,27 +4,29 @@
     "description": "A tool to identify what resources in Azure need upgrading and help you upgrade them.",
     "main": "dist/api/server.js",
     "scripts": {
-        "build": "tsc && rm -f ./dist/portal/js/bundle.js && cp -R $(ls -d1 src/portal/* | egrep -v '.ts') dist/portal/. && ./node_modules/browserify/bin/cmd.js ./dist/portal/js/*.js -o ./dist/portal/js/bundle.js",
+        "build": "npm run clean-portal && tsc && npm run build-portal && npm run copy-portal-assets",
         "start-api": "node dist/api/server.js",
         "start-jobs": "node dist/jobs/server.js",
-        "test-portal": "mocha dist/portal/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
-        "clean-portal": "find ./dist/portal/js/* | egrep -v \"bundle.js\" | xargs rm",
+        "build-portal": "rm -f ./dist/portal/client/bundle.js && ./node_modules/browserify/bin/cmd.js ./dist/portal/client/*.js -o ./dist/portal/client/bundle.js",
+        "copy-portal-assets": "cp -R $(ls -d1 src/portal/* | egrep -v '/client') dist/portal/. && npm run bump-asset-vers",
+        "bump-asset-vers": "cat dist/portal/index.html | sed -e 's/?ver=TIMESTAMP/?ver='\"$(date +%s)\"'/' > dist/portal/index.html",
+        "clean-portal": "rm -rf dist/portal/**",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
-        "test-logcar": "mocha dist/logcar/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000"
+        "test-logcar": "mocha dist/logcar/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
+        "test-portal": "mocha dist/portal/tests/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/plasne/azure-upgrade-portal.git"
     },
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/plasne/azure-upgrade-portal/issues"
     },
     "homepage": "https://github.com/plasne/azure-upgrade-portal#readme",
     "dependencies": {
-        "@types/jquery": "^3.3.14",
-        "@types/jsdom": "^11.12.0",
+        "@types/jquery": "^3.3.17",
         "axios": "^0.18.0",
         "azure-storage": "^2.10.1",
         "browserify": "^16.2.3",

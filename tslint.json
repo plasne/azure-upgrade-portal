@@ -20,7 +20,8 @@
         "jsdoc-format": false,
         "curly": {
             "options": ["ignore-same-line"]
-        }
+        },
+        "max-line-length": [false]
     },
     "rulesDirectory": []
 }
