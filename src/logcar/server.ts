@@ -35,9 +35,6 @@ const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
 // connect to the blob service
 const service = azs.createBlobService(STORAGE_ACCOUNT, STORAGE_KEY);
 
-// enable logging
-globalExt.enableConsoleLogging(LOG_LEVEL);
-
 // define the log levels
 export type LogLevels =
     | 'error'
@@ -118,11 +115,16 @@ function clear(entry: ILogEntry) {
 // define startup
 async function startup() {
     try {
+        // enable logging
+        globalExt.enableConsoleLogging(LOG_LEVEL);
+
         // log startup
         console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
-        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}".`);
-        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}".`);
-        global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
+        if (global.logger) {
+            global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}".`);
+            global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}".`);
+            global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
+        }
 
         // create the container
         await new Promise(resolve => {
@@ -130,9 +132,11 @@ async function startup() {
                 if (!error) {
                     resolve();
                 } else {
-                    global.logger.error(
-                        `"logs" container could not be created.`
-                    );
+                    if (global.logger) {
+                        global.logger.error(
+                            `"logs" container could not be created.`
+                        );
+                    }
                     process.exit(1);
                 }
             });
@@ -145,18 +149,28 @@ async function startup() {
         ipc.config.silent = true;
         ipc.serve(() => {
             if (process.send) {
-                global.logger.info('sent "listening" from LogCar to test rig.');
+                if (global.logger) {
+                    global.logger.info(
+                        'sent "listening" from LogCar to test rig.'
+                    );
+                }
                 process.send('listening');
             } else {
-                global.logger.verbose(`listening on ${ipc.config.id}...`);
+                if (global.logger) {
+                    global.logger.verbose(`listening on ${ipc.config.id}...`);
+                }
             }
 
             // listening for logs
             ipc.server.on('log', async (message, socket) => {
                 try {
-                    global.logger.verbose(
-                        `received log message: "${JSON.stringify(message)}".`
-                    );
+                    if (global.logger) {
+                        global.logger.verbose(
+                            `received log message: "${JSON.stringify(
+                                message
+                            )}".`
+                        );
+                    }
                     await write(message);
                     ipc.server.emit(socket, 'receipt', {
                         id: message.coorelationId
@@ -175,9 +189,13 @@ async function startup() {
             // listening for clear
             ipc.server.on('clear', async (message, socket) => {
                 try {
-                    global.logger.verbose(
-                        `received clear message: "${JSON.stringify(message)}".`
-                    );
+                    if (global.logger) {
+                        global.logger.verbose(
+                            `received clear message: "${JSON.stringify(
+                                message
+                            )}".`
+                        );
+                    }
                     await clear(message);
                     ipc.server.emit(socket, 'receipt', {
                         if: message.coorelationId
@@ -195,8 +213,10 @@ async function startup() {
         });
         ipc.server.start();
     } catch (error) {
-        global.logger.error(`"logcar" startup() failed.`);
-        global.logger.error(error);
+        if (global.logger) {
+            global.logger.error(`"logcar" startup() failed.`);
+            global.logger.error(error);
+        }
 
         // try again every 20 seconds
         setTimeout(() => {

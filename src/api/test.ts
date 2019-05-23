@@ -24,9 +24,11 @@ before(() => {
                 'verbose'
             ]).on('message', message => {
                 if (message === 'listening') {
-                    global.logger.info(
-                        'LogCar listening on "logcar", connecting...'
-                    );
+                    if (global.logger) {
+                        global.logger.info(
+                            'LogCar listening on "logcar", connecting...'
+                        );
+                    }
                     resolve(forked);
                 }
             });
@@ -47,13 +49,17 @@ before(() => {
                 'verbose'
             ]).on('message', message => {
                 if (message === 'listening') {
-                    global.logger.verbose(
-                        'API server listening on port 8112...'
-                    );
-                    resolve(forked);
+                    if (global.logger) {
+                        global.logger.verbose(
+                            'API server listening on port 8112...'
+                        );
+                        resolve(forked);
+                    }
                 }
             });
-            global.logger.verbose('waiting for API server...');
+            if (global.logger) {
+                global.logger.verbose('waiting for API server...');
+            }
         } catch (error) {
             reject(error);
         }

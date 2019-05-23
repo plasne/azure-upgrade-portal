@@ -1,8 +1,10 @@
 // includes
 import * as azs from 'azure-storage';
-import AzureQueueOperation from '../lib/AzureQueueOperation';
-import AzureTableOperation from '../lib/AzureTableOperation';
-import PromiseImposter from '../lib/PromiseImposter';
+import {
+    AzureQueueOperation,
+    AzureTableOperation,
+    PromiseImposter
+} from 'azure-storage-stream';
 import Job from './Job';
 
 // define the job types

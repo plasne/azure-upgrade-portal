@@ -1,11 +1,13 @@
 // includes
 import * as azs from 'azure-storage';
-import AzureQueue from '../lib/AzureQueue';
-import AzureQueueOperation from '../lib/AzureQueueOperation';
-import AzureTable from '../lib/AzureTable';
-import AzureTableOperation from '../lib/AzureTableOperation';
-import ReadableStream from '../lib/ReadableStream';
-import WriteableStream from '../lib/WriteableStream';
+import {
+    AzureQueue,
+    AzureQueueOperation,
+    AzureTable,
+    AzureTableOperation,
+    ReadableStream,
+    WriteableStream
+} from 'azure-storage-stream';
 import Job, { ICreateJob } from './Job';
 import Task from './Task';
 
@@ -16,7 +18,7 @@ export default class Jobs {
     public tableIn: WriteableStream<AzureTableOperation, AzureTableOperation>;
     public tableOut: ReadableStream<AzureTableOperation, Job>;
     public queueIn: WriteableStream<AzureQueueOperation, AzureQueueOperation>;
-    public queueOut: ReadableStream<AzureQueueOperation, AzureQueueOperation>;
+    public queueOut: ReadableStream<string, any>;
     private createJobsTable: Promise<any>;
 
     constructor(account: string, key: string) {
@@ -27,28 +29,19 @@ export default class Jobs {
             useGlobalAgent: true
         });
         this.createJobsTable = this.azureTable.createTableIfNotExists('jobs');
-        const tableStreams = this.azureTable.queryStream<
-            AzureTableOperation,
-            Job
-        >(
+        const tableStreams = this.azureTable.streams<AzureTableOperation, any>(
             {
                 processAfter: this.createJobsTable
             },
             {
-                batchSize: 100,
-                transform: data => {
-                    const job = new Job(this);
-                    job.id = data.PartitionKey._;
-                    job.status = data.Status._;
-                    return job;
-                }
+                batchSize: 100
             }
         );
         this.tableIn = tableStreams.in.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
         });
         this.tableOut = tableStreams.out.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
         });
 
         // create the queue in & out streams
@@ -59,20 +52,17 @@ export default class Jobs {
         });
         const createQs: Array<Promise<any>> = [];
         createQs.push(this.azureQueue.createQueueIfNotExists('discovery'));
-        const queueStreams = this.azureQueue.queueStream<
-            AzureQueueOperation,
-            any
-        >(
+        const queueStreams = this.azureQueue.streams<AzureQueueOperation, any>(
             {
                 processAfter: Promise.all(createQs)
             },
             {}
         );
         this.queueIn = queueStreams.in.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
         });
         this.queueOut = queueStreams.out.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
         });
     }
 
@@ -92,7 +82,7 @@ export default class Jobs {
             service: this.azureTable.service,
             useGlobalAgent: true
         });
-        const streams = table.queryStream<AzureTableOperation, any>(
+        const streams = table.streams<AzureTableOperation, any>(
             {
                 processAfter: this.createJobsTable
             },
@@ -104,11 +94,11 @@ export default class Jobs {
         // monitor for errors
         let errors = 0;
         streams.in.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
             errors++;
         });
         streams.out.on('error', error => {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
             errors++;
         });
 

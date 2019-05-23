@@ -1,19 +1,12 @@
 // includes
-import { json as bodyParserJson } from 'body-parser';
+import { AzureQueueOperation } from 'azure-storage-stream';
 import cmd = require('commander');
 import dotenv = require('dotenv');
-import express = require('express');
-import * as fs from 'fs';
+import * as http from 'http';
+import * as https from 'https';
 import * as os from 'os';
-import * as util from 'util';
 import * as globalExt from '../lib/global-ext';
-
-// promisify
-const readdirAsync = util.promisify(fs.readdir);
-
-// configure express
-const app = express();
-app.use(bodyParserJson());
+import Discovery, { IDiscoveryJob } from './Discovery';
 
 // define command line parameters
 let doStartup = true;
@@ -23,17 +16,24 @@ cmd.option(
     /^(error|warn|info|verbose|debug|silly)$/i
 )
     .option(
-        '-p, --port <i>',
-        '[REQUIRED] PORT. The port that will host the API.',
-        parseInt
-    )
-    .option(
         '-s, --storage-account <s>',
         '[REQUIRED] STORAGE_ACCOUNT. The Azure Storage Account that will be used for persistence.'
     )
     .option(
         '-k, --storage-key <s>',
         '[REQUIRED] STORAGE_KEY. The key for the Azure Storage Account that will be used for persistence.'
+    )
+    .option(
+        '-d, --directory <s>',
+        '[REQUIRED] DIRECTORY. The Azure AD directory that contains the APP_ID.'
+    )
+    .option(
+        '-i, --app-id <s>',
+        '[REQUIRED] APP_ID. The ID of the application that has permission to Azure AD.'
+    )
+    .option(
+        '-l, --app-key <s>',
+        '[REQUIRED] APP_KEY. The Azure Storage Account that will be used for persistence.'
     )
     .option(
         '-r, --socket-root <s>',
@@ -50,10 +50,20 @@ cmd.option(
 // globals
 dotenv.config();
 const LOG_LEVEL = cmd.logLevel || process.env.LOG_LEVEL || 'info';
-const PORT = cmd.port || process.env.PORT || 8112;
+const STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
+const STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+const DIRECTORY = cmd.directory || process.env.DIRECTORY;
+const APP_ID = cmd.appId || process.env.APP_ID;
+const APP_KEY = cmd.appKey || process.env.APP_KEY;
 const SOCKET_ROOT = cmd.socketRoot || process.env.SOCKET_ROOT || '/tmp/';
-global.STORAGE_ACCOUNT = cmd.storageAccount || process.env.STORAGE_ACCOUNT;
-global.STORAGE_KEY = cmd.storageKey || process.env.STORAGE_KEY;
+
+// modify the agents
+const httpAgent: any = http.globalAgent;
+httpAgent.keepAlive = true;
+httpAgent.maxSockets = 30;
+const httpsAgent: any = https.globalAgent;
+httpsAgent.keepAlive = true;
+httpsAgent.maxSockets = 30;
 
 // declare startup
 async function startup() {
@@ -64,20 +74,29 @@ async function startup() {
         // log startup
         console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
         if (global.logger) {
-            global.logger.verbose(`PORT = "${PORT}".`);
+            global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
+            global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
+            global.logger.verbose(`DIRECTORY = "${DIRECTORY}"`);
+            global.logger.verbose(`APP_ID = "${APP_ID}"`);
+            global.logger.verbose(`APP_KEY = "${APP_KEY}"`);
             global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
         }
 
         // check requirements
-        if (!PORT) {
-            throw new Error('You must specify a PORT.');
-        }
-
-        if (!global.STORAGE_ACCOUNT) {
+        if (!STORAGE_ACCOUNT) {
             throw new Error('You must specify a STORAGE_ACCOUNT.');
         }
-        if (!global.STORAGE_KEY) {
+        if (!STORAGE_KEY) {
             throw new Error('You must specify a STORAGE_KEY.');
+        }
+        if (!DIRECTORY) {
+            throw new Error('You must specify a DIRECTORY.');
+        }
+        if (!APP_ID) {
+            throw new Error('You must specify a APP_ID.');
+        }
+        if (!APP_KEY) {
+            throw new Error('You must specify a APP_KEY.');
         }
 
         // start persistent logging
@@ -89,46 +108,39 @@ async function startup() {
         if (global.writer) {
             await global.writer(
                 'info',
-                `API instance on "${os.hostname}" started up.`
+                `Discovery instance on "${os.hostname}" started.`
             );
         }
 
-        // mount all routes
-        const routePaths = await readdirAsync(`${__dirname}/routes`);
-        for (const routePath of routePaths) {
-            if (global.logger) {
-                global.logger.verbose(`mounting routes for "${routePath}"...`);
-            }
-            require(`${__dirname}/routes/${routePath}`)(app);
-            if (global.logger) {
-                global.logger.verbose(`mounted routes for "${routePath}".`);
-            }
-        }
-
-        // start listening
-        app.listen(PORT, () => {
-            if (global.logger) {
-                global.logger.verbose(`listening on port ${PORT}...`);
-            }
-            if (process.send) {
-                if (global.logger) {
-                    global.logger.verbose(
-                        'sent "listening" from API to test rig.'
-                    );
-                }
-                process.send('listening');
-            }
+        // initialize discovery
+        const discovery = new Discovery({
+            appId: APP_ID,
+            appKey: APP_KEY,
+            directory: DIRECTORY,
+            storageAcount: STORAGE_ACCOUNT,
+            storageKey: STORAGE_KEY
         });
+
+        // start listening for jobs
+        discovery.listen();
+
+        // TEST: insert a message
+        const msg: IDiscoveryJob = {
+            jobId: new Date().toISOString(),
+            operation: 'start'
+        };
+        const top = new AzureQueueOperation('discovery', 'enqueue', msg);
+        if (discovery.inQueue) discovery.inQueue.push(top);
     } catch (error) {
         if (global.logger) {
-            global.logger.error(`API startup() failed.`);
+            global.logger.error(`Discovery startup() loop failed...`);
             global.logger.error(error);
         }
         try {
             if (global.writer) {
                 await global.writer(
                     'error',
-                    `Jobs instance on "${
+                    `Discovery instance on "${
                         os.hostname
                     }" failed in the startup() loop...`
                 );

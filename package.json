@@ -13,7 +13,10 @@
         "clean-portal": "rm -rf dist/portal/**",
         "test": "mocha dist/**/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
         "test-logcar": "mocha dist/logcar/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
-        "test-portal": "mocha dist/portal/tests/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000"
+        "test-portal": "mocha dist/portal/tests/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
+        "test-api": "mocha dist/api/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
+        "test-jobs": "mocha dist/jobs/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000",
+        "test-discovery": "mocha dist/discovery/test.js --reporter mocha-multi-reporters --reporter-options configFile=test/config.json --timeout 30000"
     },
     "repository": {
         "type": "git",
@@ -27,8 +30,10 @@
     "homepage": "https://github.com/plasne/azure-upgrade-portal#readme",
     "dependencies": {
         "@types/jquery": "^3.3.17",
+        "adal-node": "^0.1.28",
         "axios": "^0.18.0",
         "azure-storage": "^2.10.1",
+        "azure-storage-stream": "git+https://github.com/plasne/azure-storage-streaming-sdk.git",
         "browserify": "^16.2.3",
         "commander": "^2.18.0",
         "dotenv": "^6.0.0",

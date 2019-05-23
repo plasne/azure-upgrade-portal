@@ -19,9 +19,11 @@ global.version = async () => {
         const pkg = JSON.parse(raw);
         return pkg.version;
     } catch (error) {
-        global.logger.debug(
-            `version could not be read from "${process.cwd()}/package.json".`
-        );
+        if (global.logger) {
+            global.logger.debug(
+                `version could not be read from "${process.cwd()}/package.json".`
+            );
+        }
         return 'unknown';
     }
 };
@@ -70,9 +72,11 @@ async function connectToIpc(
         ipc.config.silent = true;
         ipc.connectTo(targetName, () => {
             ipc.of.logcar.on('connect', () => {
-                global.logger.verbose(
-                    `"${sourceName}" successfully connected to "${targetName}" over IPC.`
-                );
+                if (global.logger) {
+                    global.logger.verbose(
+                        `"${sourceName}" successfully connected to "${targetName}" over IPC.`
+                    );
+                }
                 resolve();
             });
         });
@@ -81,6 +85,48 @@ async function connectToIpc(
 
 // start persistent logging
 export async function enablePersistentLogging(socketRoot: string) {
+    // commit to the persistent log
+    global.writer = (
+        level: LogLevels,
+        message: string,
+        jobId?: string,
+        taskName?: string
+    ) => {
+        return new Promise<void>(async (resolve, reject) => {
+            if (ipc.of.logcar) {
+                // create the message
+                const logEntry: ILogEntry = {
+                    coorelationId: uuid(),
+                    jobId,
+                    level,
+                    message,
+                    taskName
+                };
+
+                // commit the log and wait for response
+                ipc.of.logcar.emit('log', logEntry);
+                ipc.of.logcar.once('receipt', (msg: any) => {
+                    if (global.logger) {
+                        global.logger.verbose(
+                            `receipt from "logcar": ${JSON.stringify(msg)}`
+                        );
+                    }
+                    resolve(msg);
+                });
+                ipc.of.logcar.once('failure', (msg: any) => {
+                    if (global.logger) {
+                        global.logger.error(`failure from "logcar"...`);
+                        global.logger.error(msg.error.stack);
+                    }
+                    reject(msg.error);
+                });
+            } else {
+                reject(new Error('You must enablePersistentLogging() first.'));
+            }
+        });
+    };
+
+    // connect to IPC
     return connectToIpc(socketRoot, 'logcar-client', 'logcar');
 }
 
@@ -88,40 +134,3 @@ export async function enablePersistentLogging(socketRoot: string) {
 export async function disablePersistentLogging() {
     ipc.disconnect('logcar');
 }
-
-// commit to the persistent log
-global.commitLog = (
-    level: LogLevels,
-    message: string,
-    jobId?: string,
-    taskName?: string
-) => {
-    return new Promise<void>(async (resolve, reject) => {
-        if (ipc.of.logcar) {
-            // create the message
-            const logEntry: ILogEntry = {
-                coorelationId: uuid(),
-                jobId,
-                level,
-                message,
-                taskName
-            };
-
-            // commit the log and wait for response
-            ipc.of.logcar.emit('log', logEntry);
-            ipc.of.logcar.once('receipt', (msg: any) => {
-                global.logger.verbose(
-                    `receipt from "logcar": ${JSON.stringify(msg)}`
-                );
-                resolve(msg);
-            });
-            ipc.of.logcar.once('failure', (msg: any) => {
-                global.logger.error(`failure from "logcar".`);
-                global.logger.error(msg.error.stack);
-                reject(msg.error);
-            });
-        } else {
-            reject(new Error('You must enablePersistentLogging() first.'));
-        }
-    });
-};

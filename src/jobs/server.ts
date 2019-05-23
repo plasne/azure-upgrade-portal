@@ -64,18 +64,20 @@ const httpsAgent: any = https.globalAgent;
 httpsAgent.keepAlive = true;
 httpsAgent.maxSockets = 30;
 
-// enable logging
-globalExt.enableConsoleLogging(LOG_LEVEL);
-
 // declare startup
 async function startup() {
     try {
+        // enable logging
+        globalExt.enableConsoleLogging(LOG_LEVEL);
+
         // log startup
         console.log(`LOG_LEVEL = "${LOG_LEVEL}".`);
-        global.logger.verbose(`PORT = "${PORT}"`);
-        global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
-        global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
-        global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
+        if (global.logger) {
+            global.logger.verbose(`PORT = "${PORT}"`);
+            global.logger.verbose(`STORAGE_ACCOUNT = "${STORAGE_ACCOUNT}"`);
+            global.logger.verbose(`STORAGE_KEY = "${STORAGE_KEY}"`);
+            global.logger.verbose(`SOCKET_ROOT = "${SOCKET_ROOT}"`);
+        }
 
         // check requirements
         if (!PORT) {
@@ -89,13 +91,17 @@ async function startup() {
         }
 
         // start persistent logging
-        global.logger.info(`Attempting to connect to "logcar"...`);
+        if (global.logger) {
+            global.logger.info(`Attempting to connect to "logcar"...`);
+        }
         await globalExt.enablePersistentLogging(SOCKET_ROOT);
-        global.logger.info(`Connected to "logcar".`);
-        await global.commitLog(
-            'info',
-            `Jobs instance on "${os.hostname}" started up.`
-        );
+        if (global.logger) global.logger.info(`Connected to "logcar".`);
+        if (global.writer) {
+            await global.writer(
+                'info',
+                `Jobs instance on "${os.hostname}" started up.`
+            );
+        }
 
         // initialize the jobs collection
         const jobs = new Jobs(STORAGE_ACCOUNT, STORAGE_KEY);
@@ -106,7 +112,7 @@ async function startup() {
                 await jobs.clear();
                 res.status(200).end();
             } catch (error) {
-                global.logger.error(error.stack);
+                if (global.logger) global.logger.error(error.stack);
                 res.status(500).send(
                     'Jobs could not be deleted. Please check the logs.'
                 );
@@ -124,7 +130,7 @@ async function startup() {
                     res.status(404).end();
                 }
             } catch (error) {
-                global.logger.error(error.stack);
+                if (global.logger) global.logger.error(error.stack);
                 res.status(500).send(
                     'The job could not be fetched. Please check the logs.'
                 );
@@ -140,7 +146,7 @@ async function startup() {
                     id: job.id
                 });
             } catch (error) {
-                global.logger.error(error.stack);
+                if (global.logger) global.logger.error(error.stack);
                 res.status(500).send(
                     'The job could not be created. Please check the logs.'
                 );
@@ -159,7 +165,7 @@ async function startup() {
                     res.status(404).end();
                 }
             } catch (error) {
-                global.logger.error(error.stack);
+                if (global.logger) global.logger.error(error.stack);
                 res.status(500).send(
                     'The job could not be patched. Please check the logs.'
                 );
@@ -168,17 +174,36 @@ async function startup() {
 
         // start listening
         app.listen(PORT, () => {
-            global.logger.info(`listening on port ${PORT}...`);
+            if (global.logger) {
+                global.logger.info(`listening on port ${PORT}...`);
+            }
             if (process.send) {
-                global.logger.verbose(
-                    'sent "listening" from Jobs to test rig.'
-                );
+                if (global.logger) {
+                    global.logger.verbose(
+                        'sent "listening" from Jobs to test rig.'
+                    );
+                }
                 process.send('listening');
             }
         });
     } catch (error) {
-        global.logger.error(`Jobs startup() failed.`);
-        global.logger.error(error);
+        if (global.logger) {
+            global.logger.error(`Jobs startup() loop failed...`);
+            global.logger.error(error);
+        }
+        try {
+            if (global.writer) {
+                await global.writer(
+                    'error',
+                    `Jobs instance on "${
+                        os.hostname
+                    }" failed in the startup() loop...`
+                );
+                await global.writer('error', error);
+            }
+        } catch (error) {
+            // depending on the error persistent logging might not be possible
+        }
         process.exit(1);
     }
 }

@@ -7,10 +7,10 @@ declare global {
     namespace NodeJS {
         interface Global {
             version: () => Promise<string>;
-            logger: winston.Logger;
+            logger?: winston.Logger;
             STORAGE_ACCOUNT: string;
             STORAGE_KEY: string;
-            commitLog: (
+            writer?: (
                 level: LogLevels,
                 message: any,
                 jobId?: string,

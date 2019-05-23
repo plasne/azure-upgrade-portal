@@ -1,10 +1,8 @@
 // includes
 import * as azs from 'azure-storage';
+import { AzureQueueOperation, AzureTableOperation, PromiseImposter } from 'azure-storage-stream';
 import { timeout } from 'promise-timeout';
 import { v4 as uuid } from 'uuid';
-import AzureQueueOperation from '../lib/AzureQueueOperation';
-import AzureTableOperation from '../lib/AzureTableOperation';
-import PromiseImposter from '../lib/PromiseImposter';
 import Jobs from './Jobs';
 import Task, { ICreateTask, IFetchTask } from './Task';
 

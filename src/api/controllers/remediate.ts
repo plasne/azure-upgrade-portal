@@ -89,9 +89,11 @@ export default {
 
             // validate body contents
             if (!bwhen || !bscope) {
-                global.logger.error(
-                    'Incomplete JSON body: ' + JSON.stringify(req.body)
-                );
+                if (global.logger) {
+                    global.logger.error(
+                        'Incomplete JSON body: ' + JSON.stringify(req.body)
+                    );
+                }
                 res.status(400).send(
                     'Remdiation request could not be completed.  Incomplete JSON body.'
                 );
@@ -109,7 +111,7 @@ export default {
                 scope: bscope,
                 when: bwhen
             });
-            global.logger.info('Remediation record added');
+            if (global.logger) global.logger.info('Remediation record added.');
 
             // send to job engine to queue to run
             const jobs = new Jobs(global.STORAGE_ACCOUNT, global.STORAGE_KEY);
@@ -117,7 +119,7 @@ export default {
 
             res.status(200).send();
         } catch (error) {
-            global.logger.error(error.stack);
+            if (global.logger) global.logger.error(error.stack);
             res.status(500).send(
                 'The remediation request could not be created. Please check the logs.'
             );

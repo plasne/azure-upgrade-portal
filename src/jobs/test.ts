@@ -12,6 +12,11 @@ import { ICreateJob, IFetchJob, IPatchJob } from './Job';
 let server: ChildProcess | undefined;
 let logcar: ChildProcess | undefined;
 before(() => {
+    // read variables
+    dotenv.config();
+    const LOG_LEVEL = process.env.LOG_LEVEL;
+    globalExt.enableConsoleLogging(LOG_LEVEL || 'silly');
+
     // startup the logcar
     const p1 = new Promise<ChildProcess>((resolve, reject) => {
         try {
@@ -20,9 +25,11 @@ before(() => {
                 'verbose'
             ]).on('message', message => {
                 if (message === 'listening') {
-                    global.logger.info(
-                        'LogCar listening on "logcar", connecting...'
-                    );
+                    if (global.logger) {
+                        global.logger.info(
+                            'LogCar listening on "logcar", connecting...'
+                        );
+                    }
                     resolve(forked);
                 }
             });
@@ -33,7 +40,7 @@ before(() => {
         logcar = cp;
     });
 
-    // startup the API server
+    // startup the Jobs server
     const p2 = new Promise<ChildProcess>((resolve, reject) => {
         try {
             const forked = fork(`${__dirname}/server.js`, [
@@ -43,13 +50,17 @@ before(() => {
                 'verbose'
             ]).on('message', message => {
                 if (message === 'listening') {
-                    global.logger.verbose(
-                        'Jobs server listening on port 8113...'
-                    );
+                    if (global.logger) {
+                        global.logger.verbose(
+                            'Jobs server listening on port 8113...'
+                        );
+                    }
                     resolve(forked);
                 }
             });
-            global.logger.verbose('waiting for Jobs server...');
+            if (global.logger) {
+                global.logger.verbose('waiting for Jobs server...');
+            }
         } catch (error) {
             reject(error);
         }

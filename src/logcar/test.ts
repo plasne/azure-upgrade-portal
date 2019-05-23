@@ -35,9 +35,11 @@ before(done => {
         'message',
         message => {
             if (message === 'listening') {
-                global.logger.info(
-                    'LogCar listening on "logcar", connecting...\n'
-                );
+                if (global.logger) {
+                    global.logger.info(
+                        'LogCar listening on "logcar", connecting...\n'
+                    );
+                }
                 done();
             }
         }
@@ -67,7 +69,9 @@ describe('LogCar Tests', () => {
     });
 
     it('should log a system message', async () => {
-        await global.commitLog('silly', 'TEST: should log a system message');
+        if (global.writer) {
+            await global.writer('silly', 'TEST: should log a system message');
+        }
         const blob = new Date().toISOString().split('T')[0] + '.txt';
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
@@ -83,11 +87,13 @@ describe('LogCar Tests', () => {
 
     it('should log a job message without a task', async () => {
         const jobId = uuid();
-        await global.commitLog(
-            'silly',
-            'TEST: should log a job message without a task',
-            jobId
-        );
+        if (global.writer) {
+            await global.writer(
+                'silly',
+                'TEST: should log a job message without a task',
+                jobId
+            );
+        }
         const blob = `${jobId}.txt`;
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
@@ -106,12 +112,14 @@ describe('LogCar Tests', () => {
     it('should log a job/task message', async () => {
         const jobId = uuid();
         const taskId = uuid();
-        await global.commitLog(
-            'silly',
-            'TEST: should log a job/task message',
-            jobId,
-            taskId
-        );
+        if (global.writer) {
+            await global.writer(
+                'silly',
+                'TEST: should log a job/task message',
+                jobId,
+                taskId
+            );
+        }
         const blob = `${jobId}.${taskId}.txt`;
         const content: string = await new Promise<string>((resolve, reject) => {
             service.getBlobToText('logs', blob, (error, result) => {
