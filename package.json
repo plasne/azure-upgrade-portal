@@ -27,7 +27,7 @@
     "homepage": "https://github.com/plasne/azure-upgrade-portal#readme",
     "dependencies": {
         "@types/jquery": "^3.3.17",
-        "axios": "^0.18.0",
+        "axios": "^0.21.1",
         "azure-storage": "^2.10.1",
         "browserify": "^16.2.3",
         "commander": "^2.18.0",
